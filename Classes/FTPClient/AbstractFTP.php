@@ -235,7 +235,7 @@ abstract class AbstractFTP implements FTPInterface {
 				$mimeType = 'video/x-sgi-movie'; break;
 			case 'mp2':
 			case 'mp3':
-			    $mimeType = 'audio/mp3'; break;
+			    $mimeType = 'audio/mpeg'; break;
 			case 'mpga':
 				$mimeType = 'audio/mpeg'; break;
 			case 'mp4':
