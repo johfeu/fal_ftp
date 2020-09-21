@@ -59,6 +59,7 @@
 					<label>LLL:EXT:fal_ftp/Resources/Private/Language/locallang_db.xlf:passiveMode</label>
 					<config>
 						<type>select</type>
+						<renderType>selectSingle</renderType>
 						<items type="array">
 							<numIndex index="0" type="array">
 								<numIndex index="0">LLL:EXT:fal_ftp/Resources/Private/Language/locallang_db.xlf:passiveMode.passive</numIndex>
