@@ -549,7 +549,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 	 */
 	public function copyFolderWithinStorage($sourceFolderIdentifier, $targetFolderIdentifier, $newFolderName) {
 
-		$targetIdentifier = $targetFolderIdentifier . $folderName . '/';
+		$targetIdentifier = $targetFolderIdentifier . $newFolderName . '/';
 
 		try {
 			$this->ftpClient->copyDirectory($sourceFolderIdentifier, $targetIdentifier);
