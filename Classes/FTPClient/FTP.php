@@ -683,7 +683,7 @@ class FTP extends AbstractFTP {
 		$this->changeDirectory($directory);
 
 		// The -a option is used to show the hidden files as well on some FTP servers.
-		$result = @ftp_rawlist($this->getStream(), '-a ');
+		$result = @ftp_rawlist($this->getStream(), $directory);
 		if ($result === FALSE) {
 			throw new Exception\FTPConnectionException('Fetching directory "' . $directory . '" faild.', 1408550538);
 		}
