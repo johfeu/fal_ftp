@@ -27,6 +27,8 @@ namespace AdGrafik\FalFtp\Driver;
  * This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use TYPO3\CMS\Core\Charset\CharsetConverter;
+use TYPO3\CMS\Core\Core\Environment;
 use TYPO3\CMS\Core\Resource\Driver\AbstractHierarchicalFilesystemDriver;
 use TYPO3\CMS\Core\Resource\ResourceStorage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -180,7 +182,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 	 */
 	public function __destruct() {
 		// Delete all temporary files after processing.
-		$temporaryPattern = PATH_site . 'typo3temp/fal-ftp-tempfile-*';
+		$temporaryPattern = Environment::getPublicPath() . 'typo3temp/fal-ftp-tempfile-*';
 		array_map('unlink', glob($temporaryPattern));
 	}
 
@@ -1019,16 +1021,14 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 		} else {
 			// Define character set
 			if (!$charset) {
-				if (TYPO3_MODE === 'FE') {
-					$charset = $GLOBALS['TSFE']->renderCharset;
-				} else {
-					// default for Backend
-					$charset = 'utf-8';
-				}
+				// Breaking #73794: Charset is now always utf-8
+				$charset = 'utf-8';
 			}
 			// If a charset was found, convert fileName
 			if ($charset) {
-				$fileName = $this->getCharsetConversion()->specCharsToASCII($charset, $fileName);
+				/** @var CharsetConverter $charsetConverter */
+				$charsetConverter = GeneralUtility::makeInstance(CharsetConverter::class);
+				$fileName = $charsetConverter->conv($fileName, $charset, "utf-8");
 			}
 			// Replace unwanted characters by underscores
 			$cleanFileName = preg_replace('/[' . self::UNSAFE_FILENAME_CHARACTER_EXPRESSION . '\\xC0-\\xFF]/', '_', trim($fileName));
