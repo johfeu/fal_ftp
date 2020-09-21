@@ -607,9 +607,13 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 			}
 		}
 
-		return count($propertiesToExtract)
-			? array_intersect_key(array_flip($propertiesToExtract), $this->directoryCache[$folderIdentifier][$fileIdentifier])
-			: $this->directoryCache[$folderIdentifier][$fileIdentifier];
+		$returnValues = [];
+		foreach($propertiesToExtract as $property) {
+			if($this->directoryCache[$folderIdentifier][$fileIdentifier][$property]) {
+				array_push($returnValues, $this->directoryCache[$folderIdentifier][$fileIdentifier][$property]);
+			}
+		}
+		return $returnValues;
 	}
 
 	/**
