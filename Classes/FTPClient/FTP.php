@@ -214,7 +214,6 @@ class FTP extends AbstractFTP {
 	public function login($username = '', $password = '') {
 
 		$username = $username ? urldecode($username) : 'anonymous';
-		$password = $password ? urldecode($password) : '';
 
 		$result = @ftp_login($this->getStream(), $username, $password);
 		if ($result === FALSE) {
