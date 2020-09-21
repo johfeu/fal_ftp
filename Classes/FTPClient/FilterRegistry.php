@@ -72,7 +72,7 @@ class FilterRegistry implements SingletonInterface {
 	 * @return boolean
 	 */
 	public function hasFilter() {
-		return (count($this->filter) > 0);
+		return isset($this->filter);
 	}
 
 	/**

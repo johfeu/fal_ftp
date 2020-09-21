@@ -72,7 +72,7 @@ class ParserRegistry implements SingletonInterface {
 	 * @return boolean
 	 */
 	public function hasParser() {
-		return (count($this->parser) > 0);
+		return isset($this->parser);
 	}
 
 	/**
