@@ -26,6 +26,7 @@ namespace AdGrafik\FalFtp\Driver;
  *
  * This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use TYPO3\CMS\Core\Http\ApplicationType;
 use AdGrafik\FalFtp\FTPClient\FTP;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Resource\Exception\FolderDoesNotExistException;
@@ -358,7 +359,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 		if ($folderIdentifier === $entryIdentifier) {
 			return TRUE;
 		}
-		return GeneralUtility::isFirstPartOfStr($entryIdentifier, $folderIdentifier);
+		return \str_starts_with($entryIdentifier, $folderIdentifier);
 	}
 
 	/**
@@ -852,7 +853,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 		$temporaryFile = $this->getTemporaryPathForFile($fileIdentifier);
 
 		// Prevent creating thumbnails if file size greater than the defined in the extension configuration.
-		if (TYPO3_MODE === 'BE' && $this->createThumbnailsUpToSize) {
+		if (ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend() && $this->createThumbnailsUpToSize) {
 			$fileInfo = $this->getFileInfoByIdentifier($fileIdentifier);
 			if ($fileInfo['size'] > $this->createThumbnailsUpToSize) {
 				copy($this->defaultThumbnail, $temporaryFile);
@@ -1323,7 +1324,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
   */
  protected function getCharsetConversion() {
 		if (!isset($this->charsetConversion)) {
-			if (TYPO3_MODE === 'FE') {
+			if (ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isFrontend()) {
 				$this->charsetConversion = $GLOBALS['TSFE']->csConvObj;
 			} elseif (is_object($GLOBALS['LANG'])) {
 				// BE assumed:
