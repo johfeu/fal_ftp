@@ -22,7 +22,6 @@ $EM_CONF[$_EXTKEY] = [
 	'author_company' => 'ad:grafik',
 	'constraints' =>  [
 		'depends' =>  [
-			'typo3' => '10.4.6-10.4.99',
 		],
 		'conflicts' => [
 		],
