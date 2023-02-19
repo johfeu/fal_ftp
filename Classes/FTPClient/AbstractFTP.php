@@ -45,30 +45,30 @@ abstract class AbstractFTP implements FTPInterface {
 	protected $stream;
 
 	/**
-	 * @var \AdGrafik\FalFtp\FTPClient\ParserRegistry $parserRegistry
-	 */
-	protected $parserRegistry;
+  * @var ParserRegistry $parserRegistry
+  */
+ protected $parserRegistry;
 
 	/**
-	 * @var \AdGrafik\FalFtp\FTPClient\ParserRegistry $parserRegistry
-	 */
-	protected $filterRegistry;
+  * @var ParserRegistry $parserRegistry
+  */
+ protected $filterRegistry;
 
 	/**
-	 * Get parserRegistry
-	 *
-	 * @return \AdGrafik\FalFtp\FTPClient\ParserRegistry
-	 */
-	public function getParserRegistry() {
+  * Get parserRegistry
+  *
+  * @return ParserRegistry
+  */
+ public function getParserRegistry() {
 		return $this->parserRegistry;
 	}
 
 	/**
-	 * Get filterRegistry
-	 *
-	 * @return \AdGrafik\FalFtp\FTPClient\ParserRegistry
-	 */
-	public function getFilterRegistry() {
+  * Get filterRegistry
+  *
+  * @return ParserRegistry
+  */
+ public function getFilterRegistry() {
 		return $this->filterRegistry;
 	}
 

@@ -30,15 +30,16 @@ namespace AdGrafik\FalFtp\FTPClient;
  *
  * This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-
+use AdGrafik\FalFtp\FTPClient\Filter\FilterInterface;
+use AdGrafik\FalFtp\FTPClient\Exception\InvalidConfigurationException;
 use \TYPO3\CMS\Core\SingletonInterface;
 
 class FilterRegistry implements SingletonInterface {
 
 	/**
-	 * @var array<\AdGrafik\FalFtp\FTPClient\Filter\FilterInterface> $filter
-	 */
-	protected $filter;
+  * @var array<FilterInterface> $filter
+  */
+ protected $filter;
 
 	/**
 	 * Initialize object.
@@ -50,13 +51,13 @@ class FilterRegistry implements SingletonInterface {
 	}
 
 	/**
-	 * Register filter classes.
-	 *
-	 * @param mixed $filters
-	 * @return \AdGrafik\FalFtp\FTPClient\FilterRegistry
-	 * @throws \AdGrafik\FalFtp\FTPClient\Exception\InvalidConfigurationException
-	 */
-	public function registerFilter($filters) {
+  * Register filter classes.
+  *
+  * @param mixed $filters
+  * @return \AdGrafik\FalFtp\FTPClient\FilterRegistry
+  * @throws InvalidConfigurationException
+  */
+ public function registerFilter($filters) {
 		if (is_array($filters) === FALSE) {
 			$filters = array($filters);
 		}

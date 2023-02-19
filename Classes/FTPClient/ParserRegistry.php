@@ -30,15 +30,16 @@ namespace AdGrafik\FalFtp\FTPClient;
  *
  * This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-
+use AdGrafik\FalFtp\FTPClient\Parser\ParserInterface;
+use AdGrafik\FalFtp\FTPClient\Exception\InvalidConfigurationException;
 use \TYPO3\CMS\Core\SingletonInterface;
 
 class ParserRegistry implements SingletonInterface {
 
 	/**
-	 * @var array<\AdGrafik\FalFtp\FTPClient\Parser\ParserInterface> $parser
-	 */
-	protected $parser;
+  * @var array<ParserInterface> $parser
+  */
+ protected $parser;
 
 	/**
 	 * Initialize object.
@@ -50,13 +51,13 @@ class ParserRegistry implements SingletonInterface {
 	}
 
 	/**
-	 * Register parser classes.
-	 *
-	 * @param mixed $parsers
-	 * @return \AdGrafik\FalFtp\FTPClient\ParserRegistry
-	 * @throws \AdGrafik\FalFtp\FTPClient\Exception\InvalidConfigurationException
-	 */
-	public function registerParser($parsers) {
+  * Register parser classes.
+  *
+  * @param mixed $parsers
+  * @return \AdGrafik\FalFtp\FTPClient\ParserRegistry
+  * @throws InvalidConfigurationException
+  */
+ public function registerParser($parsers) {
 		if (is_array($parsers) === FALSE) {
 			$parsers = array($parsers);
 		}

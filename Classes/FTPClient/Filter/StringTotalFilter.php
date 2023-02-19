@@ -36,14 +36,14 @@ use \AdGrafik\FalFtp\FTPClient\FTPInterface;
 class StringTotalFilter implements FilterInterface {
 
 	/**
-	 * Filter the given resource info.
-	 *
-	 * @param array $resourceInfo
-	 * @param string $resource
-	 * @param \AdGrafik\FalFtp\FTPClient\FTPInterface $parentObject
-	 * @return boolean
-	 */
-	public function filter($resourceInfo, $resource, FTPInterface $parentObject) {
+  * Filter the given resource info.
+  *
+  * @param array $resourceInfo
+  * @param string $resource
+  * @param FTPInterface $parentObject
+  * @return boolean
+  */
+ public function filter($resourceInfo, $resource, FTPInterface $parentObject) {
 		// Exclude the total line that some servers return
 		return (substr($resource, 0, 5) == 'total');
 	}

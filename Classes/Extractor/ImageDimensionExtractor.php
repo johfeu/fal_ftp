@@ -26,7 +26,7 @@ namespace AdGrafik\FalFtp\Extractor;
  *
  * This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-
+use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\Index\ExtractorInterface;
 use TYPO3\CMS\Core\Resource;
 
@@ -90,13 +90,13 @@ class ImageDimensionExtractor implements ExtractorInterface {
 	}
 
 	/**
-	 * Checks if the given file can be processed by this Extractor
-	 *
-	 * @param \TYPO3\CMS\Core\Resource\File $file
-	 * @return bool
-	 */
-	public function canProcess(Resource\File $file) {
-		if ($file->getType() == Resource\File::FILETYPE_IMAGE) {
+  * Checks if the given file can be processed by this Extractor
+  *
+  * @param File $file
+  * @return bool
+  */
+ public function canProcess(File $file) {
+		if ($file->getType() == File::FILETYPE_IMAGE) {
 			try {
 				$size = $this->getImageSize($file);
 				if (is_array($size) && $size[0] > 0 && $size[1] > 0) {
@@ -110,15 +110,15 @@ class ImageDimensionExtractor implements ExtractorInterface {
 	}
 
 	/**
-	 * The actual processing TASK
-	 *
-	 * Should return an array with database properties for sys_file_metadata to write
-	 *
-	 * @param \TYPO3\CMS\Core\Resource\File $file
-	 * @param array $previousExtractedData optional, contains the array of already extracted data
-	 * @return array
-	 */
-	public function extractMetaData(Resource\File $file, array $previousExtractedData = array()) {
+  * The actual processing TASK
+  *
+  * Should return an array with database properties for sys_file_metadata to write
+  *
+  * @param File $file
+  * @param array $previousExtractedData optional, contains the array of already extracted data
+  * @return array
+  */
+ public function extractMetaData(File $file, array $previousExtractedData = array()) {
 		$size = $this->getImageSize($file);
 		if (is_array($size) && $size[0] > 0 && $size[1] > 0) {
 			return array('width' => $size[0], 'height' => $size[1]);
@@ -127,12 +127,12 @@ class ImageDimensionExtractor implements ExtractorInterface {
 	}
 
 	/**
-	 * Return the size-array of an image returned by getimagesize
-	 *
-	 * @param \TYPO3\CMS\Core\Resource\File $file
-	 * @return array
-	 */
-	private function getImageSize(Resource\File $file) {
+  * Return the size-array of an image returned by getimagesize
+  *
+  * @param File $file
+  * @return array
+  */
+ private function getImageSize(File $file) {
 		$tmpLocalFile = $file->getForLocalProcessing();
 		return getimagesize($tmpLocalFile);
 	}

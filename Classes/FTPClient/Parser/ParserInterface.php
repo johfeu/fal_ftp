@@ -32,14 +32,14 @@ use \AdGrafik\FalFtp\FTPClient\FTPInterface;
 interface ParserInterface {
 
 	/**
-	 * Parse the FTP result line.
-	 *
-	 * @param array &$resourceInfo
-	 * @param string $resource
-	 * @param \AdGrafik\FalFtp\FTPClient\FTPInterface $parentObject
-	 * @return boolean
-	 */
-	public function parse(&$resourceInfo, $resource, FTPInterface $parentObject);
+  * Parse the FTP result line.
+  *
+  * @param array &$resourceInfo
+  * @param string $resource
+  * @param FTPInterface $parentObject
+  * @return boolean
+  */
+ public function parse(&$resourceInfo, $resource, FTPInterface $parentObject);
 
 }
 

@@ -36,14 +36,14 @@ use \AdGrafik\FalFtp\FTPClient\FTPInterface;
 class DotsFilter implements FilterInterface {
 
 	/**
-	 * Filter the given resource info.
-	 *
-	 * @param array $resourceInfo
-	 * @param string $resource
-	 * @param \AdGrafik\FalFtp\FTPClient\FTPInterface $parentObject
-	 * @return boolean
-	 */
-	public function filter($resourceInfo, $resource, FTPInterface $parentObject) {
+  * Filter the given resource info.
+  *
+  * @param array $resourceInfo
+  * @param string $resource
+  * @param FTPInterface $parentObject
+  * @return boolean
+  */
+ public function filter($resourceInfo, $resource, FTPInterface $parentObject) {
 		// Exclude the . and .. entries
 		return ($resourceInfo['name'] == '.' || $resourceInfo['name'] == '..');
 	}

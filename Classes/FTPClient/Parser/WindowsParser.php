@@ -106,14 +106,14 @@ use \AdGrafik\FalFtp\FTPClient\FTPInterface;
 class WindowsParser implements ParserInterface {
 
 	/**
-	 * Parse the FTP result line.
-	 *
-	 * @param array &$resourceInfo
-	 * @param string $resource
-	 * @param \AdGrafik\FalFtp\FTPClient\FTPInterface $parentObject
-	 * @return boolean
-	 */
-	public function parse(&$resourceInfo, $resource, FTPInterface $parentObject) {
+  * Parse the FTP result line.
+  *
+  * @param array &$resourceInfo
+  * @param string $resource
+  * @param FTPInterface $parentObject
+  * @return boolean
+  */
+ public function parse(&$resourceInfo, $resource, FTPInterface $parentObject) {
 
 		//                 date            time            size              filename
 #		Original regexp: '/([0-9\\/-]+)[ ]+([0-9:AMP]+)[ ]+([0-9]*|<DIR>)[ ]+(.*)/'

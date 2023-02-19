@@ -32,14 +32,14 @@ use \AdGrafik\FalFtp\FTPClient\FTPInterface;
 interface FilterInterface {
 
 	/**
-	 * Filter the given resource info.
-	 *
-	 * @param array $resourceInfo
-	 * @param string $resource
-	 * @param \AdGrafik\FalFtp\FTPClient\FTPInterface $parentObject
-	 * @return boolean
-	 */
-	public function filter($resourceInfo, $resource, FTPInterface $parentObject);
+  * Filter the given resource info.
+  *
+  * @param array $resourceInfo
+  * @param string $resource
+  * @param FTPInterface $parentObject
+  * @return boolean
+  */
+ public function filter($resourceInfo, $resource, FTPInterface $parentObject);
 
 }
 

@@ -1,6 +1,7 @@
 <?php
 namespace AdGrafik\FalFtp\FTPClient\Exception;
 
+use AdGrafik\FalFtp\FTPClient\Exception;
 /***************************************************************
  *  Copyright notice
  *
@@ -27,7 +28,7 @@ namespace AdGrafik\FalFtp\FTPClient\Exception;
  * An exception when something is wrong with the configuration
  *
  */
-class ResourceDoesNotExistException extends \AdGrafik\FalFtp\FTPClient\Exception {
+class ResourceDoesNotExistException extends Exception {
 
 
 }

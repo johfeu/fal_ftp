@@ -106,14 +106,14 @@ use \AdGrafik\FalFtp\FTPClient\FTPInterface;
 class NetwareParser implements ParserInterface {
 
 	/**
-	 * Parse the FTP result line.
-	 *
-	 * @param array &$resourceInfo
-	 * @param string $resource
-	 * @param \AdGrafik\FalFtp\FTPClient\FTPInterface $parentObject
-	 * @return boolean
-	 */
-	public function parse(&$resourceInfo, $resource, FTPInterface $parentObject) {
+  * Parse the FTP result line.
+  *
+  * @param array &$resourceInfo
+  * @param string $resource
+  * @param FTPInterface $parentObject
+  * @return boolean
+  */
+ public function parse(&$resourceInfo, $resource, FTPInterface $parentObject) {
 
 		//                 dir/file perms          owner      size        month         day        hour         filename
 #		Original regexp: '/([-]|[d])[ ]+(.{10})[ ]+([^ ]+)[ ]+([0-9]*)[ ]+([a-zA-Z]*[ ]+[0-9]*)[ ]+([0-9:]*)[ ]+(.*)/'
