@@ -396,9 +396,7 @@ abstract class AbstractFTP implements FTPInterface {
 	 * @return string
 	 */
 	protected function getAbsolutePath($relativeDirectoryOrFilePath) {
-        return substr($relativeDirectoryOrFilePath, 0,1) === "/" // given path starts with "/"
-        ? $relativeDirectoryOrFilePath
-        : $this->basePath . $relativeDirectoryOrFilePath;
+		return $this->basePath . $relativeDirectoryOrFilePath;
 	}
 
 	/**
