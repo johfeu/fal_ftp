@@ -17,7 +17,7 @@
 				<source>Enable Real Modification Time: By default the modification time is generated at listing and depends on what FTP server returns. Usually this is enough information. If this feature ist set, the modification time is fetched by the function ftp_mdtm and overwrite the time of the list if it is available. But not all servers support this feature and it will slow down the file listing.</source>
 			</trans-unit>
 			<trans-unit id="remoteService" xml:space="preserve">
-				<source>Enable Remote Service: If this option is set, a service file is uploaded to the FTP server which handles some operations over the public URL, to avoid too much downloading. $TYPO3_CONF_VARS['SYS']['curlUse'] must be set.</source>
+				<source>Enable Remote Service: If this option is set, a service file is uploaded to the FTP server which handles some operations over the public URL, to avoid too much downloading.</source>
 			</trans-unit>
 			<trans-unit id="remoteService.encryptionKey" xml:space="preserve">
 				<source>Encryption Key: Individual encryption key for communication with the remote service. By default the encryption key of the TYPO3 installation is used.</source>

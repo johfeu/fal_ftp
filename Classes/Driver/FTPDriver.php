@@ -231,14 +231,9 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 		$this->remoteServiceFileName = '/' . trim(@$this->extensionConfiguration['remoteService.']['fileName'] ?: '.FalFtpRemoteService.php');
 		$this->remoteServiceAdditionalHeaders = GeneralUtility::trimExplode(';', (string) @$this->extensionConfiguration['remoteService.']['additionalHeaders']);
 
-		// Check if curlUse is activated.
-		if ($this->remoteService && $GLOBALS['TYPO3_CONF_VARS']['SYS']['curlUse'] != '1') {
-			$this->addFlashMessage('cURL configuration is not activated. $GLOBALS[\'TYPO3_CONF_VARS\'][\'SYS\'][\'curlUse\']');
-		}
-
 		// Check if Driver is writable.
 		if ($this->remoteService && !$this->hasCapability(\TYPO3\CMS\Core\Resource\ResourceStorageInterface::CAPABILITY_WRITABLE)) {
-			$this->addFlashMessage('remoteService is activated in the Extension Configuration but Driver is not writable');
+			$this->addFlashMessage('remoteService is activated in the extension configuration but storage is not set as writable');
 		}
 
 		// Set driver configuration.
