@@ -46,6 +46,7 @@ use TYPO3\CMS\Core\Resource\ResourceStorage;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\PathUtility;
 use \AdGrafik\FalFtp\FTPClient\Exception;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Driver for FTP clients.
@@ -853,7 +854,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 		$temporaryFile = $this->getTemporaryPathForFile($fileIdentifier);
 
 		// Prevent creating thumbnails if file size greater than the defined in the extension configuration.
-		if (ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend() && $this->createThumbnailsUpToSize) {
+		if (($GLOBALS['TYPO3_REQUEST'] ?? null) instanceof ServerRequestInterface && ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isBackend() && $this->createThumbnailsUpToSize) {
 			$fileInfo = $this->getFileInfoByIdentifier($fileIdentifier);
 			if ($fileInfo['size'] > $this->createThumbnailsUpToSize) {
 				copy($this->defaultThumbnail, $temporaryFile);
@@ -1305,6 +1306,9 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 	 * @return void
 	 */
 	protected function addFlashMessage($message, $severity = AbstractMessage::ERROR) {
+        if (PHP_SAPI === 'cli') {
+            return;
+        }
 		$flashMessage = GeneralUtility::makeInstance(
 			'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
 			$message,
