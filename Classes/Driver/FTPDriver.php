@@ -84,7 +84,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 	protected $directoryCache;
 
 	/**
-	 * In this stack all created temporary files are cached. Sometimes a temporary file 
+	 * In this stack all created temporary files are cached. Sometimes a temporary file
 	 * already exist. In this case use the file which was downloaded already.
 	 *
 	 * @var array $temporaryFileStack
@@ -92,10 +92,10 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 	protected $temporaryFileStack;
 
 	/**
-	 * Limit Thumbnails Rendering: This option can be used to reduce file rendering 
-	 * in the backend. Usually if a thumbnail is created it have to be downloaded first, 
-	 * generated and then uploaded again. With this option it'p possible to define 
-	 * a maximum file size where thumbnails created. If set a local image will be 
+	 * Limit Thumbnails Rendering: This option can be used to reduce file rendering
+	 * in the backend. Usually if a thumbnail is created it have to be downloaded first,
+	 * generated and then uploaded again. With this option it'p possible to define
+	 * a maximum file size where thumbnails created. If set a local image will be
 	 * taken as placeholder. Set this option to "0" will deactivate this function.
 	 *
 	 * @var integer $createThumbnailsUpToSize
@@ -103,7 +103,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 	protected $createThumbnailsUpToSize;
 
 	/**
-	 * Default Thumbnails: Path to thumbnail image which is displayed 
+	 * Default Thumbnails: Path to thumbnail image which is displayed
 	 * when "createThumbnailsUpToSize" is set.
 	 *
 	 * @var string $defaultThumbnail
@@ -111,10 +111,10 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 	protected $defaultThumbnail;
 
 	/**
-	 * Fetch Real Modification Time: By default the modification time is generated at listing 
-	 * and depends on what FTP server returns. Usually this is enough information. 
-	 * If this feature ist set, the modification time is fetched by the function ftp_mdtm 
-	 * and overwrite the time of the list if it is available. But not all servers support 
+	 * Fetch Real Modification Time: By default the modification time is generated at listing
+	 * and depends on what FTP server returns. Usually this is enough information.
+	 * If this feature ist set, the modification time is fetched by the function ftp_mdtm
+	 * and overwrite the time of the list if it is available. But not all servers support
 	 * this feature and it will slow down the file listing.
 	 *
 	 * @var string $exactModificationTime
@@ -122,29 +122,29 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 	protected $exactModificationTime;
 
 	/**
-	 * Enable Remote Service: If this option is set, a service file is uploaded 
-	 * to the FTP server which handles some operations to avoid too much downloading. 
+	 * Enable Remote Service: If this option is set, a service file is uploaded
+	 * to the FTP server which handles some operations to avoid too much downloading.
 	 *
 	 * @var string $remoteService
 	 */
 	protected $remoteService;
 
 	/**
-	 * Encryption key for remote service. 
+	 * Encryption key for remote service.
 	 *
 	 * @var string $remoteServiceEncryptionKey
 	 */
 	protected $remoteServiceEncryptionKey;
 
 	/**
-	 * Encryption key for remote service. 
+	 * Encryption key for remote service.
 	 *
 	 * @var string $remoteServiceFileName
 	 */
 	protected $remoteServiceFileName;
 
 	/**
-	 * Additional header to send with cUrl. 
+	 * Additional header to send with cUrl.
 	 *
 	 * @var string $remoteServiceAdditionalHeaders
 	 */
@@ -235,6 +235,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 		// Check if Driver is writable.
 		if ($this->remoteService && !$this->hasCapability(\TYPO3\CMS\Core\Resource\ResourceStorageInterface::CAPABILITY_WRITABLE)) {
 			$this->addFlashMessage('remoteService is activated in the extension configuration but storage is not set as writable');
+            $this->remoteService = false;
 		}
 
 		// Set driver configuration.
