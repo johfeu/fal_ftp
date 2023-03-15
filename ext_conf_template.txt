@@ -12,10 +12,10 @@ ftpDriver.defaultThumbnail = EXT:fal_ftp/Resources/Public/Images/default_image.p
 ftpDriver.exactModificationTime = 0
 
 # cat=Remote Service/10; type=boolean; label=LLL:EXT:fal_ftp/Resources/Private/Language/locallang_ext_conf.xlf:remoteService
-remoteService = 0
+remoteService.enable = 0
 
 # cat=Remote Service/20; type=string; label=LLL:EXT:fal_ftp/Resources/Private/Language/locallang_ext_conf.xlf:remoteService.encryptionKey
-remoteService.encryptionKey = 
+remoteService.encryptionKey =
 
 # cat=Remote Service/30; type=string; label=LLL:EXT:fal_ftp/Resources/Private/Language/locallang_ext_conf.xlf:remoteService.fileName
 remoteService.fileName = .FalFtpRemoteService.php

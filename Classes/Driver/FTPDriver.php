@@ -224,13 +224,13 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 			trigger_error('Hook for fal_ftp parser "$GLOBALS[\'TYPO3_CONF_VARS\'][\'SC_OPTIONS\'][\'fal_ftp/Classes/Hook/ListParser.php\']" is deprecated. Use "AdGrafik\\FalFtp\\FTPClient\\ParserRegistry->registerParser" instead.', E_USER_DEPRECATED);
 		}
 
-		$this->createThumbnailsUpToSize = (integer) @$this->extensionConfiguration['ftpDriver.']['createThumbnailsUpToSize'];
-		$this->defaultThumbnail = GeneralUtility::getFileAbsFileName(@$this->extensionConfiguration['ftpDriver.']['defaultThumbnail'] ?: 'EXT:fal_ftp/Resources/Public/Images/default_image.png');
-		$this->exactModificationTime = (isset($this->extensionConfiguration['ftpDriver.']['exactModificationTime']) && $this->extensionConfiguration['ftpDriver.']['exactModificationTime']);
-		$this->remoteService = (isset($this->extensionConfiguration['remoteService']) && $this->extensionConfiguration['remoteService']);
-		$this->remoteServiceEncryptionKey = md5(@$this->extensionConfiguration['remoteService.']['encryptionKey'] ?: $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']);
-		$this->remoteServiceFileName = '/' . trim(@$this->extensionConfiguration['remoteService.']['fileName'] ?: '.FalFtpRemoteService.php');
-		$this->remoteServiceAdditionalHeaders = GeneralUtility::trimExplode(';', (string) @$this->extensionConfiguration['remoteService.']['additionalHeaders']);
+		$this->createThumbnailsUpToSize = (integer) @$this->extensionConfiguration['ftpDriver']['createThumbnailsUpToSize'];
+		$this->defaultThumbnail = GeneralUtility::getFileAbsFileName(@$this->extensionConfiguration['ftpDriver']['defaultThumbnail'] ?: 'EXT:fal_ftp/Resources/Public/Images/default_image.png');
+		$this->exactModificationTime = (isset($this->extensionConfiguration['ftpDriver']['exactModificationTime']) && $this->extensionConfiguration['ftpDriver']['exactModificationTime']);
+		$this->remoteService = (isset($this->extensionConfiguration['remoteService']['enable']) && $this->extensionConfiguration['remoteService']['enable']);
+		$this->remoteServiceEncryptionKey = md5(@$this->extensionConfiguration['remoteService']['encryptionKey'] ?: $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']);
+		$this->remoteServiceFileName = '/' . trim(@$this->extensionConfiguration['remoteService']['fileName'] ?: '.FalFtpRemoteService.php');
+		$this->remoteServiceAdditionalHeaders = GeneralUtility::trimExplode(';', (string) @$this->extensionConfiguration['remoteService']['additionalHeaders']);
 
 		// Check if Driver is writable.
 		if ($this->remoteService && !$this->hasCapability(\TYPO3\CMS\Core\Resource\ResourceStorageInterface::CAPABILITY_WRITABLE)) {
@@ -242,7 +242,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 		$this->basePath = '/' . trim($this->configuration['basePath'], '/');
 		$this->publicUrl = trim($this->configuration['publicUrl'], '/');
 
-		$this->configuration['timeout'] = (integer) @$this->extensionConfiguration['ftpDriver.']['timeout'] ?: 90;
+		$this->configuration['timeout'] = (integer) @$this->extensionConfiguration['ftpDriver']['timeout'] ?: 90;
 		$this->configuration['ssl'] = (isset($this->configuration['ssl']) && $this->configuration['ssl']);
 		// Configuration parameter "mode" deprecated. Use passiveMode instead.
 		if (isset($this->configuration['mode']) && isset($this->configuration['passiveMode']) === FALSE) {
