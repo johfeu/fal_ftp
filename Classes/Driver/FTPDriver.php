@@ -1081,7 +1081,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 	 * @return array
 	 * @throws \InvalidArgumentException
 	 */
-	protected function getDirectoryItemList($folderIdentifier, $start = 0, $numberOfItems = 0, array $filterMethods, $includeFiles = TRUE, $includeDirs = TRUE, $recursive = FALSE) {
+	protected function getDirectoryItemList($folderIdentifier, $start = 0, $numberOfItems = 0, array $filterMethods = [], $includeFiles = TRUE, $includeDirs = TRUE, $recursive = FALSE) {
 
 		if ($this->folderExists($folderIdentifier) === FALSE) {
 			throw new \InvalidArgumentException('Cannot list items in directory ' . $folderIdentifier . ' - does not exist or is no directory', 1314349666);
@@ -1361,6 +1361,3 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 #\TYPO3\CMS\Core\Utility\DebugUtility::debug(__FUNCTION__, 'Method');
 	}
 }
-
-
-?>
