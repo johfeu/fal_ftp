@@ -26,6 +26,9 @@ namespace AdGrafik\FalFtp\Driver;
  *
  * This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+
+use AdGrafik\FalFtp\FTPClient\Exception\InvalidAttributeException;
+use AdGrafik\FalFtp\FTPClient\Exception\InvalidConfigurationException;
 use TYPO3\CMS\Core\Http\ApplicationType;
 use AdGrafik\FalFtp\FTPClient\FTP;
 use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
@@ -1155,16 +1158,20 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 		return TRUE;
 	}
 
-	/**
-	 * This function scans an ftp_rawlist line string and returns its parts.
-	 *
-	 * @param string $folderIdentifier
-	 * @param boolean $resetCache
-	 * @return array
-	 */
-	protected function fetchDirectoryList($folderIdentifier, $resetCache = FALSE) {
+    /**
+     * This function scans a ftp_rawlist line string and returns its parts.
+     *
+     * @param string $folderIdentifier
+     * @param boolean $resetCache
+     * @return array
+     * @throws InvalidAttributeException
+     * @throws InvalidConfigurationException
+     * @throws FTPConnectionException
+     */
+	protected function fetchDirectoryList(string $folderIdentifier, bool $resetCache = FALSE): array
+    {
 
-		if ($resetCache === FALSE && is_array($this->directoryCache[$folderIdentifier])) {
+		if ($resetCache === FALSE && isset($this->directoryCache[$folderIdentifier]) && is_array($this->directoryCache[$folderIdentifier])) {
 			return $this->directoryCache[$folderIdentifier];
 		}
 		$this->directoryCache[$folderIdentifier] = array();
