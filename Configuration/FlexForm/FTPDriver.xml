@@ -1,89 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
 <T3DataStructure>
-	<meta>
-		<langDisable>1</langDisable>
-	</meta>
-	<ROOT>
-		<type>array</type>
-		<el>
-			<host>
-				<TCEforms>
-					<label>LLL:EXT:fal_ftp/Resources/Private/Language/locallang_db.xlf:host</label>
-					<config>
-						<type>input</type>
-						<size>30</size>
-					</config>
-				</TCEforms>
-			</host>
-			<username>
-				<TCEforms>
-					<label>LLL:EXT:fal_ftp/Resources/Private/Language/locallang_db.xlf:username</label>
-					<config>
-						<type>input</type>
-						<size>30</size>
-					</config>
-				</TCEforms>
-			</username>
-			<password>
-				<TCEforms>
-					<label>LLL:EXT:fal_ftp/Resources/Private/Language/locallang_db.xlf:password</label>
-					<config>
-						<type>input</type>
-						<size>30</size>
-					</config>
-				</TCEforms>
-			</password>
-			<basePath>
-				<TCEforms>
-					<label>LLL:EXT:fal_ftp/Resources/Private/Language/locallang_db.xlf:basePath</label>
-					<config>
-						<type>input</type>
-						<size>30</size>
-					</config>
-				</TCEforms>
-			</basePath>
-			<port>
-				<TCEforms>
-					<label>LLL:EXT:fal_ftp/Resources/Private/Language/locallang_db.xlf:port</label>
-					<config>
-						<type>input</type>
-						<default>21</default>
-						<size>7</size>
-						<max>7</max>
-						<eval>int</eval>
-					</config>
-				</TCEforms>
-			</port>
-			<passiveMode>
-				<TCEforms>
-					<label>LLL:EXT:fal_ftp/Resources/Private/Language/locallang_db.xlf:passiveMode</label>
-					<config>
-						<type>select</type>
-						<renderType>selectSingle</renderType>
-						<items type="array">
-							<numIndex index="0" type="array">
-								<numIndex index="0">LLL:EXT:fal_ftp/Resources/Private/Language/locallang_db.xlf:passiveMode.passive</numIndex>
-								<numIndex index="1">1</numIndex>
-							</numIndex>
-							<numIndex index="1" type="array">
-								<numIndex index="0">LLL:EXT:fal_ftp/Resources/Private/Language/locallang_db.xlf:passiveMode.active</numIndex>
-								<numIndex index="1">0</numIndex>
-							</numIndex>
-						</items>
-						<default>1</default>
-					</config>
-				</TCEforms>
-			</passiveMode>
+    <meta>
+        <langDisable>1</langDisable>
+    </meta>
+    <ROOT>
+        <type>array</type>
+        <el>
+            <host>
+                <label>LLL:EXT:fal_ftp/Resources/Private/Language/locallang_db.xlf:host</label>
+                <config>
+                    <type>input</type>
+                    <size>30</size>
+                </config>
+            </host>
+            <username>
+                <label>LLL:EXT:fal_ftp/Resources/Private/Language/locallang_db.xlf:username</label>
+                <config>
+                    <type>input</type>
+                    <size>30</size>
+                </config>
+            </username>
+            <password>
+                <label>LLL:EXT:fal_ftp/Resources/Private/Language/locallang_db.xlf:password</label>
+                <config>
+                    <type>input</type>
+                    <size>30</size>
+                </config>
+            </password>
+            <basePath>
+                <label>LLL:EXT:fal_ftp/Resources/Private/Language/locallang_db.xlf:basePath</label>
+                <config>
+                    <type>input</type>
+                    <size>30</size>
+                </config>
+            </basePath>
+            <port>
+                <label>LLL:EXT:fal_ftp/Resources/Private/Language/locallang_db.xlf:port</label>
+                <config>
+                    <type>number</type>
+                    <default>21</default>
+                    <size>7</size>
+                    <max>7</max>
+                </config>
+            </port>
+            <passiveMode>
+                <label>LLL:EXT:fal_ftp/Resources/Private/Language/locallang_db.xlf:passiveMode</label>
+                <config>
+                    <type>select</type>
+                    <renderType>selectSingle</renderType>
+                    <items type="array">
+                        <numIndex index="0" type="array">
+                            <label>LLL:EXT:fal_ftp/Resources/Private/Language/locallang_db.xlf:passiveMode.passive</label>
+                            <value>1</value>
+                        </numIndex>
+                        <numIndex index="1" type="array">
+                            <label>LLL:EXT:fal_ftp/Resources/Private/Language/locallang_db.xlf:passiveMode.active</label>
+                            <value>0</value>
+                        </numIndex>
+                    </items>
+                    <default>1</default>
+                </config>
+            </passiveMode>
             <publicUrl>
-                <TCEforms>
-                    <label>LLL:EXT:fal_ftp/Resources/Private/Language/locallang_db.xlf:publicUrl</label>
-                    <config>
-                        <type>input</type>
-                        <default>http://</default>
-                        <size>30</size>
-                    </config>
-                </TCEforms>
+                <label>LLL:EXT:fal_ftp/Resources/Private/Language/locallang_db.xlf:publicUrl</label>
+                <config>
+                    <type>input</type>
+                    <default>http://</default>
+                    <size>30</size>
+                </config>
             </publicUrl>
-		</el>
-	</ROOT>
+        </el>
+    </ROOT>
 </T3DataStructure>

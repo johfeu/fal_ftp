@@ -38,7 +38,7 @@ class FTPSDriver extends FTPDriver {
 	 *
 	 * @return void
 	 */
-	public function processConfiguration() {
+	public function processConfiguration(): void {
 		// Just set SSL option for the FTP client.
 		$this->configuration['ssl'] = TRUE;
 		parent::processConfiguration();

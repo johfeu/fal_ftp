@@ -45,7 +45,7 @@ class StringTotalFilter implements FilterInterface {
   */
  public function filter($resourceInfo, $resource, FTPInterface $parentObject) {
 		// Exclude the total line that some servers return
-		return (substr($resource, 0, 5) == 'total');
+		return (str_starts_with($resource, 'total'));
 	}
 
 }

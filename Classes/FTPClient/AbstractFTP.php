@@ -92,299 +92,127 @@ abstract class AbstractFTP implements FTPInterface {
 
 		$extension = strtolower(PathUtility::pathinfo($fileName, PATHINFO_EXTENSION));
 
-		switch ($extension) {
-			case 'ai':
-			case 'eps':
-			case 'ps':
-				$mimeType = 'application/postscript'; break;
-			case 'aif':
-			case 'aifc':
-			case 'aiff':
-				$mimeType = 'audio/x-aiff'; break;
-			case 'asc':
-			case 'txt':
-				$mimeType = 'text/plain'; break;
-			case 'atom':
-				$mimeType = 'application/atom+xml'; break;
-			case 'au':
-			case 'snd':
-				$mimeType = 'audio/basic'; break;
-			case 'avi':
-				$mimeType = 'video/x-msvideo'; break;
-			case 'bcpio':
-				$mimeType = 'application/x-bcpio'; break;
-			case 'bin':
-			case 'class':
-			case 'dll':
-			case 'dmg':
-			case 'dms':
-			case 'exe':
-			case 'lha':
-			case 'lzh':
-			case 'so':
-				$mimeType = 'application/octet-stream'; break;
-			case 'bmp':
-				$mimeType = 'image/bmp'; break;
-			case 'cdf':
-			case 'nc':
-				$mimeType = 'application/x-netcdf'; break;
-			case 'cgm':
-				$mimeType = 'image/cgm'; break;
-			case 'cpio':
-				$mimeType = 'application/x-cpio'; break;
-			case 'cpt':
-				$mimeType = 'application/mac-compactpro'; break;
-			case 'csh':
-				$mimeType = 'application/x-csh'; break;
-			case 'css':
-				$mimeType = 'text/css'; break;
-			case 'dcr':
-			case 'dir':
-			case 'dxr':
-				$mimeType = 'application/x-director'; break;
-			case 'dif':
-			case 'dv':
-				$mimeType = 'video/x-dv'; break;
-			case 'djv':
-			case 'djvu':
-				$mimeType = 'image/vnd.djvu'; break;
-			case 'doc':
-				$mimeType = 'application/msword'; break;
-			case 'dtd':
-				$mimeType = 'application/xml-dtd'; break;
-			case 'dvi':
-				$mimeType = 'application/x-dvi'; break;
-			case 'etx':
-				$mimeType = 'text/x-setext'; break;
-			case 'ez':
-				$mimeType = 'application/andrew-inset'; break;
-			case 'gif':
-				$mimeType = 'image/gif'; break;
-			case 'gram':
-				$mimeType = 'application/srgs'; break;
-			case 'grxml':
-				$mimeType = 'application/srgs+xml'; break;
-			case 'gtar':
-				$mimeType = 'application/x-gtar'; break;
-			case 'hdf':
-				$mimeType = 'application/x-hdf'; break;
-			case 'hqx':
-				$mimeType = 'application/mac-binhex40'; break;
-			case 'htm':
-			case 'html':
-				$mimeType = 'text/html'; break;
-			case 'ice':
-				$mimeType = 'x-conference/x-cooltalk'; break;
-			case 'ico':
-				$mimeType = 'image/x-icon'; break;
-			case 'ics':
-			case 'ifb':
-				$mimeType = 'text/calendar'; break;
-			case 'ief':
-				$mimeType = 'image/ief'; break;
-			case 'iges':
-			case 'igs':
-				$mimeType = 'model/iges'; break;
-			case 'jnlp':
-				$mimeType = 'application/x-java-jnlp-file'; break;
-			case 'jp2':
-				$mimeType = 'image/jp2'; break;
-			case 'jpe':
-			case 'jpeg':
-			case 'jpg':
-				$mimeType = 'image/jpeg'; break;
-			case 'js':
-				$mimeType = 'application/x-javascript'; break;
-			case 'kar':
-			case 'mid':
-			case 'midi':
-				$mimeType = 'audio/midi'; break;
-			case 'latex':
-				$mimeType = 'application/x-latex'; break;
-			case 'm3u':
-				$mimeType = 'audio/x-mpegurl'; break;
-			case 'm4a':
-			case 'm4b':
-			case 'm4p':
-				$mimeType = 'audio/mp4a-latm'; break;
-			case 'm4u':
-			case 'mxu':
-				$mimeType = 'video/vnd.mpegurl'; break;
-			case 'm4v':
-				$mimeType = 'video/x-m4v'; break;
-			case 'mac':
-			case 'pnt':
-			case 'pntg':
-				$mimeType = 'image/x-macpaint'; break;
-			case 'man':
-				$mimeType = 'application/x-troff-man'; break;
-			case 'mathml':
-				$mimeType = 'application/mathml+xml'; break;
-			case 'me':
-				$mimeType = 'application/x-troff-me'; break;
-			case 'mesh':
-			case 'msh':
-			case 'silo':
-				$mimeType = 'model/mesh'; break;
-			case 'mif':
-				$mimeType = 'application/vnd.mif'; break;
-			case 'mov':
-			case 'qt':
-				$mimeType = 'video/quicktime'; break;
-			case 'movie':
-				$mimeType = 'video/x-sgi-movie'; break;
-			case 'mp2':
-			case 'mp3':
-			    $mimeType = 'audio/mpeg'; break;
-			case 'mpga':
-				$mimeType = 'audio/mpeg'; break;
-			case 'mp4':
-				$mimeType = 'video/mp4'; break;
-			case 'mpe':
-			case 'mpeg':
-			case 'mpg':
-				$mimeType = 'video/mpeg'; break;
-			case 'ms':
-				$mimeType = 'application/x-troff-ms'; break;
-			case 'oda':
-				$mimeType = 'application/oda'; break;
-			case 'ogg':
-				$mimeType = 'application/ogg'; break;
-			case 'pbm':
-				$mimeType = 'image/x-portable-bitmap'; break;
-			case 'pct':
-			case 'pic':
-			case 'pict':
-				$mimeType = 'image/pict'; break;
-			case 'pdb':
-				$mimeType = 'chemical/x-pdb'; break;
-			case 'pdf':
-				$mimeType = 'application/pdf'; break;
-			case 'pgm':
-				$mimeType = 'image/x-portable-graymap'; break;
-			case 'pgn':
-				$mimeType = 'application/x-chess-pgn'; break;
-			case 'png':
-				$mimeType = 'image/png'; break;
-			case 'pnm':
-				$mimeType = 'image/x-portable-anymap'; break;
-			case 'ppm':
-				$mimeType = 'image/x-portable-pixmap'; break;
-			case 'ppt':
-				$mimeType = 'application/vnd.ms-powerpoint'; break;
-			case 'qti':
-			case 'qtif':
-				$mimeType = 'image/x-quicktime'; break;
-			case 'ra':
-			case 'ram':
-				$mimeType = 'audio/x-pn-realaudio'; break;
-			case 'ras':
-				$mimeType = 'image/x-cmu-raster'; break;
-			case 'rdf':
-				$mimeType = 'application/rdf+xml'; break;
-			case 'rgb':
-				$mimeType = 'image/x-rgb'; break;
-			case 'rm':
-				$mimeType = 'application/vnd.rn-realmedia'; break;
-			case 'roff':
-			case 't':
-			case 'tr':
-				$mimeType = 'application/x-troff'; break;
-			case 'rtf':
-				$mimeType = 'text/rtf'; break;
-			case 'rtx':
-				$mimeType = 'text/richtext'; break;
-			case 'sgm':
-			case 'sgml':
-				$mimeType = 'text/sgml'; break;
-			case 'sh':
-				$mimeType = 'application/x-sh'; break;
-			case 'shar':
-				$mimeType = 'application/x-shar'; break;
-			case 'sit':
-				$mimeType = 'application/x-stuffit'; break;
-			case 'skd':
-			case 'skm':
-			case 'skp':
-			case 'skt':
-				$mimeType = 'application/x-koan'; break;
-			case 'smi':
-			case 'smil':
-				$mimeType = 'application/smil'; break;
-			case 'spl':
-				$mimeType = 'application/x-futuresplash'; break;
-			case 'src':
-				$mimeType = 'application/x-wais-source'; break;
-			case 'sv4cpio':
-				$mimeType = 'application/x-sv4cpio'; break;
-			case 'sv4crc':
-				$mimeType = 'application/x-sv4crc'; break;
-			case 'svg':
-				$mimeType = 'image/svg+xml'; break;
-			case 'swf':
-				$mimeType = 'application/x-shockwave-flash'; break;
-			case 'tar':
-				$mimeType = 'application/x-tar'; break;
-			case 'tcl':
-				$mimeType = 'application/x-tcl'; break;
-			case 'tex':
-				$mimeType = 'application/x-tex'; break;
-			case 'texi':
-			case 'texinfo':
-				$mimeType = 'application/x-texinfo'; break;
-			case 'tif':
-			case 'tiff':
-				$mimeType = 'image/tiff'; break;
-			case 'tsv':
-				$mimeType = 'text/tab-separated-values'; break;
-			case 'ustar':
-				$mimeType = 'application/x-ustar'; break;
-			case 'vcd':
-				$mimeType = 'application/x-cdlink'; break;
-			case 'vrml':
-			case 'wrl':
-				$mimeType = 'model/vrml'; break;
-			case 'vxml':
-				$mimeType = 'application/voicexml+xml'; break;
-			case 'wav':
-				$mimeType = 'audio/x-wav'; break;
-			case 'wbmp':
-				$mimeType = 'image/vnd.wap.wbmp'; break;
-			case 'wbmxl':
-				$mimeType = 'application/vnd.wap.wbxml'; break;
-			case 'wml':
-				$mimeType = 'text/vnd.wap.wml'; break;
-			case 'wmlc':
-				$mimeType = 'application/vnd.wap.wmlc'; break;
-			case 'wmls':
-				$mimeType = 'text/vnd.wap.wmlscript'; break;
-			case 'wmlsc':
-				$mimeType = 'application/vnd.wap.wmlscriptc'; break;
-			case 'xbm':
-				$mimeType = 'image/x-xbitmap'; break;
-			case 'xht':
-			case 'xhtml':
-				$mimeType = 'application/xhtml+xml'; break;
-			case 'xls':
-				$mimeType = 'application/vnd.ms-excel'; break;
-			case 'xml':
-			case 'xsl':
-				$mimeType = 'application/xml'; break;
-			case 'xpm':
-				$mimeType = 'image/x-xpixmap'; break;
-			case 'xslt':
-				$mimeType = 'application/xslt+xml'; break;
-			case 'xul':
-				$mimeType = 'application/vnd.mozilla.xul+xml'; break;
-			case 'xwd':
-				$mimeType = 'image/x-xwindowdump'; break;
-			case 'xyz':
-				$mimeType = 'chemical/x-xyz'; break;
-			case 'zip':
-				$mimeType = 'application/zip'; break;
-			default:
-				$mimeType = 'application/octet-stream'; break;
-		}
+		$mimeType = match ($extension) {
+      'ai', 'eps', 'ps' => 'application/postscript',
+      'aif', 'aifc', 'aiff' => 'audio/x-aiff',
+      'asc', 'txt' => 'text/plain',
+      'atom' => 'application/atom+xml',
+      'au', 'snd' => 'audio/basic',
+      'avi' => 'video/x-msvideo',
+      'bcpio' => 'application/x-bcpio',
+      'bin', 'class', 'dll', 'dmg', 'dms', 'exe', 'lha', 'lzh', 'so' => 'application/octet-stream',
+      'bmp' => 'image/bmp',
+      'cdf', 'nc' => 'application/x-netcdf',
+      'cgm' => 'image/cgm',
+      'cpio' => 'application/x-cpio',
+      'cpt' => 'application/mac-compactpro',
+      'csh' => 'application/x-csh',
+      'css' => 'text/css',
+      'dcr', 'dir', 'dxr' => 'application/x-director',
+      'dif', 'dv' => 'video/x-dv',
+      'djv', 'djvu' => 'image/vnd.djvu',
+      'doc' => 'application/msword',
+      'dtd' => 'application/xml-dtd',
+      'dvi' => 'application/x-dvi',
+      'etx' => 'text/x-setext',
+      'ez' => 'application/andrew-inset',
+      'gif' => 'image/gif',
+      'gram' => 'application/srgs',
+      'grxml' => 'application/srgs+xml',
+      'gtar' => 'application/x-gtar',
+      'hdf' => 'application/x-hdf',
+      'hqx' => 'application/mac-binhex40',
+      'htm', 'html' => 'text/html',
+      'ice' => 'x-conference/x-cooltalk',
+      'ico' => 'image/x-icon',
+      'ics', 'ifb' => 'text/calendar',
+      'ief' => 'image/ief',
+      'iges', 'igs' => 'model/iges',
+      'jnlp' => 'application/x-java-jnlp-file',
+      'jp2' => 'image/jp2',
+      'jpe', 'jpeg', 'jpg' => 'image/jpeg',
+      'js' => 'application/x-javascript',
+      'kar', 'mid', 'midi' => 'audio/midi',
+      'latex' => 'application/x-latex',
+      'm3u' => 'audio/x-mpegurl',
+      'm4a', 'm4b', 'm4p' => 'audio/mp4a-latm',
+      'm4u', 'mxu' => 'video/vnd.mpegurl',
+      'm4v' => 'video/x-m4v',
+      'mac', 'pnt', 'pntg' => 'image/x-macpaint',
+      'man' => 'application/x-troff-man',
+      'mathml' => 'application/mathml+xml',
+      'me' => 'application/x-troff-me',
+      'mesh', 'msh', 'silo' => 'model/mesh',
+      'mif' => 'application/vnd.mif',
+      'mov', 'qt' => 'video/quicktime',
+      'movie' => 'video/x-sgi-movie',
+      'mp2', 'mp3' => 'audio/mpeg',
+      'mpga' => 'audio/mpeg',
+      'mp4' => 'video/mp4',
+      'mpe', 'mpeg', 'mpg' => 'video/mpeg',
+      'ms' => 'application/x-troff-ms',
+      'oda' => 'application/oda',
+      'ogg' => 'application/ogg',
+      'pbm' => 'image/x-portable-bitmap',
+      'pct', 'pic', 'pict' => 'image/pict',
+      'pdb' => 'chemical/x-pdb',
+      'pdf' => 'application/pdf',
+      'pgm' => 'image/x-portable-graymap',
+      'pgn' => 'application/x-chess-pgn',
+      'png' => 'image/png',
+      'pnm' => 'image/x-portable-anymap',
+      'ppm' => 'image/x-portable-pixmap',
+      'ppt' => 'application/vnd.ms-powerpoint',
+      'qti', 'qtif' => 'image/x-quicktime',
+      'ra', 'ram' => 'audio/x-pn-realaudio',
+      'ras' => 'image/x-cmu-raster',
+      'rdf' => 'application/rdf+xml',
+      'rgb' => 'image/x-rgb',
+      'rm' => 'application/vnd.rn-realmedia',
+      'roff', 't', 'tr' => 'application/x-troff',
+      'rtf' => 'text/rtf',
+      'rtx' => 'text/richtext',
+      'sgm', 'sgml' => 'text/sgml',
+      'sh' => 'application/x-sh',
+      'shar' => 'application/x-shar',
+      'sit' => 'application/x-stuffit',
+      'skd', 'skm', 'skp', 'skt' => 'application/x-koan',
+      'smi', 'smil' => 'application/smil',
+      'spl' => 'application/x-futuresplash',
+      'src' => 'application/x-wais-source',
+      'sv4cpio' => 'application/x-sv4cpio',
+      'sv4crc' => 'application/x-sv4crc',
+      'svg' => 'image/svg+xml',
+      'swf' => 'application/x-shockwave-flash',
+      'tar' => 'application/x-tar',
+      'tcl' => 'application/x-tcl',
+      'tex' => 'application/x-tex',
+      'texi', 'texinfo' => 'application/x-texinfo',
+      'tif', 'tiff' => 'image/tiff',
+      'tsv' => 'text/tab-separated-values',
+      'ustar' => 'application/x-ustar',
+      'vcd' => 'application/x-cdlink',
+      'vrml', 'wrl' => 'model/vrml',
+      'vxml' => 'application/voicexml+xml',
+      'wav' => 'audio/x-wav',
+      'wbmp' => 'image/vnd.wap.wbmp',
+      'wbmxl' => 'application/vnd.wap.wbxml',
+      'wml' => 'text/vnd.wap.wml',
+      'wmlc' => 'application/vnd.wap.wmlc',
+      'wmls' => 'text/vnd.wap.wmlscript',
+      'wmlsc' => 'application/vnd.wap.wmlscriptc',
+      'xbm' => 'image/x-xbitmap',
+      'xht', 'xhtml' => 'application/xhtml+xml',
+      'xls' => 'application/vnd.ms-excel',
+      'xml', 'xsl' => 'application/xml',
+      'xpm' => 'image/x-xpixmap',
+      'xslt' => 'application/xslt+xml',
+      'xul' => 'application/vnd.mozilla.xul+xml',
+      'xwd' => 'image/x-xwindowdump',
+      'xyz' => 'chemical/x-xyz',
+      'zip' => 'application/zip',
+      default => 'application/octet-stream',
+  };
 
 		return $mimeType;
 	}

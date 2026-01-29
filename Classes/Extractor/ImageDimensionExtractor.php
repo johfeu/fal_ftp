@@ -46,7 +46,7 @@ class ImageDimensionExtractor implements ExtractorInterface {
 	 * @return array
 	 */
 	public function getFileTypeRestrictions() {
-		return array();
+		return [];
 	}
 
 
@@ -63,7 +63,7 @@ class ImageDimensionExtractor implements ExtractorInterface {
 	 * @return array
 	 */
 	public function getDriverRestrictions() {
-		return array('FTP');
+		return ['FTP'];
 	}
 
 	/**
@@ -102,7 +102,7 @@ class ImageDimensionExtractor implements ExtractorInterface {
 				if (is_array($size) && $size[0] > 0 && $size[1] > 0) {
 					return TRUE;
 				}
-			} catch(\Exception $e){
+			} catch(\Exception){
 				return FALSE;
 			}
 		}
@@ -118,12 +118,12 @@ class ImageDimensionExtractor implements ExtractorInterface {
   * @param array $previousExtractedData optional, contains the array of already extracted data
   * @return array
   */
- public function extractMetaData(File $file, array $previousExtractedData = array()) {
+ public function extractMetaData(File $file, array $previousExtractedData = []) {
 		$size = $this->getImageSize($file);
 		if (is_array($size) && $size[0] > 0 && $size[1] > 0) {
-			return array('width' => $size[0], 'height' => $size[1]);
+			return ['width' => $size[0], 'height' => $size[1]];
 		}
-		return array();
+		return [];
 	}
 
 	/**

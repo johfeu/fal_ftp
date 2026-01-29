@@ -126,38 +126,28 @@ class FTP extends AbstractFTP {
 	 */
 	public function __construct(array $settings) {
 
-		$this->parserRegistry = GeneralUtility::makeInstance('AdGrafik\\FalFtp\\FTPClient\\ParserRegistry');
+		$this->parserRegistry = GeneralUtility::makeInstance(\AdGrafik\FalFtp\FTPClient\ParserRegistry::class);
 		if ($this->parserRegistry->hasParser() === FALSE) {
-			$this->parserRegistry->registerParser(array(
-				'AdGrafik\\FalFtp\\FTPClient\\Parser\\StrictRulesParser',
-				'AdGrafik\\FalFtp\\FTPClient\\Parser\\LessStrictRulesParser',
-				'AdGrafik\\FalFtp\\FTPClient\\Parser\\WindowsParser',
-				'AdGrafik\\FalFtp\\FTPClient\\Parser\\NetwareParser',
-				'AdGrafik\\FalFtp\\FTPClient\\Parser\\AS400Parser',
-				'AdGrafik\\FalFtp\\FTPClient\\Parser\\TitanParser',
-			));
+			$this->parserRegistry->registerParser([\AdGrafik\FalFtp\FTPClient\Parser\StrictRulesParser::class, \AdGrafik\FalFtp\FTPClient\Parser\LessStrictRulesParser::class, \AdGrafik\FalFtp\FTPClient\Parser\WindowsParser::class, \AdGrafik\FalFtp\FTPClient\Parser\NetwareParser::class, \AdGrafik\FalFtp\FTPClient\Parser\AS400Parser::class, \AdGrafik\FalFtp\FTPClient\Parser\TitanParser::class]);
 		}
 
-		$this->filterRegistry = GeneralUtility::makeInstance('AdGrafik\\FalFtp\\FTPClient\\FilterRegistry');
+		$this->filterRegistry = GeneralUtility::makeInstance(\AdGrafik\FalFtp\FTPClient\FilterRegistry::class);
 		if ($this->filterRegistry->hasFilter() === FALSE) {
-			$this->filterRegistry->registerFilter(array(
-				'AdGrafik\\FalFtp\\FTPClient\\Filter\\DotsFilter',
-				'AdGrafik\\FalFtp\\FTPClient\\Filter\\StringTotalFilter',
-			));
+			$this->filterRegistry->registerFilter([\AdGrafik\FalFtp\FTPClient\Filter\DotsFilter::class, \AdGrafik\FalFtp\FTPClient\Filter\StringTotalFilter::class]);
 		}
 
-		$extractorRegistry = GeneralUtility::makeInstance('TYPO3\CMS\Core\Resource\Index\ExtractorRegistry');
-		$extractorRegistry->registerExtractionService("AdGrafik\FalFtp\Extractor\ImageDimensionExtractor");
+		$extractorRegistry = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Resource\Index\ExtractorRegistry::class);
+		$extractorRegistry->registerExtractionService(\AdGrafik\FalFtp\Extractor\ImageDimensionExtractor::class);
 
-		$this->host = urldecode(trim($settings['host'], '/') ?: '');
+		$this->host = urldecode(trim((string) $settings['host'], '/') ?: '');
 		$this->port = (integer) $settings['port'] ?: 21;
 		$this->username = $settings['username'];
 		$this->password = $settings['password'];
 		$this->ssl = (bool)$settings['ssl'];
 		$this->timeout = (integer) $settings['timeout'] ?: 90;
 		$this->passiveMode = isset($settings['passiveMode']) ? (boolean) $settings['passiveMode'] : self::MODE_PASSIV;
-		$this->transferMode = isset($settings['transferMode']) ? $settings['transferMode'] : self::TRANSFER_BINARY;
-		$this->basePath = '/' . (trim($settings['basePath'], '/') ?: '');
+		$this->transferMode = $settings['transferMode'] ?? self::TRANSFER_BINARY;
+		$this->basePath = '/' . (trim((string) $settings['basePath'], '/') ?: '');
 	}
 
 	/**
@@ -701,20 +691,10 @@ class FTP extends AbstractFTP {
 			}
 		}
 
-		$resourceList = array();
+		$resourceList = [];
 		foreach ($result as &$resource) {
 
-			$resourceInfo = array(
-				'path' => $directory,
-				'isDirectory' => NULL,
-				'name' => NULL,
-				'size' => NULL,
-				'owner' => NULL,
-				'group' => NULL,
-				'mode' => NULL,
-				'mimetype' => NULL,
-				'mtime' => 0,
-			);
+			$resourceInfo = ['path' => $directory, 'isDirectory' => NULL, 'name' => NULL, 'size' => NULL, 'owner' => NULL, 'group' => NULL, 'mode' => NULL, 'mimetype' => NULL, 'mtime' => 0];
 
 			foreach ($this->parserRegistry->getParser() as $parserClass) {
 				$parserObject = GeneralUtility::makeInstance($parserClass);

@@ -46,20 +46,19 @@ class ParserRegistry implements SingletonInterface {
 	 *
 	 * @return void
 	 */
-	public function initialize() {
-		$this->parser = array();
+	public function initialize(): void {
+		$this->parser = [];
 	}
 
 	/**
   * Register parser classes.
   *
-  * @param mixed $parsers
   * @return \AdGrafik\FalFtp\FTPClient\ParserRegistry
   * @throws InvalidConfigurationException
   */
- public function registerParser($parsers) {
+ public function registerParser(mixed $parsers) {
 		if (is_array($parsers) === FALSE) {
-			$parsers = array($parsers);
+			$parsers = [$parsers];
 		}
 		foreach ($parsers as &$parser) {
 			$this->parser[] = $parser;

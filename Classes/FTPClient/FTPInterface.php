@@ -196,7 +196,7 @@ interface FTPInterface {
   * @throws ExistingResourceException
   * @throws FTPConnectionException Thrown at FTP error.
   */
- public function uploadFile($targetFile, $sourceFileOrResource, $overwrite = FALSE);
+ public function uploadFile($targetFile, mixed $sourceFileOrResource, $overwrite = FALSE);
 
 	/**
   * Download a file to a temporary file.
@@ -207,7 +207,7 @@ interface FTPInterface {
   * @throws ResourceDoesNotExistException
   * @throws FTPConnectionException Thrown at FTP error.
   */
- public function downloadFile($sourceFile, $targetFileOrResource);
+ public function downloadFile($sourceFile, mixed $targetFileOrResource);
 
 	/**
   * Set the contents of a file.
@@ -247,7 +247,7 @@ interface FTPInterface {
 	 * @param mixed $sourceFileOrResource Local source file or file resource, absolute path.
 	 * @return \AdGrafik\FalFtp\FTPClient\FTPClient
 	 */
-	public function replaceFile($targetFile, $sourceFileOrResource);
+	public function replaceFile($targetFile, mixed $sourceFileOrResource);
 
 	/**
 	 * Renames a file on the FTP server.
@@ -301,7 +301,7 @@ interface FTPInterface {
   * @throws InvalidConfigurationException
   * @throws InvalidAttributeException
   */
- public function fetchDirectoryList($directory, $resourceInfoParserCallback = NULL, $sort = 'strnatcasecmp');
+ public function fetchDirectoryList($directory, mixed $resourceInfoParserCallback = NULL, $sort = 'strnatcasecmp');
 
 }
 

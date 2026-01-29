@@ -16,7 +16,6 @@ $EM_CONF[$_EXTKEY] = [
 	'category' => 'plugin',
 	'version' => '1.4.0',
 	'state' => 'stable',
-	'clearCacheOnLoad' => true,
 	'author' => 'Arno Dudek',
 	'author_email' => 'webmaster@adgrafik.at',
 	'author_company' => 'ad:grafik',

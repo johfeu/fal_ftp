@@ -46,20 +46,19 @@ class FilterRegistry implements SingletonInterface {
 	 *
 	 * @return void
 	 */
-	public function initialize() {
-		$this->filter = array();
+	public function initialize(): void {
+		$this->filter = [];
 	}
 
 	/**
   * Register filter classes.
   *
-  * @param mixed $filters
   * @return \AdGrafik\FalFtp\FTPClient\FilterRegistry
   * @throws InvalidConfigurationException
   */
- public function registerFilter($filters) {
+ public function registerFilter(mixed $filters) {
 		if (is_array($filters) === FALSE) {
-			$filters = array($filters);
+			$filters = [$filters];
 		}
 		foreach ($filters as &$filter) {
 			$this->filter[] = $filter;

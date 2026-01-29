@@ -71,7 +71,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 	 *
 	 * @var array
 	 */
-	protected $supportedHashAlgorithms = array('sha1', 'md5');
+	protected $supportedHashAlgorithms = ['sha1', 'md5'];
 
 	/**
 	 * @var array $extensionConfiguration
@@ -175,7 +175,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 	/**
 	 * @return void
 	 */
-	public function __construct(array $configuration = array()) {
+	public function __construct(array $configuration = []) {
 		parent::__construct($configuration);
 
 		// The capabilities default of this driver. See CAPABILITY_* constants for possible values
@@ -186,8 +186,8 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 
 		// Get and set extension configuration.
 		$this->extensionConfiguration = (array) @GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('fal_ftp');
-		$this->directoryCache = array();
-		$this->temporaryFileStack = array();
+		$this->directoryCache = [];
+		$this->temporaryFileStack = [];
 	}
 
 	/**
@@ -220,7 +220,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 	 *
 	 * @return void
 	 */
-	public function processConfiguration() {
+	public function processConfiguration(): void {
 
 		// Throw deprecation message if hooks defined.
 		if (isset($GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['fal_ftp/Classes/Hook/ListParser.php'])) {
@@ -231,8 +231,8 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 		$this->defaultThumbnail = GeneralUtility::getFileAbsFileName(@$this->extensionConfiguration['ftpDriver']['defaultThumbnail'] ?: 'EXT:fal_ftp/Resources/Public/Images/default_image.png');
 		$this->exactModificationTime = (isset($this->extensionConfiguration['ftpDriver']['exactModificationTime']) && $this->extensionConfiguration['ftpDriver']['exactModificationTime']);
 		$this->remoteService = (isset($this->extensionConfiguration['remoteService']['enable']) && $this->extensionConfiguration['remoteService']['enable']);
-		$this->remoteServiceEncryptionKey = md5(@$this->extensionConfiguration['remoteService']['encryptionKey'] ?: $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']);
-		$this->remoteServiceFileName = '/' . trim(@$this->extensionConfiguration['remoteService']['fileName'] ?: '.FalFtpRemoteService.php');
+		$this->remoteServiceEncryptionKey = md5((string) (@$this->extensionConfiguration['remoteService']['encryptionKey'] ?: $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']));
+		$this->remoteServiceFileName = '/' . trim((string) (@$this->extensionConfiguration['remoteService']['fileName'] ?: '.FalFtpRemoteService.php'));
 		$this->remoteServiceAdditionalHeaders = GeneralUtility::trimExplode(';', (string) @$this->extensionConfiguration['remoteService']['additionalHeaders']);
 
 		// Check if Driver is writable.
@@ -242,8 +242,8 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 		}
 
 		// Set driver configuration.
-		$this->basePath = '/' . trim($this->configuration['basePath'], '/');
-		$this->publicUrl = trim($this->configuration['publicUrl'], '/');
+		$this->basePath = '/' . trim((string) $this->configuration['basePath'], '/');
+		$this->publicUrl = trim((string) $this->configuration['publicUrl'], '/');
 
 		$this->configuration['timeout'] = (integer) @$this->extensionConfiguration['ftpDriver']['timeout'] ?: 90;
 		$this->configuration['ssl'] = (isset($this->configuration['ssl']) && $this->configuration['ssl']);
@@ -253,8 +253,8 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 		}
 
 		// Connect to FTP server.
-		$this->ftpClient = GeneralUtility::makeInstance('AdGrafik\\FalFtp\\FTPClient\\FTP', $this->configuration);
-		$registryObject = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Registry');
+		$this->ftpClient = GeneralUtility::makeInstance(\AdGrafik\FalFtp\FTPClient\FTP::class, $this->configuration);
+		$registryObject = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Registry::class);
 		$storageIdentifier = 'sys_file_storage-' . $this->storageUid . '-' . sha1(serialize($this->configuration)) . '-fal_ftp-configuration-check';
 		$configurationChecked = $registryObject->get('fal_ftp', $storageIdentifier, 0);
 		if (!$configurationChecked) {
@@ -327,7 +327,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 				$folderIdentifier = $this->createFolder('user_upload', '/');
 			} catch (\RuntimeException $e) {
 				/** @var StorageRepository $storageRepository */
-				$storageRepository = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Resource\\StorageRepository');
+				$storageRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Resource\StorageRepository::class);
 				$storage = $storageRepository->findByUid($this->storageUid);
 				if ($storage->isWritable()) {
 					throw $e;
@@ -392,11 +392,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 			throw new FolderDoesNotExistException('File ' . $folderIdentifier . ' does not exist.', 1314516810);
 		}
 
-		return array(
-			'identifier' => $folderIdentifier,
-			'name' => $this->getNameFromIdentifier($folderIdentifier),
-			'storage' => $this->storageUid
-		);
+		return ['identifier' => $folderIdentifier, 'name' => $this->getNameFromIdentifier($folderIdentifier), 'storage' => $this->storageUid];
 	}
 
 	/**
@@ -426,7 +422,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 	 * @param bool $sortRev TRUE to indicate reverse sorting (last to first)
 	 * @return array of Folder Identifier
 	 */
-	public function getFoldersInFolder($folderIdentifier, $start = 0, $numberOfItems = 0, $recursive = FALSE, array $folderNameFilterCallbacks = array(), $sort = '', $sortRev = FALSE) {
+	public function getFoldersInFolder($folderIdentifier, $start = 0, $numberOfItems = 0, $recursive = FALSE, array $folderNameFilterCallbacks = [], $sort = '', $sortRev = FALSE) {
 		return $this->getDirectoryItemList($folderIdentifier, $start, $numberOfItems, $folderNameFilterCallbacks, FALSE, TRUE, $recursive);
 	}
 
@@ -439,7 +435,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 	 * @return int Number of files in folder
 	 * @throws \RuntimeException
 	 */
-	public function countFilesInFolder($folderIdentifier, $recursive = FALSE, array $filenameFilterCallbacks = array()) {
+	public function countFilesInFolder($folderIdentifier, $recursive = FALSE, array $filenameFilterCallbacks = []) {
 		return count($this->getDirectoryItemList($folderIdentifier, 0, 0, $filenameFilterCallbacks, TRUE, FALSE, $recursive));
 	}
 
@@ -452,7 +448,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 	 * @return int Number of folders in folder
 	 * @throws \RuntimeException
 	 */
-	public function countFoldersInFolder($folderIdentifier, $recursive = FALSE, array $folderNameFilterCallbacks = array()) {
+	public function countFoldersInFolder($folderIdentifier, $recursive = FALSE, array $folderNameFilterCallbacks = []) {
 		return count($this->getDirectoryItemList($folderIdentifier, 0, 0, $folderNameFilterCallbacks, FALSE, TRUE, $recursive));
 	}
 
@@ -473,7 +469,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 
 		try {
 			$this->ftpClient->createDirectory($folderIdentifier);
-		} catch (FTPConnectionException $exception) {
+		} catch (FTPConnectionException) {
 			throw new \RuntimeException('Creating folder "' . $folderIdentifier . '" faild.', 1408550550);
 		}
 
@@ -500,9 +496,9 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 
 		try {
 			$this->ftpClient->renameDirectory($folderIdentifier, $newFolderIdentifier);
-		} catch (ExistingResourceException $exception) {
+		} catch (ExistingResourceException) {
 			throw new ExistingTargetFolderException('Folder "' . $folderIdentifier . '" already exists.', 1408550551);
-		} catch (FTPConnectionException $exception) {
+		} catch (FTPConnectionException) {
 			throw new \RuntimeException('Renaming folder "' . $folderIdentifier . '" faild.', 1408550552);
 		}
 
@@ -520,7 +516,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 	public function deleteFolder($folderIdentifier, $recursively = FALSE) {
 		try {
 			$this->ftpClient->deleteDirectory($folderIdentifier, $recursively);
-		} catch (FTPConnectionException $exception) {
+		} catch (FTPConnectionException) {
 			throw new \RuntimeException('Deleting folder "' . $folderIdentifier . '" faild.', 1408550553);
 		}
 		return TRUE;
@@ -545,9 +541,9 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 
 		try {
 			$this->ftpClient->moveDirectory($sourceFolderIdentifier, $newIdentifier);
-		} catch (ExistingResourceException $exception) {
+		} catch (ExistingResourceException) {
 			throw new ExistingTargetFolderException('Folder "' . $newIdentifier . '" already exists.', 1408550554);
-		} catch (FTPConnectionException $exception) {
+		} catch (FTPConnectionException) {
 			throw new \RuntimeException('Moving folder "' . $sourceFolderIdentifier . '" faild.', 1408550555);
 		}
 
@@ -570,11 +566,11 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 
 		try {
 			$this->ftpClient->copyDirectory($sourceFolderIdentifier, $targetIdentifier);
-		} catch (ResourceDoesNotExistException $exception) {
+		} catch (ResourceDoesNotExistException) {
 			throw new FolderDoesNotExistException('Source folder "' . $sourceFolderIdentifier . '" not exists', 1408550556);
-		} catch (ExistingResourceException $exception) {
+		} catch (ExistingResourceException) {
 			throw new ExistingTargetFolderException('Target folder "' . $targetIdentifier . '" already exists', 1408550557);
-		} catch (FTPConnectionException $exception) {
+		} catch (FTPConnectionException) {
 			throw new \RuntimeException('Copying folder "' . $sourceFolderIdentifier . '" faild.', 1408550558);
 		}
 
@@ -610,7 +606,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 	 * @param array $propertiesToExtract Array of properties which are be extracted. If empty all will be extracted
 	 * @return array
 	 */
-	public function getFileInfoByIdentifier($fileIdentifier, array $propertiesToExtract = array()) {
+	public function getFileInfoByIdentifier($fileIdentifier, array $propertiesToExtract = []) {
 
 		$folderIdentifier = $this->getParentFolderIdentifierOfIdentifier($fileIdentifier);
 
@@ -620,7 +616,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 			$this->fetchDirectoryList($folderIdentifier, TRUE);
 
 			if (isset($this->directoryCache[$folderIdentifier][$fileIdentifier]) === FALSE) {
-				$this->directoryCache[$folderIdentifier][$fileIdentifier] = array();
+				$this->directoryCache[$folderIdentifier][$fileIdentifier] = [];
 			}
 		}
 
@@ -665,7 +661,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 	 * @param bool $sortRev TRUE to indicate reverse sorting (last to first)
 	 * @return array of FileIdentifiers
 	 */
-	public function getFilesInFolder($folderIdentifier, $start = 0, $numberOfItems = 0, $recursive = FALSE, array $filenameFilterCallbacks = array(), $sort = '', $sortRev = FALSE) {
+	public function getFilesInFolder($folderIdentifier, $start = 0, $numberOfItems = 0, $recursive = FALSE, array $filenameFilterCallbacks = [], $sort = '', $sortRev = FALSE) {
 		return $this->getDirectoryItemList($folderIdentifier, $start, $numberOfItems, $filenameFilterCallbacks, TRUE, FALSE, $recursive);
 	}
 
@@ -690,11 +686,11 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 
 		try {
 			$this->ftpClient->uploadFile($newFileIdentifier, $localFilePath);
-		} catch (ResourceDoesNotExistException $exception) {
+		} catch (ResourceDoesNotExistException) {
 			throw new FileDoesNotExistException('Source file "' . $localFilePath . '" not exists', 1408550561);
-		} catch (ExistingResourceException $exception) {
+		} catch (ExistingResourceException) {
 			throw new ExistingTargetFolderException('Target file "' . $newFileIdentifier . '" already exists', 1408550562);
-		} catch (FTPConnectionException $exception) {
+		} catch (FTPConnectionException) {
 			throw new \RuntimeException('Adding file "' . $newFileIdentifier . '" faild.', 1408550563);
 		}
 
@@ -727,9 +723,9 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 
 		try {
 			$this->ftpClient->createFile($fileIdentifier);
-		} catch (ExistingResourceException $exception) {
+		} catch (ExistingResourceException) {
 			throw new ExistingTargetFileNameException('File "' . $fileIdentifier . '" already exists', 1408550565);
-		} catch (FTPConnectionException $exception) {
+		} catch (FTPConnectionException) {
 			throw new \RuntimeException('Creating file "' . $fileIdentifier . '" faild.', 1408550566);
 		}
 
@@ -751,9 +747,9 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 
 		try {
 			$this->ftpClient->renameFile($fileIdentifier, $newFileIdentifier);
-		} catch (ExistingResourceException $exception) {
+		} catch (ExistingResourceException) {
 			throw new ExistingTargetFileNameException('File "' . $fileIdentifier . '" already exists', 1408550567);
-		} catch (FTPConnectionException $exception) {
+		} catch (FTPConnectionException) {
 			throw new \RuntimeException('Renaming file "' . $fileIdentifier . '" faild.', 1408550568);
 		}
 
@@ -773,9 +769,9 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 
 		try {
 			$this->ftpClient->replaceFile($fileIdentifier, $localFilePath);
-		} catch (ResourceDoesNotExistException $exception) {
+		} catch (ResourceDoesNotExistException) {
 			throw new FileDoesNotExistException('Source file "' . $localFilePath . '" not exists', 1408550569);
-		} catch (FTPConnectionException $exception) {
+		} catch (FTPConnectionException) {
 			throw new \RuntimeException('Replacing file "' . $fileIdentifier . '" faild.', 1408550570);
 		}
 
@@ -795,7 +791,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 
 		try {
 			$this->ftpClient->deleteFile($fileIdentifier);
-		} catch (FTPConnectionException $exception) {
+		} catch (FTPConnectionException) {
 			throw new \RuntimeException('Deleting file "' . $fileIdentifier . '" faild.', 1408550571);
 		}
 
@@ -814,7 +810,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 
 		try {
 			$bytes = $this->ftpClient->setFileContents($fileIdentifier, $contents);
-		} catch (Exception $exception) {
+		} catch (Exception) {
 			throw new \RuntimeException('Setting file contents of file "' . $fileIdentifier . '" faild.', 1408550572);
 		}
 
@@ -835,7 +831,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 
 		try {
 			$contents = $this->ftpClient->getFileContents($fileIdentifier);
-		} catch (Exception $exception) {
+		} catch (Exception) {
 			throw new \RuntimeException('Setting file contents of file "' . $fileIdentifier . '" faild.', 1408550573);
 		}
 
@@ -868,9 +864,9 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 
 		try {
 			$this->ftpClient->downloadFile($fileIdentifier, $temporaryFile);
-		} catch (ResourceDoesNotExistException $exception) {
+		} catch (ResourceDoesNotExistException) {
 			throw new FileDoesNotExistException('Source file "' . $temporaryFile . '" not exists', 1408550574);
-		} catch (FTPConnectionException $exception) {
+		} catch (FTPConnectionException) {
 			throw new \RuntimeException('Copying file "' . $fileIdentifier . '" to temporary file faild.', 1408550575);
 		}
 
@@ -886,7 +882,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 	 *
 	 * @return void
 	 */
-	public function dumpFileContents($identifier) {
+	public function dumpFileContents($identifier): void {
 		echo $this->getFileContents($identifier);
 	}
 
@@ -908,9 +904,9 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 
 		try {
 			$this->ftpClient->moveFile($sourceFileIdentifier, $targetFileIdentifier);
-		} catch (ExistingResourceException $exception) {
+		} catch (ExistingResourceException) {
 			throw new ExistingTargetFileException('File "' . $targetFileIdentifier . '" already exists.', 1408550576);
-		} catch (FTPConnectionException $exception) {
+		} catch (FTPConnectionException) {
 			throw new \RuntimeException('Moving file "' . $sourceFileIdentifier . '" faild.', 1408550577);
 		}
 
@@ -939,11 +935,11 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 
 		try {
 			$this->ftpClient->copyFile($sourceFileIdentifier, $targetFileIdentifier);
-		} catch (ResourceDoesNotExistException $exception) {
+		} catch (ResourceDoesNotExistException) {
 			throw new FileDoesNotExistException('Source file "' . $sourceFileIdentifier . '" not exists', 1408550578);
-		} catch (ExistingResourceException $exception) {
+		} catch (ExistingResourceException) {
 			throw new ExistingTargetFileException('Target file "' . $targetFileIdentifier . '" already exists', 1408550579);
-		} catch (FTPConnectionException $exception) {
+		} catch (FTPConnectionException) {
 			throw new \RuntimeException('Copying file "' . $sourceFileIdentifier . '" faild.', 1408550580);
 		}
 
@@ -960,7 +956,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 	 */
 	public function getPermissions($identifier) {
 
-		if (substr($identifier, -1) === '/') {
+		if (str_ends_with($identifier, '/')) {
 			$resourceInfo = $this->getFolderInfoByIdentifier($identifier);
 		} else {
 			$resourceInfo = $this->getFileInfoByIdentifier($identifier);
@@ -969,10 +965,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 		if (isset($resourceInfo['mode']) && is_array($resourceInfo['mode'])) {
 			return $resourceInfo['mode'];
 		} else {
-			return array(
-				'r' => TRUE,
-				'w' => TRUE,
-			);
+			return ['r' => TRUE, 'w' => TRUE];
 		}
 	}
 
@@ -993,13 +986,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 
 		if ($this->remoteService) {
 
-			$request = array(
-				'action' => 'hashFile',
-				'parameters' => array(
-					'fileIdentifier' => $fileIdentifier,
-					'hashAlgorithm' => $hashAlgorithm,
-				),
-			);
+			$request = ['action' => 'hashFile', 'parameters' => ['fileIdentifier' => $fileIdentifier, 'hashAlgorithm' => $hashAlgorithm]];
 			$response = $this->sendRemoteService($request);
 
 			if ($response['result'] === FALSE) {
@@ -1012,16 +999,11 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 
 			$temporaryFile = $this->getFileForLocalProcessing($fileIdentifier);
 
-			switch ($hashAlgorithm) {
-				case 'sha1':
-					$hash = sha1_file($temporaryFile);
-					break;
-				case 'md5':
-					$hash = md5_file($temporaryFile);
-					break;
-				default:
-					throw new \RuntimeException('Hash algorithm ' . $hashAlgorithm . ' is not implemented.', 1408550582);
-			}
+			$hash = match ($hashAlgorithm) {
+       'sha1' => sha1_file($temporaryFile),
+       'md5' => md5_file($temporaryFile),
+       default => throw new \RuntimeException('Hash algorithm ' . $hashAlgorithm . ' is not implemented.', 1408550582),
+   };
 		}
 
 		return $hash;
@@ -1060,7 +1042,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 			$cleanFileName = preg_replace('/[' . self::UNSAFE_FILENAME_CHARACTER_EXPRESSION . '\\xC0-\\xFF]/', '_', trim($fileName));
 		}
 		// Strip trailing dots and return
-		$cleanFileName = preg_replace('/\\.*$/', '', $cleanFileName);
+		$cleanFileName = preg_replace('/\\.*$/', '', (string) $cleanFileName);
 		if (!$cleanFileName) {
 			throw new InvalidFileNameException(
 				'File name ' . $cleanFileName . ' is invalid.',
@@ -1098,13 +1080,13 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 
 		$iterator = new \ArrayIterator($this->directoryCache[$folderIdentifier]);
 		if ($iterator->count() === 0) {
-			return array();
+			return [];
 		}
 		$iterator->seek($start);
 
 		// $c is the counter for how many items we still have to fetch (-1 is unlimited)
 		$c = $numberOfItems > 0 ? $numberOfItems : - 1;
-		$items = array();
+		$items = [];
 		while ($iterator->valid() && ($numberOfItems === 0 || $c > 0)) {
 
 			$iteratorItem = $iterator->current();
@@ -1145,13 +1127,13 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 	protected function applyFilterMethodsToDirectoryItem(array $filterMethods, $itemName, $itemIdentifier, $parentIdentifier) {
 		foreach ($filterMethods as $filter) {
 			if (is_array($filter)) {
-				$result = call_user_func($filter, $itemName, $itemIdentifier, $parentIdentifier, array(), $this);
+				$result = call_user_func($filter, $itemName, $itemIdentifier, $parentIdentifier, [], $this);
 				// We have to use -1 as the â€ždon't includeâ€œ return value, as call_user_func() will return FALSE
 				// If calling the method succeeded and thus we can't use that as a return value.
 				if ($result === -1) {
 					return FALSE;
 				} elseif ($result === FALSE) {
-					throw new \RuntimeException('Could not apply file/folder name filter ' . $filter[0] . '::' . $filter[1]);
+					throw new \RuntimeException('Could not apply file/folder name filter ' . $filter[0] . '::' . $filter[1], 5865295059);
 				}
 			}
 		}
@@ -1174,9 +1156,9 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 		if ($resetCache === FALSE && isset($this->directoryCache[$folderIdentifier]) && is_array($this->directoryCache[$folderIdentifier])) {
 			return $this->directoryCache[$folderIdentifier];
 		}
-		$this->directoryCache[$folderIdentifier] = array();
+		$this->directoryCache[$folderIdentifier] = [];
 
-		return $this->ftpClient->fetchDirectoryList($folderIdentifier, array($this, 'fetchDirectoryList_itemCallback'));
+		return $this->ftpClient->fetchDirectoryList($folderIdentifier, $this->fetchDirectoryList_itemCallback(...));
 	}
 
 	/**
@@ -1186,7 +1168,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
   * @param FTP $parentObject
   * @return void
   */
- public function fetchDirectoryList_itemCallback($resourceInfo, $parentObject) {
+ public function fetchDirectoryList_itemCallback($resourceInfo, $parentObject): void {
 
 		if ($resourceInfo['isDirectory']) {
 			$identifier = $this->canonicalizeAndCheckFolderIdentifier($resourceInfo['path'] . $resourceInfo['name']);
@@ -1200,15 +1182,12 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 		$resourceInfo['folder_hash'] = $this->hashIdentifier($this->getParentFolderIdentifierOfIdentifier($identifier));
 		$resourceInfo['ctime'] = 0;
 		$resourceInfo['atime'] = 0;
-		$resourceInfo['mode'] = array(
-			'r' => (@$resourceInfo['mode'][0] == 'r'),
-			'w' => (@$resourceInfo['mode'][1] == 'w'),
-		);
+		$resourceInfo['mode'] = ['r' => (@$resourceInfo['mode'][0] == 'r'), 'w' => (@$resourceInfo['mode'][1] == 'w')];
 
 		if ($this->exactModificationTime) {
 			try {
 				$resourceInfo['mtime'] = $this->ftpClient->getModificationTime($identifier);
-			} catch (FTPConnectionException $exception) {
+			} catch (FTPConnectionException) {
 				// Ignore on failure.
 			}
 		}
@@ -1226,7 +1205,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 	 * @return array
 	 * @throws \RuntimeException
 	 */
-	protected function createIdentifierMap($oldIdentifier, $newIdentifier, &$identifierMap = array()) {
+	protected function createIdentifierMap($oldIdentifier, $newIdentifier, &$identifierMap = []) {
 
 		if ($this->ftpClient->directoryExists($oldIdentifier) === FALSE) {
 			$identifierMap[$oldIdentifier] = $newIdentifier;
@@ -1240,7 +1219,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 
 		try {
 			$directoryList = $this->ftpClient->fetchDirectoryList($oldIdentifier);
-		} catch (Exception $exception) {
+		} catch (Exception) {
 			throw new \RuntimeException('Fetching list of directory "' . $oldIdentifier . '" faild.', 1408550584);
 		}
 
@@ -1279,21 +1258,18 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 	 * @return array
 	 * @throws \RuntimeException
 	 */
-	protected function sendRemoteService($request = array(), $createOnFail = TRUE) {
+	protected function sendRemoteService($request = [], $createOnFail = TRUE) {
 
 		$request['encryptionKey'] = $this->remoteServiceEncryptionKey;
 		$requestUrl = $this->getPublicUrl($this->remoteServiceFileName) . '?' . http_build_query($request);
 		$headers = count($this->remoteServiceAdditionalHeaders) ? $this->remoteServiceAdditionalHeaders : FALSE;
 
-		$response = GeneralUtility::getUrl($requestUrl, 0, $headers);
+		$response = GeneralUtility::getUrl($requestUrl);
 		$response = @json_decode($response, TRUE);
 
 		if (is_array($response) === FALSE && isset($response['result']) === FALSE) {
 			// Define default error message before.
-			$response = array(
-				'result' => FALSE,
-				'message' => 'Remote service communication faild.',
-			);
+			$response = ['result' => FALSE, 'message' => 'Remote service communication faild.'];
 			// If fails, renew the remote service and try again.
 			if ($createOnFail) {
 				$remoteServiceContents = file_get_contents(GeneralUtility::getFileAbsFileName('EXT:fal_ftp/Resources/Private/Script/.FalFtpRemoteService.php'));
@@ -1313,19 +1289,19 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 	 * @param integer $severity
 	 * @return void
 	 */
-	protected function addFlashMessage($message, $severity = AbstractMessage::ERROR) {
+	protected function addFlashMessage($message, $severity = \TYPO3\CMS\Core\Type\ContextualFeedbackSeverity::ERROR) {
         if (PHP_SAPI === 'cli') {
             return;
         }
 		$flashMessage = GeneralUtility::makeInstance(
-			'TYPO3\\CMS\\Core\\Messaging\\FlashMessage',
+			\TYPO3\CMS\Core\Messaging\FlashMessage::class,
 			$message,
 			'',
 			$severity,
 			TRUE
 		);
 		/** @var $defaultFlashMessageQueue \TYPO3\CMS\Core\Messaging\FlashMessageQueue */
-		$defaultFlashMessageQueue = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Messaging\\FlashMessageService')->getMessageQueueByIdentifier();
+		$defaultFlashMessageQueue = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Messaging\FlashMessageService::class)->getMessageQueueByIdentifier();
 		$defaultFlashMessageQueue->enqueue($flashMessage);
 	}
 
@@ -1343,7 +1319,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 				$this->charsetConversion = GeneralUtility::makeInstance(CharsetConverter::class);
 			} else {
 				// The object may not exist yet, so we need to create it now. Happens in the Install Tool for example.
-				$this->charsetConversion = GeneralUtility::makeInstance('TYPO3\\CMS\\Core\\Charset\\CharsetConverter');
+				$this->charsetConversion = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Charset\CharsetConverter::class);
 			}
 		}
 		return $this->charsetConversion;
@@ -1359,11 +1335,8 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver {
 
 		// Sometimes a temporary file already exist. In this case use the file which was downloaded already.
 		$hash = sha1($this->storageUid . ':' . $fileIdentifier);
-		if (isset($this->temporaryFileStack[$hash])) {
-			return $this->temporaryFileStack[$hash];
-		}
 
-		return $this->temporaryFileStack[$hash] = parent::getTemporaryPathForFile($fileIdentifier);
+		return $this->temporaryFileStack[$hash] ?? ($this->temporaryFileStack[$hash] = parent::getTemporaryPathForFile($fileIdentifier));
 #\TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump($this, 'getFileInfoByIdentifier');
 #\TYPO3\CMS\Core\Utility\DebugUtility::debug(__FUNCTION__, 'Method');
 	}
