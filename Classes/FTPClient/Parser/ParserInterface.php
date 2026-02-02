@@ -27,20 +27,17 @@ namespace AdGrafik\FalFtp\FTPClient\Parser;
  * This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use \AdGrafik\FalFtp\FTPClient\FTPInterface;
+use AdGrafik\FalFtp\FTPClient\FTPInterface;
 
-interface ParserInterface {
-
-	/**
-  * Parse the FTP result line.
-  *
-  * @param array &$resourceInfo
-  * @param string $resource
-  * @param FTPInterface $parentObject
-  * @return boolean
-  */
- public function parse(&$resourceInfo, $resource, FTPInterface $parentObject);
-
+interface ParserInterface
+{
+    /**
+     * Parse the FTP result line.
+     *
+     * @param array &$resourceInfo
+     * @param string $resource
+     * @param FTPInterface $parentObject
+     * @return bool
+     */
+    public function parse(&$resourceInfo, $resource, FTPInterface $parentObject);
 }
-
-?>

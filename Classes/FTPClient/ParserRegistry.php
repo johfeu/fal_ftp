@@ -6,8 +6,8 @@ namespace AdGrafik\FalFtp\FTPClient;
  *
  * (c) 2014 Arno Dudek <webmaster@adgrafik.at>
  * All rights reserved
- * 
- * Some parts of FTP handling as special parsing the list results 
+ *
+ * Some parts of FTP handling as special parsing the list results
  * was adapted from net2ftp by David Gartner.
  * @see https://www.net2ftp.com
  *
@@ -30,71 +30,75 @@ namespace AdGrafik\FalFtp\FTPClient;
  *
  * This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-use AdGrafik\FalFtp\FTPClient\Parser\ParserInterface;
 use AdGrafik\FalFtp\FTPClient\Exception\InvalidConfigurationException;
-use \TYPO3\CMS\Core\SingletonInterface;
+use AdGrafik\FalFtp\FTPClient\Parser\ParserInterface;
+use TYPO3\CMS\Core\SingletonInterface;
 
-class ParserRegistry implements SingletonInterface {
+class ParserRegistry implements SingletonInterface
+{
+    /**
+     * @var array<ParserInterface>
+     */
+    protected $parser;
 
-	/**
-  * @var array<ParserInterface> $parser
-  */
- protected $parser;
+    /**
+     * Initialize object.
+     *
+     * @return void
+     */
+    public function initialize(): void
+    {
+        $this->parser = [];
+    }
 
-	/**
-	 * Initialize object.
-	 *
-	 * @return void
-	 */
-	public function initialize(): void {
-		$this->parser = [];
-	}
+    /**
+     * Register parser classes.
+     *
+     * @throws InvalidConfigurationException
+     * @return \AdGrafik\FalFtp\FTPClient\ParserRegistry
+     */
+    public function registerParser(mixed $parsers)
+    {
+        if (is_array($parsers) === false) {
+            $parsers = [$parsers];
+        }
+        foreach ($parsers as &$parser) {
+            $this->parser[] = $parser;
+        }
 
-	/**
-  * Register parser classes.
-  *
-  * @return \AdGrafik\FalFtp\FTPClient\ParserRegistry
-  * @throws InvalidConfigurationException
-  */
- public function registerParser(mixed $parsers) {
-		if (is_array($parsers) === FALSE) {
-			$parsers = [$parsers];
-		}
-		foreach ($parsers as &$parser) {
-			$this->parser[] = $parser;
-		}
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Has parser
-	 *
-	 * @return boolean
-	 */
-	public function hasParser() {
-		return isset($this->parser);
-	}
+    /**
+     * Has parser
+     *
+     * @return bool
+     */
+    public function hasParser()
+    {
+        return isset($this->parser);
+    }
 
-	/**
-	 * Set parser
-	 *
-	 * @param array $parser
-	 * @return \AdGrafik\FalFtp\FTPClient\ParserRegistry
-	 */
-	public function setParser(array $parser) {
-		$this->parser = $parser;
-		return $this;
-	}
+    /**
+     * Set parser
+     *
+     * @param array $parser
+     * @return \AdGrafik\FalFtp\FTPClient\ParserRegistry
+     */
+    public function setParser(array $parser)
+    {
+        $this->parser = $parser;
 
-	/**
-	 * Get parser
-	 *
-	 * @return array
-	 */
-	public function getParser() {
-		return $this->parser;
-	}
+        return $this;
+    }
 
+    /**
+     * Get parser
+     *
+     * @return array
+     */
+    public function getParser()
+    {
+        return $this->parser;
+    }
 }
-
-?>

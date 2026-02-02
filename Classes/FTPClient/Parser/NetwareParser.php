@@ -6,7 +6,7 @@ namespace AdGrafik\FalFtp\FTPClient\Parser;
  *
  * (c) 2014 Arno Dudek <webmaster@adgrafik.at>
  * All rights reserved
- * 
+ *
  * Parsing the list results was adapted from net2ftp by David Gartner.
  * @see https://www.net2ftp.com
  *
@@ -30,8 +30,7 @@ namespace AdGrafik\FalFtp\FTPClient\Parser;
  * This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use \AdGrafik\FalFtp\FTPClient\Parser\ParserInterface;
-use \AdGrafik\FalFtp\FTPClient\FTPInterface;
+use AdGrafik\FalFtp\FTPClient\FTPInterface;
 
 // This class scans an ftp_rawlist line string and returns its parts (name, size,...).
 // Adapted from net2ftp by David Gartner
@@ -103,51 +102,50 @@ use \AdGrafik\FalFtp\FTPClient\FTPInterface;
 // drwxrwx--- 1 owner group 512 Apr 15 13:32 images
 // -rw-rw---- 1 owner group 764 Apr 15 11:07 styles.css
 
-class NetwareParser implements ParserInterface {
+class NetwareParser implements ParserInterface
+{
+    /**
+     * Parse the FTP result line.
+     *
+     * @param array &$resourceInfo
+     * @param string $resource
+     * @param FTPInterface $parentObject
+     * @return bool
+     */
+    public function parse(&$resourceInfo, $resource, FTPInterface $parentObject)
+    {
+        //                 dir/file perms          owner      size        month         day        hour         filename
+        //		Original regexp: '/([-]|[d])[ ]+(.{10})[ ]+([^ ]+)[ ]+([0-9]*)[ ]+([a-zA-Z]*[ ]+[0-9]*)[ ]+([0-9:]*)[ ]+(.*)/'
+        if (preg_match('/([-]|[d])\s+(.{10})\s+([^ ]+)\s+([0-9]*)\s+([a-zA-Z]*\s+[0-9]*\s+[0-9:]*)\s+(.*)/', $resource, $matches)) {
+            $resourceInfo['isDirectory'] = ($matches[1] === 'd');
+            $resourceInfo['name'] = $matches[6];
+            $resourceInfo['size'] = $matches[4];
+            $resourceInfo['owner'] = $matches[3];
+            $resourceInfo['mode'] = $matches[2];
+            $resourceInfo['mtime'] = $this->getTimestampOfDate($matches[5]);
 
-	/**
-  * Parse the FTP result line.
-  *
-  * @param array &$resourceInfo
-  * @param string $resource
-  * @param FTPInterface $parentObject
-  * @return boolean
-  */
- public function parse(&$resourceInfo, $resource, FTPInterface $parentObject) {
+            if ($resourceInfo['isDirectory'] === false) {
+                $resourceInfo['mimetype'] = $parentObject->getMimeType($resourceInfo['name']);
+            }
 
-		//                 dir/file perms          owner      size        month         day        hour         filename
-#		Original regexp: '/([-]|[d])[ ]+(.{10})[ ]+([^ ]+)[ ]+([0-9]*)[ ]+([a-zA-Z]*[ ]+[0-9]*)[ ]+([0-9:]*)[ ]+(.*)/'
-		if (preg_match('/([-]|[d])\s+(.{10})\s+([^ ]+)\s+([0-9]*)\s+([a-zA-Z]*\s+[0-9]*\s+[0-9:]*)\s+(.*)/', $resource, $matches)) {
-			$resourceInfo['isDirectory']  = ($matches[1] === 'd');
-			$resourceInfo['name']         = $matches[6];
-			$resourceInfo['size']         = $matches[4];
-			$resourceInfo['owner']        = $matches[3];
-			$resourceInfo['mode']         = $matches[2];
-			$resourceInfo['mtime']        = $this->getTimestampOfDate($matches[5]);
+            return true;
+        }
 
-			if ($resourceInfo['isDirectory'] === FALSE) {
-				$resourceInfo['mimetype'] = $parentObject->getMimeType($resourceInfo['name']);
-			}
+        return false;
+    }
 
-			return TRUE;
-		}
+    /**
+     * Parse the timestamp.
+     *
+     * @param string $date
+     * @return int
+     */
+    protected function getTimestampOfDate($date)
+    {
+        // Date format depends on what FTP server returns (year, month, day, hour, minutes... see above)
+        // Set time always with seconds, else the seconds of the time NOW is taken, and the hash identifier will change.
+        $date = \DateTime::createFromFormat('M d H:i:s', $date . ':00') ?: new \DateTime('@0');
 
-		return FALSE;
-	}
-
-	/**
-	 * Parse the timestamp.
-	 *
-	 * @param string $date
-	 * @return integer
-	 */
-	protected function getTimestampOfDate($date) {
-		// Date format depends on what FTP server returns (year, month, day, hour, minutes... see above)
-		// Set time always with seconds, else the seconds of the time NOW is taken, and the hash identifier will change.
-		$date = \DateTime::createFromFormat('M d H:i:s', $date . ':00') ?: new \DateTime('@0');
-		return $date->format('U');
-	}
-
+        return $date->format('U');
+    }
 }
-
-?>

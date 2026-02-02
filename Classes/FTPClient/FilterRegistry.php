@@ -6,8 +6,8 @@ namespace AdGrafik\FalFtp\FTPClient;
  *
  * (c) 2014 Arno Dudek <webmaster@adgrafik.at>
  * All rights reserved
- * 
- * Some parts of FTP handling as special parsing the list results 
+ *
+ * Some parts of FTP handling as special parsing the list results
  * was adapted from net2ftp by David Gartner.
  * @see https://www.net2ftp.com
  *
@@ -30,71 +30,75 @@ namespace AdGrafik\FalFtp\FTPClient;
  *
  * This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-use AdGrafik\FalFtp\FTPClient\Filter\FilterInterface;
 use AdGrafik\FalFtp\FTPClient\Exception\InvalidConfigurationException;
-use \TYPO3\CMS\Core\SingletonInterface;
+use AdGrafik\FalFtp\FTPClient\Filter\FilterInterface;
+use TYPO3\CMS\Core\SingletonInterface;
 
-class FilterRegistry implements SingletonInterface {
+class FilterRegistry implements SingletonInterface
+{
+    /**
+     * @var array<FilterInterface>
+     */
+    protected $filter;
 
-	/**
-  * @var array<FilterInterface> $filter
-  */
- protected $filter;
+    /**
+     * Initialize object.
+     *
+     * @return void
+     */
+    public function initialize(): void
+    {
+        $this->filter = [];
+    }
 
-	/**
-	 * Initialize object.
-	 *
-	 * @return void
-	 */
-	public function initialize(): void {
-		$this->filter = [];
-	}
+    /**
+     * Register filter classes.
+     *
+     * @throws InvalidConfigurationException
+     * @return \AdGrafik\FalFtp\FTPClient\FilterRegistry
+     */
+    public function registerFilter(mixed $filters)
+    {
+        if (is_array($filters) === false) {
+            $filters = [$filters];
+        }
+        foreach ($filters as &$filter) {
+            $this->filter[] = $filter;
+        }
 
-	/**
-  * Register filter classes.
-  *
-  * @return \AdGrafik\FalFtp\FTPClient\FilterRegistry
-  * @throws InvalidConfigurationException
-  */
- public function registerFilter(mixed $filters) {
-		if (is_array($filters) === FALSE) {
-			$filters = [$filters];
-		}
-		foreach ($filters as &$filter) {
-			$this->filter[] = $filter;
-		}
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Has filter
-	 *
-	 * @return boolean
-	 */
-	public function hasFilter() {
-		return isset($this->filter);
-	}
+    /**
+     * Has filter
+     *
+     * @return bool
+     */
+    public function hasFilter()
+    {
+        return isset($this->filter);
+    }
 
-	/**
-	 * Set filter
-	 *
-	 * @param array $filter
-	 * @return \AdGrafik\FalFtp\FTPClient\FilterRegistry
-	 */
-	public function setFilter(array $filter) {
-		$this->filter = $filter;
-		return $this;
-	}
+    /**
+     * Set filter
+     *
+     * @param array $filter
+     * @return \AdGrafik\FalFtp\FTPClient\FilterRegistry
+     */
+    public function setFilter(array $filter)
+    {
+        $this->filter = $filter;
 
-	/**
-	 * Get filter
-	 *
-	 * @return array
-	 */
-	public function getFilter() {
-		return $this->filter;
-	}
+        return $this;
+    }
 
+    /**
+     * Get filter
+     *
+     * @return array
+     */
+    public function getFilter()
+    {
+        return $this->filter;
+    }
 }
-
-?>

@@ -28,112 +28,120 @@ namespace AdGrafik\FalFtp\Extractor;
  ***************************************************************/
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\Index\ExtractorInterface;
-use TYPO3\CMS\Core\Resource;
 
 /**
  * An Interface for MetaData extractors the FAL Indexer uses.
  *
  * @author Jonas Temmen <jonas.temmen@artundweise.de>
  */
-class ImageDimensionExtractor implements ExtractorInterface {
+class ImageDimensionExtractor implements ExtractorInterface
+{
+    /**
+     * Returns an array of supported file types;
+     * An empty array indicates all filetypes
+     *
+     * Not used in core atm (T3 7.6.0)
+     *
+     * @return array
+     */
+    public function getFileTypeRestrictions()
+    {
+        return [];
+    }
 
-	/**
-	 * Returns an array of supported file types;
-	 * An empty array indicates all filetypes
-	 * 
-	 * Not used in core atm (T3 7.6.0)
-	 *
-	 * @return array
-	 */
-	public function getFileTypeRestrictions() {
-		return [];
-	}
+    /**
+     * Get all supported DriverClasses
+     *
+     * Since some extractors may only work for local files, and other extractors
+     * are especially made for grabbing data from remote.
+     *
+     * Returns array of string with driver names of Drivers which are supported,
+     * If the driver did not register a name, it's the classname.
+     * empty array indicates no restrictions
+     *
+     * @return array
+     */
+    public function getDriverRestrictions()
+    {
+        return ['FTP'];
+    }
 
+    /**
+     * Returns the data priority of the extraction Service.
+     * Defines the precedence of Data if several extractors
+     * extracted the same property.
+     *
+     * Should be between 1 and 100, 100 is more important than 1
+     *
+     * @return int
+     */
+    public function getPriority()
+    {
+        return 70;
+    }
 
-	/**
-	 * Get all supported DriverClasses
-	 *
-	 * Since some extractors may only work for local files, and other extractors
-	 * are especially made for grabbing data from remote.
-	 *
-	 * Returns array of string with driver names of Drivers which are supported,
-	 * If the driver did not register a name, it's the classname.
-	 * empty array indicates no restrictions
-	 *
-	 * @return array
-	 */
-	public function getDriverRestrictions() {
-		return ['FTP'];
-	}
+    /**
+     * Returns the execution priority of the extraction Service
+     * Should be between 1 and 100, 100 means runs as first service, 1 runs at last service
+     *
+     * @return int
+     */
+    public function getExecutionPriority()
+    {
+        return 10;
+    }
 
-	/**
-	 * Returns the data priority of the extraction Service.
-	 * Defines the precedence of Data if several extractors
-	 * extracted the same property.
-	 *
-	 * Should be between 1 and 100, 100 is more important than 1
-	 *
-	 * @return int
-	 */
-	public function getPriority() {
-		return 70;
-	}
+    /**
+     * Checks if the given file can be processed by this Extractor
+     *
+     * @param File $file
+     * @return bool
+     */
+    public function canProcess(File $file)
+    {
+        if ($file->getType() == File::FILETYPE_IMAGE) {
+            try {
+                $size = $this->getImageSize($file);
+                if (is_array($size) && $size[0] > 0 && $size[1] > 0) {
+                    return true;
+                }
+            } catch (\Exception) {
+                return false;
+            }
+        }
 
-	/**
-	 * Returns the execution priority of the extraction Service
-	 * Should be between 1 and 100, 100 means runs as first service, 1 runs at last service
-	 *
-	 * @return int
-	 */
-	public function getExecutionPriority() {
-		return 10;
-	}
+        return false;
+    }
 
-	/**
-  * Checks if the given file can be processed by this Extractor
-  *
-  * @param File $file
-  * @return bool
-  */
- public function canProcess(File $file) {
-		if ($file->getType() == File::FILETYPE_IMAGE) {
-			try {
-				$size = $this->getImageSize($file);
-				if (is_array($size) && $size[0] > 0 && $size[1] > 0) {
-					return TRUE;
-				}
-			} catch(\Exception){
-				return FALSE;
-			}
-		}
-		return FALSE;
-	}
+    /**
+     * The actual processing TASK
+     *
+     * Should return an array with database properties for sys_file_metadata to write
+     *
+     * @param File $file
+     * @param array $previousExtractedData optional, contains the array of already extracted data
+     * @return array
+     */
+    public function extractMetaData(File $file, array $previousExtractedData = [])
+    {
+        $size = $this->getImageSize($file);
+        if (is_array($size) && $size[0] > 0 && $size[1] > 0) {
+            return ['width' => $size[0], 'height' => $size[1]];
+        }
 
-	/**
-  * The actual processing TASK
-  *
-  * Should return an array with database properties for sys_file_metadata to write
-  *
-  * @param File $file
-  * @param array $previousExtractedData optional, contains the array of already extracted data
-  * @return array
-  */
- public function extractMetaData(File $file, array $previousExtractedData = []) {
-		$size = $this->getImageSize($file);
-		if (is_array($size) && $size[0] > 0 && $size[1] > 0) {
-			return ['width' => $size[0], 'height' => $size[1]];
-		}
-		return [];
-	}
+        return [];
+    }
 
-	/**
-  * Return the size-array of an image returned by getimagesize
-  *
-  * @param File $file
-  * @return array
-  */
- private function getImageSize(File $file) {
-		$tmpLocalFile = $file->getForLocalProcessing();
-		return getimagesize($tmpLocalFile);
-	}
+    /**
+     * Return the size-array of an image returned by getimagesize
+     *
+     * @param File $file
+     * @return array
+     */
+    private function getImageSize(File $file)
+    {
+        $tmpLocalFile = $file->getForLocalProcessing();
+
+        return getimagesize($tmpLocalFile);
+    }
 }

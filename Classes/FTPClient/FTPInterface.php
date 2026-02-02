@@ -1,13 +1,14 @@
 <?php
 namespace AdGrafik\FalFtp\FTPClient;
 
-use AdGrafik\FalFtp\FTPClient\Exception\InvalidConfigurationException;
 use AdGrafik\FalFtp\FTPClient\Exception\ExistingResourceException;
-use AdGrafik\FalFtp\FTPClient\Exception\FTPConnectionException;
-use AdGrafik\FalFtp\FTPClient\Exception\InvalidDirectoryException;
 use AdGrafik\FalFtp\FTPClient\Exception\FileOperationErrorException;
-use AdGrafik\FalFtp\FTPClient\Exception\ResourceDoesNotExistException;
+use AdGrafik\FalFtp\FTPClient\Exception\FTPConnectionException;
 use AdGrafik\FalFtp\FTPClient\Exception\InvalidAttributeException;
+use AdGrafik\FalFtp\FTPClient\Exception\InvalidConfigurationException;
+use AdGrafik\FalFtp\FTPClient\Exception\InvalidDirectoryException;
+use AdGrafik\FalFtp\FTPClient\Exception\ResourceDoesNotExistException;
+
 /***************************************************************
  * Copyright notice
  *
@@ -33,276 +34,273 @@ use AdGrafik\FalFtp\FTPClient\Exception\InvalidAttributeException;
  *
  * This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-interface FTPInterface {
+interface FTPInterface
+{
+    /**
+     * Constructor
+     *
+     * @param array $settings
+     */
+    public function __construct(array $settings);
 
-	/**
-	 * Constructor
-	 *
-	 * @param array $settings
-	 */
-	public function __construct(array $settings);
+    /**
+     * Connect to the FTP server.
+     *
+     * @param string $username
+     * @param string $password
+     * @throws InvalidConfigurationException
+     * @return \AdGrafik\FalFtp\FTPClient\FTPClient
+     */
+    public function connect($username = '', $password = '');
 
-	/**
-  * Connect to the FTP server.
-  *
-  * @param string $username
-  * @param string $password
-  * @return \AdGrafik\FalFtp\FTPClient\FTPClient
-  * @throws InvalidConfigurationException
-  */
- public function connect($username = '', $password = '');
+    /**
+     * Close the FTP connection.
+     *
+     * @throws InvalidConfigurationException
+     * @return \AdGrafik\FalFtp\FTPClient\FTPClient
+     */
+    public function disconnect();
 
-	/**
-  * Close the FTP connection.
-  *
-  * @return \AdGrafik\FalFtp\FTPClient\FTPClient
-  * @throws InvalidConfigurationException
-  */
- public function disconnect();
+    /**
+     * Logs in to the FTP connection.
+     *
+     * @param string $username
+     * @param string $password
+     * @throws InvalidConfigurationException
+     * @return \AdGrafik\FalFtp\FTPClient\FTPClient
+     */
+    public function login($username, $password);
 
-	/**
-  * Logs in to the FTP connection.
-  *
-  * @param string $username
-  * @param string $password
-  * @return \AdGrafik\FalFtp\FTPClient\FTPClient
-  * @throws InvalidConfigurationException
-  */
- public function login($username, $password);
+    /**
+     * Returns TRUE if given directory or file exists.
+     *
+     * @param string $resource remote directory or file, relative path from basePath
+     * @return bool
+     */
+    public function resourceExists($resource);
 
-	/**
-	 * Returns TRUE if given directory or file exists.
-	 *
-	 * @param string $resource Remote directory or file, relative path from basePath.
-	 * @return boolean
-	 */
-	public function resourceExists($resource);
+    /**
+     * Renames a directory or file on the FTP server.
+     *
+     * @param string $sourceResource source remote directory or file, relative path from basePath
+     * @param string $targetResource target remote directory or file, relative path from basePath
+     * @param bool $overwrite
+     * @throws ExistingResourceException
+     * @throws FTPConnectionException thrown at FTP error
+     * @return \AdGrafik\FalFtp\FTPClient\FTPClient
+     */
+    public function renameResource($sourceResource, $targetResource, $overwrite = false);
 
-	/**
-  * Renames a directory or file on the FTP server.
-  *
-  * @param string $sourceResource Source remote directory or file, relative path from basePath.
-  * @param string $targetResource Target remote directory or file, relative path from basePath.
-  * @param boolean $overwrite
-  * @return \AdGrafik\FalFtp\FTPClient\FTPClient
-  * @throws ExistingResourceException
-  * @throws FTPConnectionException Thrown at FTP error.
-  */
- public function renameResource($sourceResource, $targetResource, $overwrite = FALSE);
+    /**
+     * Returns TRUE if given directory exists.
+     *
+     * @param string $directory remote directory, relative path from basePath
+     * @return bool
+     */
+    public function directoryExists($directory);
 
-	/**
-	 * Returns TRUE if given directory exists.
-	 *
-	 * @param string $directory Remote directory, relative path from basePath.
-	 * @return boolean
-	 */
-	public function directoryExists($directory);
+    /**
+     * Changes the current directory to the specified one.
+     *
+     * @param string $directory remote directory, relative path from basePath
+     * @throws InvalidDirectoryException
+     * @return \AdGrafik\FalFtp\FTPClient\FTPClient
+     */
+    public function changeDirectory($directory);
 
-	/**
-  * Changes the current directory to the specified one.
-  *
-  * @param string $directory Remote directory, relative path from basePath.
-  * @return \AdGrafik\FalFtp\FTPClient\FTPClient
-  * @throws InvalidDirectoryException
-  */
- public function changeDirectory($directory);
+    /**
+     * Changes the current directory to the parent directory.
+     *
+     * @param string $directory remote directory, relative path from basePath
+     * @throws InvalidDirectoryException
+     * @return \AdGrafik\FalFtp\FTPClient\FTPClient
+     */
+    public function changeToParentDirectory($directory);
 
-	/**
-  * Changes the current directory to the parent directory.
-  *
-  * @param string $directory Remote directory, relative path from basePath.
-  * @return \AdGrafik\FalFtp\FTPClient\FTPClient
-  * @throws InvalidDirectoryException
-  */
- public function changeToParentDirectory($directory);
+    /**
+     * Creates a directory.
+     *
+     * @param string $directory remote directory, relative path from basePath
+     * @throws FTPConnectionException thrown at FTP error
+     * @return \AdGrafik\FalFtp\FTPClient\FTPClient
+     */
+    public function createDirectory($directory);
 
-	/**
-  * Creates a directory.
-  *
-  * @param string $directory Remote directory, relative path from basePath.
-  * @return \AdGrafik\FalFtp\FTPClient\FTPClient
-  * @throws FTPConnectionException Thrown at FTP error.
-  */
- public function createDirectory($directory);
+    /**
+     * Renames a directory on the FTP server.
+     * Alias of renameResource().
+     *
+     * @param string $sourceDirectory source remote directory, relative path from basePath
+     * @param string $targetDirectory target remote directory, relative path from basePath
+     * @param bool $overwrite
+     * @return \AdGrafik\FalFtp\FTPClient\FTPClient
+     */
+    public function renameDirectory($sourceDirectory, $targetDirectory, $overwrite = false);
 
-	/**
-	 * Renames a directory on the FTP server.
-	 * Alias of renameResource().
-	 *
-	 * @param string $sourceDirectory Source remote directory, relative path from basePath.
-	 * @param string $targetDirectory Target remote directory, relative path from basePath.
-	 * @param boolean $overwrite
-	 * @return \AdGrafik\FalFtp\FTPClient\FTPClient
-	 */
-	public function renameDirectory($sourceDirectory, $targetDirectory, $overwrite = FALSE);
+    /**
+     * Moves a directory on the FTP server.
+     * Alias of renameResource().
+     *
+     * @param string $sourceDirectory source remote directory, relative path from basePath
+     * @param string $targetDirectory target remote directory, relative path from basePath
+     * @param bool $overwrite
+     * @return \AdGrafik\FalFtp\FTPClient\FTPClient
+     */
+    public function moveDirectory($sourceDirectory, $targetDirectory, $overwrite = false);
 
-	/**
-	 * Moves a directory on the FTP server.
-	 * Alias of renameResource().
-	 *
-	 * @param string $sourceDirectory Source remote directory, relative path from basePath.
-	 * @param string $targetDirectory Target remote directory, relative path from basePath.
-	 * @param boolean $overwrite
-	 * @return \AdGrafik\FalFtp\FTPClient\FTPClient
-	 */
-	public function moveDirectory($sourceDirectory, $targetDirectory, $overwrite = FALSE);
+    /**
+     * Copy a directory on the FTP server.
+     *
+     * @param string $sourceDirectory source remote directory, relative path from basePath
+     * @param string $targetDirectory target remote directory, relative path from basePath
+     * @param bool $overwrite
+     * @throws ExistingResourceException
+     * @return \AdGrafik\FalFtp\FTPClient\FTPClient
+     */
+    public function copyDirectory($sourceDirectory, $targetDirectory, $overwrite = false);
 
-	/**
-  * Copy a directory on the FTP server.
-  *
-  * @param string $sourceDirectory Source remote directory, relative path from basePath.
-  * @param string $targetDirectory Target remote directory, relative path from basePath.
-  * @param boolean $overwrite
-  * @return \AdGrafik\FalFtp\FTPClient\FTPClient
-  * @throws ExistingResourceException
-  */
- public function copyDirectory($sourceDirectory, $targetDirectory, $overwrite = FALSE);
+    /**
+     * Moves a directory on the FTP server.
+     *
+     * @param string $directory remote directory, relative path from basePath
+     * @param bool $recursively
+     * @throws FTPConnectionException thrown at FTP error
+     * @return \AdGrafik\FalFtp\FTPClient\FTPClient
+     */
+    public function deleteDirectory($directory, $recursively = true);
 
-	/**
-  * Moves a directory on the FTP server.
-  *
-  * @param string $directory Remote directory, relative path from basePath.
-  * @param boolean $recursively
-  * @return \AdGrafik\FalFtp\FTPClient\FTPClient
-  * @throws FTPConnectionException Thrown at FTP error.
-  */
- public function deleteDirectory($directory, $recursively = TRUE);
+    /**
+     * Returns TRUE if given file exists.
+     *
+     * @param string $file remote file, relative path from basePath
+     * @return bool
+     */
+    public function fileExists($file);
 
-	/**
-	 * Returns TRUE if given file exists.
-	 *
-	 * @param string $file Remote file, relative path from basePath.
-	 * @return boolean
-	 */
-	public function fileExists($file);
+    /**
+     * Returns the size of the given file.
+     *
+     * @param string $file remote file, relative path from basePath
+     * @throws FileOperationErrorException
+     * @return int
+     */
+    public function getFileSize($file);
 
-	/**
-  * Returns the size of the given file.
-  *
-  * @param string $file Remote file, relative path from basePath.
-  * @return integer
-  * @throws FileOperationErrorException
-  */
- public function getFileSize($file);
+    /**
+     * Uploads a file to the FTP server.
+     *
+     * @param string $targetFile target remote file, relative path from basePath
+     * @param mixed $sourceFileOrResource local source file or file resource, absolute path
+     * @param bool $overwrite
+     * @throws ResourceDoesNotExistException
+     * @throws ExistingResourceException
+     * @throws FTPConnectionException thrown at FTP error
+     * @return \AdGrafik\FalFtp\FTPClient\FTPClient
+     */
+    public function uploadFile($targetFile, mixed $sourceFileOrResource, $overwrite = false);
 
-	/**
-  * Uploads a file to the FTP server.
-  *
-  * @param string $targetFile Target remote file, relative path from basePath.
-  * @param mixed $sourceFileOrResource Local source file or file resource, absolute path.
-  * @param boolean $overwrite
-  * @return \AdGrafik\FalFtp\FTPClient\FTPClient
-  * @throws ResourceDoesNotExistException
-  * @throws ExistingResourceException
-  * @throws FTPConnectionException Thrown at FTP error.
-  */
- public function uploadFile($targetFile, mixed $sourceFileOrResource, $overwrite = FALSE);
+    /**
+     * Download a file to a temporary file.
+     *
+     * @param string $sourceFile target remote file, relative path from basePath
+     * @param mixed $targetFileOrResource local target file or file resource, absolute path
+     * @throws ResourceDoesNotExistException
+     * @throws FTPConnectionException thrown at FTP error
+     * @return \AdGrafik\FalFtp\FTPClient\FTPClient
+     */
+    public function downloadFile($sourceFile, mixed $targetFileOrResource);
 
-	/**
-  * Download a file to a temporary file.
-  *
-  * @param string $sourceFile Target remote file, relative path from basePath.
-  * @param mixed $targetFileOrResource Local target file or file resource, absolute path.
-  * @return \AdGrafik\FalFtp\FTPClient\FTPClient
-  * @throws ResourceDoesNotExistException
-  * @throws FTPConnectionException Thrown at FTP error.
-  */
- public function downloadFile($sourceFile, mixed $targetFileOrResource);
+    /**
+     * Set the contents of a file.
+     *
+     * @param string $file remote file, relative path from basePath
+     * @param string $contents
+     * @throws FileOperationErrorException thrown if writing temporary file fails
+     * @return int
+     */
+    public function setFileContents($file, $contents);
 
-	/**
-  * Set the contents of a file.
-  *
-  * @param string $file Remote file, relative path from basePath.
-  * @param string $contents
-  * @return integer
-  * @throws FileOperationErrorException Thrown if writing temporary file fails.
-  */
- public function setFileContents($file, $contents);
+    /**
+     * Get the contents of a file.
+     *
+     * @param string $file remote file, relative path from basePath
+     * @throws FTPConnectionException thrown at FTP error
+     * @return string
+     */
+    public function getFileContents($file);
 
-	/**
-  * Get the contents of a file.
-  *
-  * @param string $file Remote file, relative path from basePath.
-  * @return string
-  * @throws FTPConnectionException Thrown at FTP error.
-  */
- public function getFileContents($file);
+    /**
+     * Create a file on the FTP server.
+     *
+     * @param string $file remote file, relative path from basePath
+     * @param bool $overwrite
+     * @throws ExistingResourceException
+     * @throws FTPConnectionException thrown at FTP error
+     * @return \AdGrafik\FalFtp\FTPClient\FTPClient
+     */
+    public function createFile($file, $overwrite = false);
 
-	/**
-  * Create a file on the FTP server.
-  *
-  * @param string $file Remote file, relative path from basePath.
-  * @param boolean $overwrite
-  * @return \AdGrafik\FalFtp\FTPClient\FTPClient
-  * @throws ExistingResourceException
-  * @throws FTPConnectionException Thrown at FTP error.
-  */
- public function createFile($file, $overwrite = FALSE);
+    /**
+     * Replace a file to the FTP server.
+     * Alias of uploadFile().
+     *
+     * @param string $targetFile target remote file, relative path from basePath
+     * @param mixed $sourceFileOrResource local source file or file resource, absolute path
+     * @return \AdGrafik\FalFtp\FTPClient\FTPClient
+     */
+    public function replaceFile($targetFile, mixed $sourceFileOrResource);
 
-	/**
-	 * Replace a file to the FTP server.
-	 * Alias of uploadFile().
-	 *
-	 * @param string $targetFile Target remote file, relative path from basePath.
-	 * @param mixed $sourceFileOrResource Local source file or file resource, absolute path.
-	 * @return \AdGrafik\FalFtp\FTPClient\FTPClient
-	 */
-	public function replaceFile($targetFile, mixed $sourceFileOrResource);
+    /**
+     * Renames a file on the FTP server.
+     * Alias of renameResource().
+     *
+     * @param string $sourceFile source remote file, relative path from basePath
+     * @param string $targetFile target remote file, relative path from basePath
+     * @param bool $overwrite
+     * @return \AdGrafik\FalFtp\FTPClient\FTPClient
+     */
+    public function renameFile($sourceFile, $targetFile, $overwrite = false);
 
-	/**
-	 * Renames a file on the FTP server.
-	 * Alias of renameResource().
-	 *
-	 * @param string $sourceFile Source remote file, relative path from basePath.
-	 * @param string $targetFile Target remote file, relative path from basePath.
-	 * @param boolean $overwrite
-	 * @return \AdGrafik\FalFtp\FTPClient\FTPClient
-	 */
-	public function renameFile($sourceFile, $targetFile, $overwrite = FALSE);
+    /**
+     * Moves a file on the FTP server.
+     * Alias of renameResource().
+     *
+     * @param string $sourceFile source remote file, relative path from basePath
+     * @param string $targetFile target remote file, relative path from basePath
+     * @param bool $overwrite
+     * @return \AdGrafik\FalFtp\FTPClient\FTPClient
+     */
+    public function moveFile($sourceFile, $targetFile, $overwrite = false);
 
-	/**
-	 * Moves a file on the FTP server.
-	 * Alias of renameResource().
-	 *
-	 * @param string $sourceFile Source remote file, relative path from basePath.
-	 * @param string $targetFile Target remote file, relative path from basePath.
-	 * @param boolean $overwrite
-	 * @return \AdGrafik\FalFtp\FTPClient\FTPClient
-	 */
-	public function moveFile($sourceFile, $targetFile, $overwrite = FALSE);
+    /**
+     * Copy a file on the FTP server.
+     *
+     * @param string $sourceFile source remote file, relative path from basePath
+     * @param string $targetFile target remote file, relative path from basePath
+     * @param bool $overwrite
+     * @return \AdGrafik\FalFtp\FTPClient\FTPClient
+     */
+    public function copyFile($sourceFile, $targetFile, $overwrite = false);
 
-	/**
-	 * Copy a file on the FTP server.
-	 *
-	 * @param string $sourceFile Source remote file, relative path from basePath.
-	 * @param string $targetFile Target remote file, relative path from basePath.
-	 * @param boolean $overwrite
-	 * @return \AdGrafik\FalFtp\FTPClient\FTPClient
-	 */
-	public function copyFile($sourceFile, $targetFile, $overwrite = FALSE);
+    /**
+     * Deletes a file on the FTP server.
+     *
+     * @param string $file remote file, relative path from basePath
+     * @throws FTPConnectionException thrown at FTP error
+     * @return \AdGrafik\FalFtp\FTPClient\FTPClient
+     */
+    public function deleteFile($file);
 
-	/**
-  * Deletes a file on the FTP server.
-  *
-  * @param string $file Remote file, relative path from basePath.
-  * @return \AdGrafik\FalFtp\FTPClient\FTPClient
-  * @throws FTPConnectionException Thrown at FTP error.
-  */
- public function deleteFile($file);
-
-	/**
-  * Scans an ftp_rawlist line string and returns its parts (directory/file, name, size,...) using preg_match()
-  *
-  * @param string $directory Remote directory, relative path from basePath.
-  * @param mixed $resourceInfoParserCallback Either an array of object and method name or a function name.
-  * @param string $sort
-  * @return array
-  * @throws FTPConnectionException Thrown at FTP error.
-  * @throws InvalidConfigurationException
-  * @throws InvalidAttributeException
-  */
- public function fetchDirectoryList($directory, mixed $resourceInfoParserCallback = NULL, $sort = 'strnatcasecmp');
-
+    /**
+     * Scans an ftp_rawlist line string and returns its parts (directory/file, name, size,...) using preg_match()
+     *
+     * @param string $directory remote directory, relative path from basePath
+     * @param mixed $resourceInfoParserCallback either an array of object and method name or a function name
+     * @param string $sort
+     * @throws FTPConnectionException thrown at FTP error
+     * @throws InvalidConfigurationException
+     * @throws InvalidAttributeException
+     * @return array
+     */
+    public function fetchDirectoryList($directory, mixed $resourceInfoParserCallback = null, $sort = 'strnatcasecmp');
 }
-
-?>

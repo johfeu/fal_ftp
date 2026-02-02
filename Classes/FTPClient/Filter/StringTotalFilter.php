@@ -6,7 +6,7 @@ namespace AdGrafik\FalFtp\FTPClient\Filter;
  *
  * (c) 2014 Arno Dudek <webmaster@adgrafik.at>
  * All rights reserved
- * 
+ *
  * Parsing the list results was adapted from net2ftp by David Gartner.
  * @see https://www.net2ftp.com
  *
@@ -30,24 +30,21 @@ namespace AdGrafik\FalFtp\FTPClient\Filter;
  * This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use \AdGrafik\FalFtp\FTPClient\Filter\FilterInterface;
-use \AdGrafik\FalFtp\FTPClient\FTPInterface;
+use AdGrafik\FalFtp\FTPClient\FTPInterface;
 
-class StringTotalFilter implements FilterInterface {
-
-	/**
-  * Filter the given resource info.
-  *
-  * @param array $resourceInfo
-  * @param string $resource
-  * @param FTPInterface $parentObject
-  * @return boolean
-  */
- public function filter($resourceInfo, $resource, FTPInterface $parentObject) {
-		// Exclude the total line that some servers return
-		return (str_starts_with($resource, 'total'));
-	}
-
+class StringTotalFilter implements FilterInterface
+{
+    /**
+     * Filter the given resource info.
+     *
+     * @param array $resourceInfo
+     * @param string $resource
+     * @param FTPInterface $parentObject
+     * @return bool
+     */
+    public function filter($resourceInfo, $resource, FTPInterface $parentObject)
+    {
+        // Exclude the total line that some servers return
+        return str_starts_with($resource, 'total');
+    }
 }
-
-?>

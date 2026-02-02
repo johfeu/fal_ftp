@@ -27,9 +27,7 @@ namespace AdGrafik\FalFtp\FTPClient;
  * This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use \TYPO3\CMS\Core\Utility\PathUtility;
-use \TYPO3\CMS\Core\Utility\GeneralUtility;
-use \AdGrafik\FalFtp\FTPClient\FTPInterface;
+use TYPO3\CMS\Core\Utility\PathUtility;
 
 /**
  * Abstract driver for FTP clients.
@@ -37,220 +35,225 @@ use \AdGrafik\FalFtp\FTPClient\FTPInterface;
  * @author Arno Dudek <webmaster@adgrafik.at>
  * @author Nicole Cordes <typo3@cordes.co>
  */
-abstract class AbstractFTP implements FTPInterface {
+abstract class AbstractFTP implements FTPInterface
+{
+    /**
+     * @var resource
+     */
+    protected $stream;
 
-	/**
-	 * @var resource $stream
-	 */
-	protected $stream;
+    /**
+     * @var ParserRegistry
+     */
+    protected $parserRegistry;
 
-	/**
-  * @var ParserRegistry $parserRegistry
-  */
- protected $parserRegistry;
+    /**
+     * @var ParserRegistry
+     */
+    protected $filterRegistry;
 
-	/**
-  * @var ParserRegistry $parserRegistry
-  */
- protected $filterRegistry;
+    /**
+     * Get parserRegistry
+     *
+     * @return ParserRegistry
+     */
+    public function getParserRegistry()
+    {
+        return $this->parserRegistry;
+    }
 
-	/**
-  * Get parserRegistry
-  *
-  * @return ParserRegistry
-  */
- public function getParserRegistry() {
-		return $this->parserRegistry;
-	}
+    /**
+     * Get filterRegistry
+     *
+     * @return ParserRegistry
+     */
+    public function getFilterRegistry()
+    {
+        return $this->filterRegistry;
+    }
 
-	/**
-  * Get filterRegistry
-  *
-  * @return ParserRegistry
-  */
- public function getFilterRegistry() {
-		return $this->filterRegistry;
-	}
+    /**
+     * Get stream
+     *
+     * @return resource
+     */
+    public function getStream()
+    {
+        $this->connect();
 
-	/**
-	 * Get stream
-	 *
-	 * @return resource
-	 */
-	public function getStream() {
-		$this->connect();
-		return $this->stream;
-	}
+        return $this->stream;
+    }
 
-	/**
-	 * Returns the mime type of given file extension.
-	 *
-	 * @param string $fileName
-	 * @return string
-	 */
-	public function getMimeType($fileName) {
+    /**
+     * Returns the mime type of given file extension.
+     *
+     * @param string $fileName
+     * @return string
+     */
+    public function getMimeType($fileName)
+    {
+        $extension = strtolower(PathUtility::pathinfo($fileName, PATHINFO_EXTENSION));
 
-		$extension = strtolower(PathUtility::pathinfo($fileName, PATHINFO_EXTENSION));
+        $mimeType = match ($extension) {
+            'ai', 'eps', 'ps' => 'application/postscript',
+            'aif', 'aifc', 'aiff' => 'audio/x-aiff',
+            'asc', 'txt' => 'text/plain',
+            'atom' => 'application/atom+xml',
+            'au', 'snd' => 'audio/basic',
+            'avi' => 'video/x-msvideo',
+            'bcpio' => 'application/x-bcpio',
+            'bin', 'class', 'dll', 'dmg', 'dms', 'exe', 'lha', 'lzh', 'so' => 'application/octet-stream',
+            'bmp' => 'image/bmp',
+            'cdf', 'nc' => 'application/x-netcdf',
+            'cgm' => 'image/cgm',
+            'cpio' => 'application/x-cpio',
+            'cpt' => 'application/mac-compactpro',
+            'csh' => 'application/x-csh',
+            'css' => 'text/css',
+            'dcr', 'dir', 'dxr' => 'application/x-director',
+            'dif', 'dv' => 'video/x-dv',
+            'djv', 'djvu' => 'image/vnd.djvu',
+            'doc' => 'application/msword',
+            'dtd' => 'application/xml-dtd',
+            'dvi' => 'application/x-dvi',
+            'etx' => 'text/x-setext',
+            'ez' => 'application/andrew-inset',
+            'gif' => 'image/gif',
+            'gram' => 'application/srgs',
+            'grxml' => 'application/srgs+xml',
+            'gtar' => 'application/x-gtar',
+            'hdf' => 'application/x-hdf',
+            'hqx' => 'application/mac-binhex40',
+            'htm', 'html' => 'text/html',
+            'ice' => 'x-conference/x-cooltalk',
+            'ico' => 'image/x-icon',
+            'ics', 'ifb' => 'text/calendar',
+            'ief' => 'image/ief',
+            'iges', 'igs' => 'model/iges',
+            'jnlp' => 'application/x-java-jnlp-file',
+            'jp2' => 'image/jp2',
+            'jpe', 'jpeg', 'jpg' => 'image/jpeg',
+            'js' => 'application/x-javascript',
+            'kar', 'mid', 'midi' => 'audio/midi',
+            'latex' => 'application/x-latex',
+            'm3u' => 'audio/x-mpegurl',
+            'm4a', 'm4b', 'm4p' => 'audio/mp4a-latm',
+            'm4u', 'mxu' => 'video/vnd.mpegurl',
+            'm4v' => 'video/x-m4v',
+            'mac', 'pnt', 'pntg' => 'image/x-macpaint',
+            'man' => 'application/x-troff-man',
+            'mathml' => 'application/mathml+xml',
+            'me' => 'application/x-troff-me',
+            'mesh', 'msh', 'silo' => 'model/mesh',
+            'mif' => 'application/vnd.mif',
+            'mov', 'qt' => 'video/quicktime',
+            'movie' => 'video/x-sgi-movie',
+            'mp2', 'mp3' => 'audio/mpeg',
+            'mpga' => 'audio/mpeg',
+            'mp4' => 'video/mp4',
+            'mpe', 'mpeg', 'mpg' => 'video/mpeg',
+            'ms' => 'application/x-troff-ms',
+            'oda' => 'application/oda',
+            'ogg' => 'application/ogg',
+            'pbm' => 'image/x-portable-bitmap',
+            'pct', 'pic', 'pict' => 'image/pict',
+            'pdb' => 'chemical/x-pdb',
+            'pdf' => 'application/pdf',
+            'pgm' => 'image/x-portable-graymap',
+            'pgn' => 'application/x-chess-pgn',
+            'png' => 'image/png',
+            'pnm' => 'image/x-portable-anymap',
+            'ppm' => 'image/x-portable-pixmap',
+            'ppt' => 'application/vnd.ms-powerpoint',
+            'qti', 'qtif' => 'image/x-quicktime',
+            'ra', 'ram' => 'audio/x-pn-realaudio',
+            'ras' => 'image/x-cmu-raster',
+            'rdf' => 'application/rdf+xml',
+            'rgb' => 'image/x-rgb',
+            'rm' => 'application/vnd.rn-realmedia',
+            'roff', 't', 'tr' => 'application/x-troff',
+            'rtf' => 'text/rtf',
+            'rtx' => 'text/richtext',
+            'sgm', 'sgml' => 'text/sgml',
+            'sh' => 'application/x-sh',
+            'shar' => 'application/x-shar',
+            'sit' => 'application/x-stuffit',
+            'skd', 'skm', 'skp', 'skt' => 'application/x-koan',
+            'smi', 'smil' => 'application/smil',
+            'spl' => 'application/x-futuresplash',
+            'src' => 'application/x-wais-source',
+            'sv4cpio' => 'application/x-sv4cpio',
+            'sv4crc' => 'application/x-sv4crc',
+            'svg' => 'image/svg+xml',
+            'swf' => 'application/x-shockwave-flash',
+            'tar' => 'application/x-tar',
+            'tcl' => 'application/x-tcl',
+            'tex' => 'application/x-tex',
+            'texi', 'texinfo' => 'application/x-texinfo',
+            'tif', 'tiff' => 'image/tiff',
+            'tsv' => 'text/tab-separated-values',
+            'ustar' => 'application/x-ustar',
+            'vcd' => 'application/x-cdlink',
+            'vrml', 'wrl' => 'model/vrml',
+            'vxml' => 'application/voicexml+xml',
+            'wav' => 'audio/x-wav',
+            'wbmp' => 'image/vnd.wap.wbmp',
+            'wbmxl' => 'application/vnd.wap.wbxml',
+            'wml' => 'text/vnd.wap.wml',
+            'wmlc' => 'application/vnd.wap.wmlc',
+            'wmls' => 'text/vnd.wap.wmlscript',
+            'wmlsc' => 'application/vnd.wap.wmlscriptc',
+            'xbm' => 'image/x-xbitmap',
+            'xht', 'xhtml' => 'application/xhtml+xml',
+            'xls' => 'application/vnd.ms-excel',
+            'xml', 'xsl' => 'application/xml',
+            'xpm' => 'image/x-xpixmap',
+            'xslt' => 'application/xslt+xml',
+            'xul' => 'application/vnd.mozilla.xul+xml',
+            'xwd' => 'image/x-xwindowdump',
+            'xyz' => 'chemical/x-xyz',
+            'zip' => 'application/zip',
+            default => 'application/octet-stream',
+        };
 
-		$mimeType = match ($extension) {
-      'ai', 'eps', 'ps' => 'application/postscript',
-      'aif', 'aifc', 'aiff' => 'audio/x-aiff',
-      'asc', 'txt' => 'text/plain',
-      'atom' => 'application/atom+xml',
-      'au', 'snd' => 'audio/basic',
-      'avi' => 'video/x-msvideo',
-      'bcpio' => 'application/x-bcpio',
-      'bin', 'class', 'dll', 'dmg', 'dms', 'exe', 'lha', 'lzh', 'so' => 'application/octet-stream',
-      'bmp' => 'image/bmp',
-      'cdf', 'nc' => 'application/x-netcdf',
-      'cgm' => 'image/cgm',
-      'cpio' => 'application/x-cpio',
-      'cpt' => 'application/mac-compactpro',
-      'csh' => 'application/x-csh',
-      'css' => 'text/css',
-      'dcr', 'dir', 'dxr' => 'application/x-director',
-      'dif', 'dv' => 'video/x-dv',
-      'djv', 'djvu' => 'image/vnd.djvu',
-      'doc' => 'application/msword',
-      'dtd' => 'application/xml-dtd',
-      'dvi' => 'application/x-dvi',
-      'etx' => 'text/x-setext',
-      'ez' => 'application/andrew-inset',
-      'gif' => 'image/gif',
-      'gram' => 'application/srgs',
-      'grxml' => 'application/srgs+xml',
-      'gtar' => 'application/x-gtar',
-      'hdf' => 'application/x-hdf',
-      'hqx' => 'application/mac-binhex40',
-      'htm', 'html' => 'text/html',
-      'ice' => 'x-conference/x-cooltalk',
-      'ico' => 'image/x-icon',
-      'ics', 'ifb' => 'text/calendar',
-      'ief' => 'image/ief',
-      'iges', 'igs' => 'model/iges',
-      'jnlp' => 'application/x-java-jnlp-file',
-      'jp2' => 'image/jp2',
-      'jpe', 'jpeg', 'jpg' => 'image/jpeg',
-      'js' => 'application/x-javascript',
-      'kar', 'mid', 'midi' => 'audio/midi',
-      'latex' => 'application/x-latex',
-      'm3u' => 'audio/x-mpegurl',
-      'm4a', 'm4b', 'm4p' => 'audio/mp4a-latm',
-      'm4u', 'mxu' => 'video/vnd.mpegurl',
-      'm4v' => 'video/x-m4v',
-      'mac', 'pnt', 'pntg' => 'image/x-macpaint',
-      'man' => 'application/x-troff-man',
-      'mathml' => 'application/mathml+xml',
-      'me' => 'application/x-troff-me',
-      'mesh', 'msh', 'silo' => 'model/mesh',
-      'mif' => 'application/vnd.mif',
-      'mov', 'qt' => 'video/quicktime',
-      'movie' => 'video/x-sgi-movie',
-      'mp2', 'mp3' => 'audio/mpeg',
-      'mpga' => 'audio/mpeg',
-      'mp4' => 'video/mp4',
-      'mpe', 'mpeg', 'mpg' => 'video/mpeg',
-      'ms' => 'application/x-troff-ms',
-      'oda' => 'application/oda',
-      'ogg' => 'application/ogg',
-      'pbm' => 'image/x-portable-bitmap',
-      'pct', 'pic', 'pict' => 'image/pict',
-      'pdb' => 'chemical/x-pdb',
-      'pdf' => 'application/pdf',
-      'pgm' => 'image/x-portable-graymap',
-      'pgn' => 'application/x-chess-pgn',
-      'png' => 'image/png',
-      'pnm' => 'image/x-portable-anymap',
-      'ppm' => 'image/x-portable-pixmap',
-      'ppt' => 'application/vnd.ms-powerpoint',
-      'qti', 'qtif' => 'image/x-quicktime',
-      'ra', 'ram' => 'audio/x-pn-realaudio',
-      'ras' => 'image/x-cmu-raster',
-      'rdf' => 'application/rdf+xml',
-      'rgb' => 'image/x-rgb',
-      'rm' => 'application/vnd.rn-realmedia',
-      'roff', 't', 'tr' => 'application/x-troff',
-      'rtf' => 'text/rtf',
-      'rtx' => 'text/richtext',
-      'sgm', 'sgml' => 'text/sgml',
-      'sh' => 'application/x-sh',
-      'shar' => 'application/x-shar',
-      'sit' => 'application/x-stuffit',
-      'skd', 'skm', 'skp', 'skt' => 'application/x-koan',
-      'smi', 'smil' => 'application/smil',
-      'spl' => 'application/x-futuresplash',
-      'src' => 'application/x-wais-source',
-      'sv4cpio' => 'application/x-sv4cpio',
-      'sv4crc' => 'application/x-sv4crc',
-      'svg' => 'image/svg+xml',
-      'swf' => 'application/x-shockwave-flash',
-      'tar' => 'application/x-tar',
-      'tcl' => 'application/x-tcl',
-      'tex' => 'application/x-tex',
-      'texi', 'texinfo' => 'application/x-texinfo',
-      'tif', 'tiff' => 'image/tiff',
-      'tsv' => 'text/tab-separated-values',
-      'ustar' => 'application/x-ustar',
-      'vcd' => 'application/x-cdlink',
-      'vrml', 'wrl' => 'model/vrml',
-      'vxml' => 'application/voicexml+xml',
-      'wav' => 'audio/x-wav',
-      'wbmp' => 'image/vnd.wap.wbmp',
-      'wbmxl' => 'application/vnd.wap.wbxml',
-      'wml' => 'text/vnd.wap.wml',
-      'wmlc' => 'application/vnd.wap.wmlc',
-      'wmls' => 'text/vnd.wap.wmlscript',
-      'wmlsc' => 'application/vnd.wap.wmlscriptc',
-      'xbm' => 'image/x-xbitmap',
-      'xht', 'xhtml' => 'application/xhtml+xml',
-      'xls' => 'application/vnd.ms-excel',
-      'xml', 'xsl' => 'application/xml',
-      'xpm' => 'image/x-xpixmap',
-      'xslt' => 'application/xslt+xml',
-      'xul' => 'application/vnd.mozilla.xul+xml',
-      'xwd' => 'image/x-xwindowdump',
-      'xyz' => 'chemical/x-xyz',
-      'zip' => 'application/zip',
-      default => 'application/octet-stream',
-  };
+        return $mimeType;
+    }
 
-		return $mimeType;
-	}
+    /**
+     * Returns the absolute path of the FTP remote directory or file.
+     *
+     * @param string $relativeDirectoryOrFilePath
+     * @return string
+     */
+    protected function getAbsolutePath($relativeDirectoryOrFilePath)
+    {
+        return $this->basePath . $relativeDirectoryOrFilePath;
+    }
 
-	/**
-	 * Returns the absolute path of the FTP remote directory or file.
-	 *
-	 * @param string $relativeDirectoryOrFilePath
-	 * @return string
-	 */
-	protected function getAbsolutePath($relativeDirectoryOrFilePath) {
-		return $this->basePath . $relativeDirectoryOrFilePath;
-	}
+    /**
+     * Returns the identifier of the folder the file resides in
+     *
+     * @param string $directoryOrFile
+     * @return mixed
+     */
+    protected function getParentDirectory($directoryOrFile)
+    {
+        $parentDirectory = PathUtility::dirname($directoryOrFile);
+        if ($parentDirectory === '/') {
+            return $parentDirectory;
+        }
 
-	/**
-	 * Returns the identifier of the folder the file resides in
-	 *
-	 * @param string $directoryOrFile
-	 * @return mixed
-	 */
-	protected function getParentDirectory($directoryOrFile) {
-		$parentDirectory = PathUtility::dirname($directoryOrFile);
-		if ($parentDirectory === '/') {
-			return $parentDirectory;
-		}
-		return $parentDirectory . '/';
-	}
+        return $parentDirectory . '/';
+    }
 
-	/**
-	 * Returns the identifier of the folder the file resides in
-	 *
-	 * @param string $directoryOrFile
-	 * @return mixed
-	 */
-	protected function getResourceName($directoryOrFile) {
-		return trim(PathUtility::basename($directoryOrFile), '/');
-	}
-
+    /**
+     * Returns the identifier of the folder the file resides in
+     *
+     * @param string $directoryOrFile
+     * @return mixed
+     */
+    protected function getResourceName($directoryOrFile)
+    {
+        return trim(PathUtility::basename($directoryOrFile), '/');
+    }
 }
-
-?>

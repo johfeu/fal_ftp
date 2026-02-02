@@ -27,22 +27,20 @@ namespace AdGrafik\FalFtp\Driver;
  * This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-
 /**
  * Driver for FTPS clients.
  */
-class FTPSDriver extends FTPDriver {
-
-	/**
-	 * processes the configuration, should be overridden by subclasses
-	 *
-	 * @return void
-	 */
-	public function processConfiguration(): void {
-		// Just set SSL option for the FTP client.
-		$this->configuration['ssl'] = TRUE;
-		parent::processConfiguration();
-	}
+class FTPSDriver extends FTPDriver
+{
+    /**
+     * processes the configuration, should be overridden by subclasses
+     *
+     * @return void
+     */
+    public function processConfiguration(): void
+    {
+        // Just set SSL option for the FTP client.
+        $this->configuration['ssl'] = true;
+        parent::processConfiguration();
+    }
 }
-
-?>

@@ -6,7 +6,7 @@ namespace AdGrafik\FalFtp\FTPClient\Parser;
  *
  * (c) 2014 Arno Dudek <webmaster@adgrafik.at>
  * All rights reserved
- * 
+ *
  * Parsing the list results was adapted from net2ftp by David Gartner.
  * @see https://www.net2ftp.com
  *
@@ -30,8 +30,7 @@ namespace AdGrafik\FalFtp\FTPClient\Parser;
  * This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use \AdGrafik\FalFtp\FTPClient\Parser\ParserInterface;
-use \AdGrafik\FalFtp\FTPClient\FTPInterface;
+use AdGrafik\FalFtp\FTPClient\FTPInterface;
 
 // This class scans an ftp_rawlist line string and returns its parts (name, size,...).
 // Adapted from net2ftp by David Gartner
@@ -103,49 +102,48 @@ use \AdGrafik\FalFtp\FTPClient\FTPInterface;
 // drwxrwx--- 1 owner group 512 Apr 15 13:32 images
 // -rw-rw---- 1 owner group 764 Apr 15 11:07 styles.css
 
-class WindowsParser implements ParserInterface {
+class WindowsParser implements ParserInterface
+{
+    /**
+     * Parse the FTP result line.
+     *
+     * @param array &$resourceInfo
+     * @param string $resource
+     * @param FTPInterface $parentObject
+     * @return bool
+     */
+    public function parse(&$resourceInfo, $resource, FTPInterface $parentObject)
+    {
+        //                 date            time            size              filename
+        //		Original regexp: '/([0-9\\/-]+)[ ]+([0-9:AMP]+)[ ]+([0-9]*|<DIR>)[ ]+(.*)/'
+        if (preg_match('/([0-9\\/-]+\s+[0-9:AP]+)M\s+([0-9]*|<DIR>)\s+(.*)/', $resource, $matches)) {
+            $resourceInfo['isDirectory'] = ($matches[2] === '<DIR>');
+            $resourceInfo['size'] = ($matches[2] === '<DIR>') ? '' : $matches[2];
+            $resourceInfo['name'] = $matches[3];
+            $resourceInfo['mtime'] = $this->getTimestampOfDate($matches[1]);
 
-	/**
-  * Parse the FTP result line.
-  *
-  * @param array &$resourceInfo
-  * @param string $resource
-  * @param FTPInterface $parentObject
-  * @return boolean
-  */
- public function parse(&$resourceInfo, $resource, FTPInterface $parentObject) {
+            if ($resourceInfo['isDirectory'] === false) {
+                $resourceInfo['mimetype'] = $parentObject->getMimeType($resourceInfo['name']);
+            }
 
-		//                 date            time            size              filename
-#		Original regexp: '/([0-9\\/-]+)[ ]+([0-9:AMP]+)[ ]+([0-9]*|<DIR>)[ ]+(.*)/'
-		if (preg_match('/([0-9\\/-]+\s+[0-9:AP]+)M\s+([0-9]*|<DIR>)\s+(.*)/', $resource, $matches)) {
-			$resourceInfo['isDirectory']  = ($matches[2] === '<DIR>');
-			$resourceInfo['size']         = ($matches[2] === '<DIR>') ? '' : $matches[2];
-			$resourceInfo['name']         = $matches[3];
-			$resourceInfo['mtime']        = $this->getTimestampOfDate($matches[1]);
+            return true;
+        }
 
-			if ($resourceInfo['isDirectory'] === FALSE) {
-				$resourceInfo['mimetype'] = $parentObject->getMimeType($resourceInfo['name']);
-			}
+        return false;
+    }
 
-			return TRUE;
-		}
+    /**
+     * Parse the timestamp.
+     *
+     * @param string $date
+     * @return int
+     */
+    protected function getTimestampOfDate($date)
+    {
+        // Date format depends on what FTP server returns (year, month, day, hour, minutes... see above)
+        // Set time always with seconds, else the seconds of the time NOW is taken, and the hash identifier will change.
+        $date = \DateTime::createFromFormat('m-d-y h:ia s', $date . ' 00') ?: new \DateTime('@0');
 
-		return FALSE;
-	}
-
-	/**
-	 * Parse the timestamp.
-	 *
-	 * @param string $date
-	 * @return integer
-	 */
-	protected function getTimestampOfDate($date) {
-		// Date format depends on what FTP server returns (year, month, day, hour, minutes... see above)
-		// Set time always with seconds, else the seconds of the time NOW is taken, and the hash identifier will change.
-		$date = \DateTime::createFromFormat('m-d-y h:ia s', $date . ' 00') ?: new \DateTime('@0');
-		return $date->format('U');
-	}
-
+        return $date->format('U');
+    }
 }
-
-?>
