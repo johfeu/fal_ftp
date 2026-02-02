@@ -1,0 +1,18 @@
+{
+	"name": "adgrafik/fal-ftp",
+	"description": "",
+	"type": "typo3-cms-extension",
+	"require": {
+		"typo3/cms-backend": "^11||^12||^13"
+	},
+	"autoload": {
+		"psr-4": {
+			"AdGrafik\\FalFtp\\": "Classes"
+		}
+	},
+	"extra": {
+		"typo3/cms": {
+			"extension-key": "fal_ftp"
+		}
+	}
+}
