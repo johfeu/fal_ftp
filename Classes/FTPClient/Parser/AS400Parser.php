@@ -116,7 +116,7 @@ class AS400Parser implements ParserInterface
     {
         //                 owner               size        date            time         type                      filename
         //		Original regexp: '/([a-zA-Z0-9_-]+)[ ]+([0-9]+)[ ]+([0-9\\/-]+)[ ]+([0-9:]+)[ ]+([a-zA-Z0-9_ -\*]+)[ \\/]+([^\\/]+)/'
-        if (preg_match('/([a-zA-Z0-9_-]+)\s+([0-9]+)\s+([0-9\\/-]+\s+[0-9:]+)\s+([a-zA-Z0-9_ -\*]+)[ \\/]+([^\\/]+)/', $resource, $matches)) {
+        if (preg_match('/([a-zA-Z0-9_-]+)\s+(\d+)\s+([0-9\/-]+\s+[0-9:]+)\s+([a-zA-Z0-9_ -\*]+)[ \/]+([^\/]+)/', $resource, $matches)) {
             $resourceInfo['isDirectory'] = ($matches[4] !== '*STMF');
             $resourceInfo['name'] = $matches[5];
             $resourceInfo['size'] = $matches[2];

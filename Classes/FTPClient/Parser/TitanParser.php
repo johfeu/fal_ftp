@@ -116,7 +116,7 @@ class TitanParser implements ParserInterface
     {
         //                 dir/file permissions      number      owner             group             size         month        date       time        file
         //		Original regexp: '/([-dl])([rwxsStT-]{9})[ ]+([0-9]+)[ ]+([a-zA-Z0-9]+)[ ]+([a-zA-Z0-9]+)[ ]+([0-9]+)[ ]+([a-zA-Z]+[ ]+[0-9]+)[ ]+([0-9:]+)[ ](.*)/'
-        if (preg_match('/([-dl])([rwxsStT-]{9})\s+([0-9]+)\s+([a-zA-Z0-9]+)\s+([a-zA-Z0-9]+)\s+([0-9]+)\s+([a-zA-Z]+\s+[0-9]+\s+[0-9:]+)\s(.*)/', $resource, $matches)) {
+        if (preg_match('/([-dl])([rwxsStT-]{9})\s+(\d+)\s+([a-zA-Z0-9]+)\s+([a-zA-Z0-9]+)\s+(\d+)\s+([a-zA-Z]+\s+\d+\s+[0-9:]+)\s(.*)/', $resource, $matches)) {
             $resourceInfo['parseRule'] = 'rule-3.4';
             $resourceInfo['isDirectory'] = $matches[1];
             $resourceInfo['name'] = $matches[8];

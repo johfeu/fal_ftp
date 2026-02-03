@@ -99,7 +99,7 @@ class ImageDimensionExtractor implements ExtractorInterface
      */
     public function canProcess(File $file)
     {
-        if ($file->getType() == File::FILETYPE_IMAGE) {
+        if ($file->getType() === File::FILETYPE_IMAGE) {
             try {
                 $size = $this->getImageSize($file);
                 if (is_array($size) && $size[0] > 0 && $size[1] > 0) {

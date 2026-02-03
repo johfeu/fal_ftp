@@ -55,7 +55,7 @@ class ParserRegistry implements SingletonInterface
      * Register parser classes.
      *
      * @throws InvalidConfigurationException
-     * @return \AdGrafik\FalFtp\FTPClient\ParserRegistry
+     * @return ParserRegistry
      */
     public function registerParser(mixed $parsers)
     {
@@ -76,14 +76,14 @@ class ParserRegistry implements SingletonInterface
      */
     public function hasParser()
     {
-        return isset($this->parser);
+        return $this->parser !== null;
     }
 
     /**
      * Set parser
      *
      * @param array $parser
-     * @return \AdGrafik\FalFtp\FTPClient\ParserRegistry
+     * @return ParserRegistry
      */
     public function setParser(array $parser)
     {

@@ -116,7 +116,7 @@ class NetwareParser implements ParserInterface
     {
         //                 dir/file perms          owner      size        month         day        hour         filename
         //		Original regexp: '/([-]|[d])[ ]+(.{10})[ ]+([^ ]+)[ ]+([0-9]*)[ ]+([a-zA-Z]*[ ]+[0-9]*)[ ]+([0-9:]*)[ ]+(.*)/'
-        if (preg_match('/([-]|[d])\s+(.{10})\s+([^ ]+)\s+([0-9]*)\s+([a-zA-Z]*\s+[0-9]*\s+[0-9:]*)\s+(.*)/', $resource, $matches)) {
+        if (preg_match('/([-]|[d])\s+(.{10})\s+([^ ]+)\s+(\d*)\s+([a-zA-Z]*\s+\d*\s+[0-9:]*)\s+(.*)/', $resource, $matches)) {
             $resourceInfo['isDirectory'] = ($matches[1] === 'd');
             $resourceInfo['name'] = $matches[6];
             $resourceInfo['size'] = $matches[4];

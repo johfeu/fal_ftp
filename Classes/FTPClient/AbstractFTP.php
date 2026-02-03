@@ -37,6 +37,7 @@ use TYPO3\CMS\Core\Utility\PathUtility;
  */
 abstract class AbstractFTP implements FTPInterface
 {
+    public $basePath;
     /**
      * @var resource
      */

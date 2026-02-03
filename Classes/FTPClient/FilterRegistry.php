@@ -55,7 +55,7 @@ class FilterRegistry implements SingletonInterface
      * Register filter classes.
      *
      * @throws InvalidConfigurationException
-     * @return \AdGrafik\FalFtp\FTPClient\FilterRegistry
+     * @return FilterRegistry
      */
     public function registerFilter(mixed $filters)
     {
@@ -76,14 +76,14 @@ class FilterRegistry implements SingletonInterface
      */
     public function hasFilter()
     {
-        return isset($this->filter);
+        return $this->filter !== null;
     }
 
     /**
      * Set filter
      *
      * @param array $filter
-     * @return \AdGrafik\FalFtp\FTPClient\FilterRegistry
+     * @return FilterRegistry
      */
     public function setFilter(array $filter)
     {

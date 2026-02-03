@@ -116,7 +116,7 @@ class WindowsParser implements ParserInterface
     {
         //                 date            time            size              filename
         //		Original regexp: '/([0-9\\/-]+)[ ]+([0-9:AMP]+)[ ]+([0-9]*|<DIR>)[ ]+(.*)/'
-        if (preg_match('/([0-9\\/-]+\s+[0-9:AP]+)M\s+([0-9]*|<DIR>)\s+(.*)/', $resource, $matches)) {
+        if (preg_match('/([0-9\/-]+\s+[0-9:AP]+)M\s+(\d*|<DIR>)\s+(.*)/', $resource, $matches)) {
             $resourceInfo['isDirectory'] = ($matches[2] === '<DIR>');
             $resourceInfo['size'] = ($matches[2] === '<DIR>') ? '' : $matches[2];
             $resourceInfo['name'] = $matches[3];

@@ -30,6 +30,16 @@ namespace AdGrafik\FalFtp\FTPClient;
  *
  * This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
+use AdGrafik\FalFtp\FTPClient\Parser\StrictRulesParser;
+use AdGrafik\FalFtp\FTPClient\Parser\LessStrictRulesParser;
+use AdGrafik\FalFtp\FTPClient\Parser\WindowsParser;
+use AdGrafik\FalFtp\FTPClient\Parser\NetwareParser;
+use AdGrafik\FalFtp\FTPClient\Parser\AS400Parser;
+use AdGrafik\FalFtp\FTPClient\Parser\TitanParser;
+use AdGrafik\FalFtp\FTPClient\Filter\DotsFilter;
+use AdGrafik\FalFtp\FTPClient\Filter\StringTotalFilter;
+use TYPO3\CMS\Core\Resource\Index\ExtractorRegistry;
+use AdGrafik\FalFtp\Extractor\ImageDimensionExtractor;
 use AdGrafik\FalFtp\FTPClient\Exception\ExistingResourceException;
 use AdGrafik\FalFtp\FTPClient\Exception\FileOperationErrorException;
 use AdGrafik\FalFtp\FTPClient\Exception\FTPConnectionException;
@@ -124,18 +134,18 @@ class FTP extends AbstractFTP
      */
     public function __construct(array $settings)
     {
-        $this->parserRegistry = GeneralUtility::makeInstance(\AdGrafik\FalFtp\FTPClient\ParserRegistry::class);
+        $this->parserRegistry = GeneralUtility::makeInstance(ParserRegistry::class);
         if ($this->parserRegistry->hasParser() === false) {
-            $this->parserRegistry->registerParser([\AdGrafik\FalFtp\FTPClient\Parser\StrictRulesParser::class, \AdGrafik\FalFtp\FTPClient\Parser\LessStrictRulesParser::class, \AdGrafik\FalFtp\FTPClient\Parser\WindowsParser::class, \AdGrafik\FalFtp\FTPClient\Parser\NetwareParser::class, \AdGrafik\FalFtp\FTPClient\Parser\AS400Parser::class, \AdGrafik\FalFtp\FTPClient\Parser\TitanParser::class]);
+            $this->parserRegistry->registerParser([StrictRulesParser::class, LessStrictRulesParser::class, WindowsParser::class, NetwareParser::class, AS400Parser::class, TitanParser::class]);
         }
 
-        $this->filterRegistry = GeneralUtility::makeInstance(\AdGrafik\FalFtp\FTPClient\FilterRegistry::class);
+        $this->filterRegistry = GeneralUtility::makeInstance(FilterRegistry::class);
         if ($this->filterRegistry->hasFilter() === false) {
-            $this->filterRegistry->registerFilter([\AdGrafik\FalFtp\FTPClient\Filter\DotsFilter::class, \AdGrafik\FalFtp\FTPClient\Filter\StringTotalFilter::class]);
+            $this->filterRegistry->registerFilter([DotsFilter::class, StringTotalFilter::class]);
         }
 
-        $extractorRegistry = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Resource\Index\ExtractorRegistry::class);
-        $extractorRegistry->registerExtractionService(\AdGrafik\FalFtp\Extractor\ImageDimensionExtractor::class);
+        $extractorRegistry = GeneralUtility::makeInstance(ExtractorRegistry::class);
+        $extractorRegistry->registerExtractionService(ImageDimensionExtractor::class);
 
         $this->host = urldecode(trim((string)$settings['host'], '/') ?: '');
         $this->port = (int)$settings['port'] ?: 21;
@@ -154,7 +164,7 @@ class FTP extends AbstractFTP
      * @param string $username
      * @param string $password
      * @throws InvalidConfigurationException
-     * @return \AdGrafik\FalFtp\FTPClient\FTP
+     * @return FTP
      */
     public function connect($username = '', $password = '')
     {
@@ -187,7 +197,7 @@ class FTP extends AbstractFTP
      * Close the FTP connection.
      *
      * @throws InvalidConfigurationException
-     * @return \AdGrafik\FalFtp\FTPClient\FTP
+     * @return FTP
      */
     public function disconnect()
     {
@@ -205,7 +215,7 @@ class FTP extends AbstractFTP
      * @param string $username
      * @param string $password
      * @throws InvalidConfigurationException
-     * @return \AdGrafik\FalFtp\FTPClient\FTP
+     * @return FTP
      */
     public function login($username = '', $password = '')
     {
@@ -224,7 +234,7 @@ class FTP extends AbstractFTP
      *
      * @param bool $passiveMode
      * @throws FTPConnectionException thrown at FTP error
-     * @return \AdGrafik\FalFtp\FTPClient\FTP
+     * @return FTP
      */
     public function setPassiveMode($passiveMode)
     {
@@ -277,7 +287,7 @@ class FTP extends AbstractFTP
      * @param bool $overwrite
      * @throws ExistingResourceException
      * @throws FTPConnectionException thrown at FTP error
-     * @return \AdGrafik\FalFtp\FTPClient\FTP
+     * @return FTP
      */
     public function renameResource($sourceResource, $targetResource, $overwrite = false)
     {
@@ -311,7 +321,7 @@ class FTP extends AbstractFTP
      *
      * @param string $directory remote directory, relative path from basePath
      * @throws InvalidDirectoryException
-     * @return \AdGrafik\FalFtp\FTPClient\FTP
+     * @return FTP
      */
     public function changeDirectory($directory)
     {
@@ -328,7 +338,7 @@ class FTP extends AbstractFTP
      *
      * @param string $directory remote directory, relative path from basePath
      * @throws InvalidDirectoryException
-     * @return \AdGrafik\FalFtp\FTPClient\FTP
+     * @return FTP
      */
     public function changeToParentDirectory($directory)
     {
@@ -345,7 +355,7 @@ class FTP extends AbstractFTP
      *
      * @param string $directory remote directory, relative path from basePath
      * @throws FTPConnectionException thrown at FTP error
-     * @return \AdGrafik\FalFtp\FTPClient\FTP
+     * @return FTP
      */
     public function createDirectory($directory)
     {
@@ -364,7 +374,7 @@ class FTP extends AbstractFTP
      * @param string $sourceDirectory source remote directory, relative path from basePath
      * @param string $targetDirectory target remote directory, relative path from basePath
      * @param bool $overwrite
-     * @return \AdGrafik\FalFtp\FTPClient\FTP
+     * @return FTP
      */
     public function renameDirectory($sourceDirectory, $targetDirectory, $overwrite = false)
     {
@@ -378,7 +388,7 @@ class FTP extends AbstractFTP
      * @param string $sourceDirectory source remote directory, relative path from basePath
      * @param string $targetDirectory target remote directory, relative path from basePath
      * @param bool $overwrite
-     * @return \AdGrafik\FalFtp\FTPClient\FTP
+     * @return FTP
      */
     public function moveDirectory($sourceDirectory, $targetDirectory, $overwrite = false)
     {
@@ -392,7 +402,7 @@ class FTP extends AbstractFTP
      * @param string $targetDirectory target remote directory, relative path from basePath
      * @param bool $overwrite
      * @throws ExistingResourceException
-     * @return \AdGrafik\FalFtp\FTPClient\FTP
+     * @return FTP
      */
     public function copyDirectory($sourceDirectory, $targetDirectory, $overwrite = false)
     {
@@ -421,7 +431,7 @@ class FTP extends AbstractFTP
      * @param string $directory remote directory, relative path from basePath
      * @param bool $recursively
      * @throws FTPConnectionException thrown at FTP error
-     * @return \AdGrafik\FalFtp\FTPClient\FTP
+     * @return FTP
      */
     public function deleteDirectory($directory, $recursively = true)
     {
@@ -488,7 +498,7 @@ class FTP extends AbstractFTP
      * @throws ResourceDoesNotExistException
      * @throws ExistingResourceException
      * @throws FTPConnectionException thrown at FTP error
-     * @return \AdGrafik\FalFtp\FTPClient\FTP
+     * @return FTP
      */
     public function uploadFile($targetFile, $sourceFileOrResource, $overwrite = false)
     {
@@ -521,7 +531,7 @@ class FTP extends AbstractFTP
      * @param mixed $targetFileOrResource local target file or file resource, absolute path
      * @throws ResourceDoesNotExistException
      * @throws FTPConnectionException thrown at FTP error
-     * @return \AdGrafik\FalFtp\FTPClient\FTP
+     * @return FTP
      */
     public function downloadFile($sourceFile, $targetFileOrResource)
     {
@@ -597,7 +607,7 @@ class FTP extends AbstractFTP
      * @param bool $overwrite
      * @throws ExistingResourceException
      * @throws FTPConnectionException thrown at FTP error
-     * @return \AdGrafik\FalFtp\FTPClient\FTP
+     * @return FTP
      */
     public function createFile($file, $overwrite = false)
     {
@@ -616,7 +626,7 @@ class FTP extends AbstractFTP
      *
      * @param string $targetFile target remote file, relative path from basePath
      * @param mixed $sourceFileOrResource local source file or file resource, absolute path
-     * @return \AdGrafik\FalFtp\FTPClient\FTP
+     * @return FTP
      */
     public function replaceFile($targetFile, $sourceFileOrResource)
     {
@@ -630,7 +640,7 @@ class FTP extends AbstractFTP
      * @param string $sourceFile source remote file, relative path from basePath
      * @param string $targetFile target remote file, relative path from basePath
      * @param bool $overwrite
-     * @return \AdGrafik\FalFtp\FTPClient\FTP
+     * @return FTP
      */
     public function renameFile($sourceFile, $targetFile, $overwrite = false)
     {
@@ -644,7 +654,7 @@ class FTP extends AbstractFTP
      * @param string $sourceFile source remote file, relative path from basePath
      * @param string $targetFile target remote file, relative path from basePath
      * @param bool $overwrite
-     * @return \AdGrafik\FalFtp\FTPClient\FTP
+     * @return FTP
      */
     public function moveFile($sourceFile, $targetFile, $overwrite = false)
     {
@@ -657,7 +667,7 @@ class FTP extends AbstractFTP
      * @param string $sourceFile source remote file, relative path from basePath
      * @param string $targetFile target remote file, relative path from basePath
      * @param bool $overwrite
-     * @return \AdGrafik\FalFtp\FTPClient\FTP
+     * @return FTP
      */
     public function copyFile($sourceFile, $targetFile, $overwrite = false)
     {
@@ -676,7 +686,7 @@ class FTP extends AbstractFTP
      *
      * @param string $file remote file, relative path from basePath
      * @throws FTPConnectionException thrown at FTP error
-     * @return \AdGrafik\FalFtp\FTPClient\FTP
+     * @return FTP
      */
     public function deleteFile($file)
     {

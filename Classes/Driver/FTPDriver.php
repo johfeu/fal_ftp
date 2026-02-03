@@ -26,7 +26,12 @@ namespace AdGrafik\FalFtp\Driver;
  *
  * This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-
+use TYPO3\CMS\Core\Registry;
+use TYPO3\CMS\Core\Resource\StorageRepository;
+use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
+use TYPO3\CMS\Core\Messaging\FlashMessage;
+use TYPO3\CMS\Core\Messaging\FlashMessageService;
+use TYPO3\CMS\Core\Messaging\FlashMessageQueue;
 use AdGrafik\FalFtp\FTPClient\Exception;
 use AdGrafik\FalFtp\FTPClient\Exception\ExistingResourceException;
 use AdGrafik\FalFtp\FTPClient\Exception\FTPConnectionException;
@@ -67,8 +72,6 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
      * A list of all supported hash algorithms, written all lower case and
      * without any dashes etc. (e.g. sha1 instead of SHA-1)
      * Be sure to set this in inherited classes!
-     *
-     * @var array
      */
     protected array $supportedHashAlgorithms = ['sha1', 'md5'];
 
@@ -81,17 +84,17 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
      * The $directoryCache caches all files including file info which are loaded via FTP.
      * This cache get refreshed only when an user action is done or file is processed.
      *
-     * @var array
+     * @var array<mixed>
      */
-    protected $directoryCache;
+    protected $directoryCache = [];
 
     /**
      * In this stack all created temporary files are cached. Sometimes a temporary file
      * already exist. In this case use the file which was downloaded already.
      *
-     * @var array
+     * @var array<mixed>
      */
-    protected $temporaryFileStack;
+    protected $temporaryFileStack = [];
 
     /**
      * Limit Thumbnails Rendering: This option can be used to reduce file rendering
@@ -140,36 +143,27 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
 
     /**
      * Encryption key for remote service.
-     *
-     * @var string
      */
-    protected $remoteServiceFileName;
+    protected string $remoteServiceFileName;
 
     /**
      * Additional header to send with cUrl.
-     *
-     * @var string
      */
-    protected $remoteServiceAdditionalHeaders;
+    protected string $remoteServiceAdditionalHeaders;
 
     /**
      * The base path defined in the FTP settings. Must not be the absolute path!
-     *
-     * @var string
      */
-    protected $basePath;
+    protected string $basePath;
 
     /**
      * The public URL from the FTP server
-     *
-     * @var array
      */
-    protected $publicUrl;
+    protected string $publicUrl;
 
-    /**
-     * @var FTP
-     */
-    protected $ftpClient;
+    protected FTP $ftpClient;
+
+    protected ?CharsetConverter $charsetConversion = null;
 
     public function __construct(array $configuration = [])
     {
@@ -184,8 +178,6 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
 
         // Get and set extension configuration.
         $this->extensionConfiguration = (array)@GeneralUtility::makeInstance(ExtensionConfiguration::class)->get('fal_ftp');
-        $this->directoryCache = [];
-        $this->temporaryFileStack = [];
     }
 
     /**
@@ -198,7 +190,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
     {
         // Delete all temporary files after processing.
         $temporaryPattern = Environment::getPublicPath() . 'typo3temp/fal-ftp-tempfile-*';
-        array_map('unlink', glob($temporaryPattern));
+        array_map(unlink(...), glob($temporaryPattern));
     }
 
     /**
@@ -234,7 +226,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
         $this->remoteServiceAdditionalHeaders = GeneralUtility::trimExplode(';', (string)@$this->extensionConfiguration['remoteService']['additionalHeaders']);
 
         // Check if Driver is writable.
-        if ($this->remoteService && !$this->hasCapability(\TYPO3\CMS\Core\Resource\ResourceStorageInterface::CAPABILITY_WRITABLE)) {
+        if ($this->remoteService && !$this->hasCapability(Capabilities::CAPABILITY_WRITABLE)) {
             $this->addFlashMessage('remoteService is activated in the extension configuration but storage is not set as writable');
             $this->remoteService = false;
         }
@@ -251,8 +243,8 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
         }
 
         // Connect to FTP server.
-        $this->ftpClient = GeneralUtility::makeInstance(\AdGrafik\FalFtp\FTPClient\FTP::class, $this->configuration);
-        $registryObject = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Registry::class);
+        $this->ftpClient = GeneralUtility::makeInstance(FTP::class, $this->configuration);
+        $registryObject = GeneralUtility::makeInstance(Registry::class);
         $storageIdentifier = 'sys_file_storage-' . $this->storageUid . '-' . sha1(serialize($this->configuration)) . '-fal_ftp-configuration-check';
         $configurationChecked = $registryObject->get('fal_ftp', $storageIdentifier, 0);
         if (!$configurationChecked) {
@@ -277,10 +269,8 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
 
     /**
      * Get ftpClient
-     *
-     * @return resource
      */
-    public function getFtpClient()
+    public function getFtpClient(): FTP
     {
         return $this->ftpClient;
     }
@@ -322,7 +312,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
                 $folderIdentifier = $this->createFolder('user_upload', '/');
             } catch (\RuntimeException $e) {
                 /** @var StorageRepository $storageRepository */
-                $storageRepository = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Resource\StorageRepository::class);
+                $storageRepository = GeneralUtility::makeInstance(StorageRepository::class);
                 $storage = $storageRepository->findByUid($this->storageUid);
                 if ($storage->isWritable()) {
                     throw $e;
@@ -582,7 +572,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
         if (count($propertiesToExtract) > 0) {
             foreach ($propertiesToExtract as $property) {
                 if ($this->directoryCache[$folderIdentifier][$fileIdentifier][$property]) {
-                    array_push($returnValues, $this->directoryCache[$folderIdentifier][$fileIdentifier][$property]);
+                    $returnValues[] = $this->directoryCache[$folderIdentifier][$fileIdentifier][$property];
                 }
             }
 
@@ -832,7 +822,6 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
      *
      * @throws \TYPO3\CMS\Core\Resource\Exception\ExistingTargetFileException
      * @throws \RuntimeException
-     * @return array A map of old to new file identifiers
      */
     public function moveFileWithinStorage(string $fileIdentifier, string $targetFolderIdentifier, string $newFileName): string
     {
@@ -956,12 +945,10 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
                 // Breaking #73794: Charset is now always utf-8
                 $charset = 'utf-8';
             }
-            // If a charset was found, convert fileName
-            if ($charset) {
-                /** @var CharsetConverter $charsetConverter */
-                $charsetConverter = GeneralUtility::makeInstance(CharsetConverter::class);
-                $fileName = $charsetConverter->conv($fileName, $charset, 'utf-8');
-            }
+            /** @var CharsetConverter $charsetConverter */
+            $charsetConverter = GeneralUtility::makeInstance(CharsetConverter::class);
+            $fileName = $charsetConverter->conv($fileName, $charset, 'utf-8');
+
             // Replace unwanted characters by underscores
             $cleanFileName = preg_replace('/[' . self::UNSAFE_FILENAME_CHARACTER_EXPRESSION . '\\xC0-\\xFF]/', '_', trim($fileName));
         }
@@ -1158,22 +1145,16 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
 
     /**
      * Returns the absolute path of the FTP remote directory or file.
-     *
-     * @param string $identifier
-     * @return array
      */
-    protected function getAbsolutePath($identifier)
+    protected function getAbsolutePath(string $identifier): string
     {
         return $this->basePath . '/' . ltrim($identifier, '/');
     }
 
     /**
      * Returns the cache identifier for a given path.
-     *
-     * @param string $identifier
-     * @return string
      */
-    protected function getNameFromIdentifier($identifier)
+    protected function getNameFromIdentifier(string $identifier): string
     {
         return trim(PathUtility::basename($identifier), '/');
     }
@@ -1217,20 +1198,20 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
      * @param int $severity
      * @return void
      */
-    protected function addFlashMessage($message, $severity = \TYPO3\CMS\Core\Type\ContextualFeedbackSeverity::ERROR)
+    protected function addFlashMessage($message, $severity = ContextualFeedbackSeverity::ERROR)
     {
         if (PHP_SAPI === 'cli') {
             return;
         }
         $flashMessage = GeneralUtility::makeInstance(
-            \TYPO3\CMS\Core\Messaging\FlashMessage::class,
+            FlashMessage::class,
             $message,
             '',
             $severity,
             true
         );
-        /** @var $defaultFlashMessageQueue \TYPO3\CMS\Core\Messaging\FlashMessageQueue */
-        $defaultFlashMessageQueue = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Messaging\FlashMessageService::class)->getMessageQueueByIdentifier();
+        /** @var FlashMessageQueue $defaultFlashMessageQueue */
+        $defaultFlashMessageQueue = GeneralUtility::makeInstance(FlashMessageService::class)->getMessageQueueByIdentifier();
         $defaultFlashMessageQueue->enqueue($flashMessage);
     }
 
@@ -1241,7 +1222,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
      */
     protected function getCharsetConversion()
     {
-        if (!isset($this->charsetConversion)) {
+        if (!$this->charsetConversion instanceof CharsetConverter) {
             if (ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isFrontend()) {
                 $this->charsetConversion = $GLOBALS['TSFE']->csConvObj;
             } elseif (is_object($GLOBALS['LANG'])) {
@@ -1249,7 +1230,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
                 $this->charsetConversion = GeneralUtility::makeInstance(CharsetConverter::class);
             } else {
                 // The object may not exist yet, so we need to create it now. Happens in the Install Tool for example.
-                $this->charsetConversion = GeneralUtility::makeInstance(\TYPO3\CMS\Core\Charset\CharsetConverter::class);
+                $this->charsetConversion = GeneralUtility::makeInstance(CharsetConverter::class);
             }
         }
 
