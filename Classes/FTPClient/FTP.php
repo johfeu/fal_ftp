@@ -30,15 +30,6 @@ namespace AdGrafik\FalFtp\FTPClient;
  *
  * This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-use AdGrafik\FalFtp\FTPClient\Parser\StrictRulesParser;
-use AdGrafik\FalFtp\FTPClient\Parser\LessStrictRulesParser;
-use AdGrafik\FalFtp\FTPClient\Parser\WindowsParser;
-use AdGrafik\FalFtp\FTPClient\Parser\NetwareParser;
-use AdGrafik\FalFtp\FTPClient\Parser\AS400Parser;
-use AdGrafik\FalFtp\FTPClient\Parser\TitanParser;
-use AdGrafik\FalFtp\FTPClient\Filter\DotsFilter;
-use AdGrafik\FalFtp\FTPClient\Filter\StringTotalFilter;
-use TYPO3\CMS\Core\Resource\Index\ExtractorRegistry;
 use AdGrafik\FalFtp\Extractor\ImageDimensionExtractor;
 use AdGrafik\FalFtp\FTPClient\Exception\ExistingResourceException;
 use AdGrafik\FalFtp\FTPClient\Exception\FileOperationErrorException;
@@ -47,6 +38,15 @@ use AdGrafik\FalFtp\FTPClient\Exception\InvalidAttributeException;
 use AdGrafik\FalFtp\FTPClient\Exception\InvalidConfigurationException;
 use AdGrafik\FalFtp\FTPClient\Exception\InvalidDirectoryException;
 use AdGrafik\FalFtp\FTPClient\Exception\ResourceDoesNotExistException;
+use AdGrafik\FalFtp\FTPClient\Filter\DotsFilter;
+use AdGrafik\FalFtp\FTPClient\Filter\StringTotalFilter;
+use AdGrafik\FalFtp\FTPClient\Parser\AS400Parser;
+use AdGrafik\FalFtp\FTPClient\Parser\LessStrictRulesParser;
+use AdGrafik\FalFtp\FTPClient\Parser\NetwareParser;
+use AdGrafik\FalFtp\FTPClient\Parser\StrictRulesParser;
+use AdGrafik\FalFtp\FTPClient\Parser\TitanParser;
+use AdGrafik\FalFtp\FTPClient\Parser\WindowsParser;
+use TYPO3\CMS\Core\Resource\Index\ExtractorRegistry;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
