@@ -148,8 +148,10 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
 
     /**
      * Additional header to send with cUrl.
+     *
+     * @var array<int, string>
      */
-    protected string $remoteServiceAdditionalHeaders;
+    protected array $remoteServiceAdditionalHeaders = [];
 
     /**
      * The base path defined in the FTP settings. Must not be the absolute path!

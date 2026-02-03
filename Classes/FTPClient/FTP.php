@@ -125,7 +125,7 @@ class FTP extends AbstractFTP
     /**
      * @var string
      */
-    protected $basePath;
+    public $basePath;
 
     /**
      * Constructor
