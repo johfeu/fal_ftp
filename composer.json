@@ -12,6 +12,9 @@
 		}
 	},
 	"config": {
+		"platform": {
+			"php": "8.2.99"
+		},
 		"sort-packages": true
 	},
 	"extra": {
