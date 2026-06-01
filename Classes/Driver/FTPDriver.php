@@ -162,13 +162,9 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
 
     protected FTP $ftpClient;
 
-    protected CharsetConverter $charsetConversion;
-
     public function __construct(array $configuration = [])
     {
         parent::__construct($configuration);
-
-        $this->charsetConversion = GeneralUtility::makeInstance(CharsetConverter::class);
 
         // The capabilities default of this driver. See CAPABILITY_* constants for possible values
         $this->capabilities = new Capabilities(
@@ -934,30 +930,20 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
      */
     public function sanitizeFileName(string $fileName, string $charset = ''): string
     {
+        $fileName = \Normalizer::normalize($fileName) ?: $fileName;
         // Handle UTF-8 characters
         if ($GLOBALS['TYPO3_CONF_VARS']['SYS']['UTF8filesystem']) {
             // Allow ".", "-", 0-9, a-z, A-Z and everything beyond U+C0 (latin capital letter a with grave)
-            $cleanFileName = preg_replace('/[' . self::UNSAFE_FILENAME_CHARACTER_EXPRESSION . ']/u', '_', trim($fileName));
+            $cleanFileName = (string)preg_replace('/[' . self::UNSAFE_FILENAME_CHARACTER_EXPRESSION . ']/u', '_', trim($fileName));
         } else {
-            // Define character set
-            if (!$charset) {
-                // Breaking #73794: Charset is now always utf-8
-                $charset = 'utf-8';
-            }
-            /** @var CharsetConverter $charsetConverter */
-            $charsetConverter = GeneralUtility::makeInstance(CharsetConverter::class);
-            $fileName = $charsetConverter->conv($fileName, $charset, 'utf-8');
-
-            // Replace unwanted characters by underscores
-            $cleanFileName = preg_replace('/[' . self::UNSAFE_FILENAME_CHARACTER_EXPRESSION . '\\xC0-\\xFF]/', '_', trim($fileName));
+            $fileName = GeneralUtility::makeInstance(CharsetConverter::class)->utf8_char_mapping($fileName);
+            // Replace unwanted characters with underscores
+            $cleanFileName = (string)preg_replace('/[' . self::UNSAFE_FILENAME_CHARACTER_EXPRESSION . '\\xC0-\\xFF]/', '_', trim($fileName));
         }
         // Strip trailing dots and return
-        $cleanFileName = preg_replace('/\\.*$/', '', (string)$cleanFileName);
-        if (!$cleanFileName) {
-            throw new InvalidFileNameException(
-                'File name ' . $cleanFileName . ' is invalid.',
-                1320288991
-            );
+        $cleanFileName = rtrim($cleanFileName, '.');
+        if ($cleanFileName === '') {
+            throw new InvalidFileNameException('File name ' . $fileName . ' is invalid.', 1320288991);
         }
 
         return $cleanFileName;
