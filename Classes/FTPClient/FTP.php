@@ -39,17 +39,9 @@ use AdGrafik\FalFtp\FTPClient\Exception\InvalidAttributeException;
 use AdGrafik\FalFtp\FTPClient\Exception\InvalidConfigurationException;
 use AdGrafik\FalFtp\FTPClient\Exception\InvalidDirectoryException;
 use AdGrafik\FalFtp\FTPClient\Exception\ResourceDoesNotExistException;
-use AdGrafik\FalFtp\FTPClient\Filter\DotsFilter;
-use AdGrafik\FalFtp\FTPClient\Filter\StringTotalFilter;
-use AdGrafik\FalFtp\FTPClient\Parser\AS400Parser;
-use AdGrafik\FalFtp\FTPClient\Parser\LessStrictRulesParser;
-use AdGrafik\FalFtp\FTPClient\Parser\NetwareParser;
-use AdGrafik\FalFtp\FTPClient\Parser\StrictRulesParser;
-use AdGrafik\FalFtp\FTPClient\Parser\TitanParser;
-use AdGrafik\FalFtp\FTPClient\Parser\WindowsParser;
 use FTP\Connection;
+use FTP\Connection as FTPConnection;
 use TYPO3\CMS\Core\Resource\Index\ExtractorRegistry;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
 
 /**
  * FTP client.
@@ -57,7 +49,7 @@ use TYPO3\CMS\Core\Utility\GeneralUtility;
  * @author Arno Dudek <webmaster@adgrafik.at>
  * @author Jonas Temmen <jonas.temmen@artundweise.de>
  */
-class FTP extends AbstractFTP
+class FTP extends AbstractFTP implements FTPInterface
 {
     /**
      * @var bool
@@ -100,26 +92,21 @@ class FTP extends AbstractFTP
 
     public string $basePath = '/';
 
+    protected FTPConnection|null $connection = null;
+
+    public function __construct(
+        private readonly ParserRegistry $parserRegistry,
+        private readonly FilterRegistry $filterRegistry,
+        private readonly ExtractorRegistry $extractorRegistry,
+    ) {
+        $this->extractorRegistry->registerExtractionService(ImageDimensionExtractor::class);
+    }
+
     /**
-     * Constructor.
-     *
      * @throws InvalidConfigurationException
      */
-    public function __construct(array $settings)
+    public function initialize(array $settings): void
     {
-        $this->parserRegistry = GeneralUtility::makeInstance(ParserRegistry::class);
-        if ($this->parserRegistry->hasParser() === false) {
-            $this->parserRegistry->registerParser([StrictRulesParser::class, LessStrictRulesParser::class, WindowsParser::class, NetwareParser::class, AS400Parser::class, TitanParser::class]);
-        }
-
-        $this->filterRegistry = GeneralUtility::makeInstance(FilterRegistry::class);
-        if ($this->filterRegistry->hasFilter() === false) {
-            $this->filterRegistry->registerFilter([DotsFilter::class, StringTotalFilter::class]);
-        }
-
-        $extractorRegistry = GeneralUtility::makeInstance(ExtractorRegistry::class);
-        $extractorRegistry->registerExtractionService(ImageDimensionExtractor::class);
-
         $this->host = urldecode(trim((string)$settings['host'], '/') ?: '');
         $this->port = (int)$settings['port'] ?: 21;
         $this->username = $settings['username'] ?? '';
@@ -141,21 +128,21 @@ class FTP extends AbstractFTP
      *
      * @throws InvalidConfigurationException
      */
-    public function connect(string $username = '', string $password = ''): static
+    public function connect(string $username = '', string $password = ''): Connection
     {
-        if ($this->isConnected) {
-            return $this;
+        if ($this->connection instanceof Connection) {
+            return $this->connection;
         }
 
-        $stream = $this->ssl
+        $connection = $this->ssl
             ? @ftp_ssl_connect($this->host, $this->port, $this->timeout)
             : @ftp_connect($this->host, $this->port, $this->timeout);
 
-        if ($stream instanceof Connection === false) {
+        if ($connection instanceof Connection === false) {
             throw new InvalidConfigurationException('Couldn\'t connect to host "' . $this->host . ':' . $this->port . '".', 1408550516);
         }
 
-        $this->stream = $stream;
+        $this->connection = $connection;
 
         $this->isConnected = true;
 
@@ -167,7 +154,7 @@ class FTP extends AbstractFTP
             $this->login($this->username, $this->password)->setPassiveMode($this->passiveMode);
         }
 
-        return $this;
+        return $this->connection;
     }
 
     /**
@@ -177,7 +164,7 @@ class FTP extends AbstractFTP
      */
     public function disconnect(): static
     {
-        $result = @ftp_close($this->getStream());
+        $result = @ftp_close($this->connect());
         if ($result === false) {
             throw new InvalidConfigurationException('Closeing connection faild.', 1408550517);
         }
@@ -194,7 +181,7 @@ class FTP extends AbstractFTP
     {
         $username = $username ? urldecode($username) : 'anonymous';
 
-        $result = @ftp_login($this->getStream(), $username, $password);
+        $result = @ftp_login($this->connect(), $username, $password);
         if ($result === false) {
             throw new InvalidConfigurationException('Couldn\'t connect with username "' . $this->username . '".', 1408550518);
         }
@@ -209,7 +196,7 @@ class FTP extends AbstractFTP
      */
     public function setPassiveMode(bool $passiveMode): static
     {
-        $result = @ftp_pasv($this->getStream(), $this->passiveMode);
+        $result = @ftp_pasv($this->connect(), $this->passiveMode);
         if ($result === false) {
             throw new FTPConnectionException('Setting passive mode faild.', 1408550519);
         }
@@ -241,7 +228,7 @@ class FTP extends AbstractFTP
      */
     public function getModificationTime(string $resource): int
     {
-        $result = @ftp_mdtm($this->getStream(), $this->getAbsolutePath($resource));
+        $result = @ftp_mdtm($this->connect(), $this->getAbsolutePath($resource));
         if ($result === -1) {
             throw new FTPConnectionException('Getting modification time of resource "' . $resource . '" failed.', 1408550520);
         }
@@ -264,7 +251,7 @@ class FTP extends AbstractFTP
             throw new ExistingResourceException('Resource "' . $sourceResource . '" already exists.', 1408550521);
         }
 
-        $result = @ftp_rename($this->getStream(), $this->getAbsolutePath($sourceResource), $this->getAbsolutePath($targetResource));
+        $result = @ftp_rename($this->connect(), $this->getAbsolutePath($sourceResource), $this->getAbsolutePath($targetResource));
         if ($result === false) {
             throw new FTPConnectionException('Renaming resource "' . $sourceResource . '" to "' . $targetResource . '" failed.', 1408550522);
         }
@@ -279,7 +266,7 @@ class FTP extends AbstractFTP
      */
     public function directoryExists(string $directory): bool
     {
-        $result = @ftp_chdir($this->getStream(), $this->getAbsolutePath($directory));
+        $result = @ftp_chdir($this->connect(), $this->getAbsolutePath($directory));
 
         return $result;
     }
@@ -293,7 +280,7 @@ class FTP extends AbstractFTP
      */
     public function changeDirectory(string $directory): static
     {
-        $result = @ftp_chdir($this->getStream(), $this->getAbsolutePath($directory));
+        $result = @ftp_chdir($this->connect(), $this->getAbsolutePath($directory));
         if ($result === false) {
             throw new InvalidDirectoryException('Changing directory "' . $directory . '" faild.', 1408550523);
         }
@@ -310,7 +297,7 @@ class FTP extends AbstractFTP
      */
     public function changeToParentDirectory(string $directory): static
     {
-        $result = @ftp_cdup($this->getStream());
+        $result = @ftp_cdup($this->connect());
         if ($result === false) {
             throw new InvalidDirectoryException('Changing to parent directory from "' . $directory . '" faild.', 1408550524);
         }
@@ -327,7 +314,7 @@ class FTP extends AbstractFTP
      */
     public function createDirectory(string $directory): static
     {
-        $result = @ftp_mkdir($this->getStream(), $this->getAbsolutePath($directory));
+        $result = @ftp_mkdir($this->connect(), $this->getAbsolutePath($directory));
         if ($result === false) {
             throw new FTPConnectionException('Creating directory "' . $directory . '" faild.', 1408550525);
         }
@@ -413,7 +400,7 @@ class FTP extends AbstractFTP
         $parentDirectory = $this->getParentDirectory($directory);
         $this->changeDirectory($parentDirectory);
 
-        $result = @ftp_rmdir($this->getStream(), $this->getResourceName($directory));
+        $result = @ftp_rmdir($this->connect(), $this->getResourceName($directory));
         if ($result === false) {
             throw new FTPConnectionException('Deleting directory ' . $directory . ' failed.', 1408550527);
         }
@@ -428,7 +415,7 @@ class FTP extends AbstractFTP
      */
     public function fileExists(string $file): bool
     {
-        $result = @ftp_size($this->getStream(), $this->getAbsolutePath($file));
+        $result = @ftp_size($this->connect(), $this->getAbsolutePath($file));
 
         return $result !== -1;
     }
@@ -442,7 +429,7 @@ class FTP extends AbstractFTP
      */
     public function getFileSize(string $file): int
     {
-        $result = @ftp_size($this->getStream(), $this->getAbsolutePath($file));
+        $result = @ftp_size($this->connect(), $this->getAbsolutePath($file));
         if ($result === -1) {
             throw new FileOperationErrorException('Fetching file size of "' . $file . '" faild.', 1408550528);
         }
@@ -472,9 +459,9 @@ class FTP extends AbstractFTP
 
         if (is_resource($sourceFileOrResource)) {
             rewind($sourceFileOrResource);
-            $result = @ftp_fput($this->getStream(), $this->getAbsolutePath($targetFile), $sourceFileOrResource, $this->transferMode);
+            $result = @ftp_fput($this->connect(), $this->getAbsolutePath($targetFile), $sourceFileOrResource, $this->transferMode);
         } else {
-            $result = @ftp_put($this->getStream(), $this->getAbsolutePath($targetFile), $sourceFileOrResource, $this->transferMode);
+            $result = @ftp_put($this->connect(), $this->getAbsolutePath($targetFile), $sourceFileOrResource, $this->transferMode);
         }
 
         if ($result === false) {
@@ -500,10 +487,10 @@ class FTP extends AbstractFTP
         }
 
         if (is_resource($targetFileOrResource)) {
-            $result = @ftp_fget($this->getStream(), $targetFileOrResource, $this->getAbsolutePath($sourceFile), $this->transferMode);
+            $result = @ftp_fget($this->connect(), $targetFileOrResource, $this->getAbsolutePath($sourceFile), $this->transferMode);
             rewind($targetFileOrResource);
         } else {
-            $result = @ftp_get($this->getStream(), $targetFileOrResource, $this->getAbsolutePath($sourceFile), $this->transferMode);
+            $result = @ftp_get($this->connect(), $targetFileOrResource, $this->getAbsolutePath($sourceFile), $this->transferMode);
         }
 
         if ($result === false) {
@@ -642,7 +629,7 @@ class FTP extends AbstractFTP
      */
     public function deleteFile(string $file): static
     {
-        $result = @ftp_delete($this->getStream(), $this->getAbsolutePath($file));
+        $result = @ftp_delete($this->connect(), $this->getAbsolutePath($file));
         if ($result === false) {
             throw new FTPConnectionException('Deleting file "' . $file . '" faild.', 1408550537);
         }
@@ -665,13 +652,13 @@ class FTP extends AbstractFTP
         $this->changeDirectory($directory);
 
         // The -a option is used to show the hidden files as well on some FTP servers.
-        $result = @ftp_rawlist($this->getStream(), '-a ');
+        $result = @ftp_rawlist($this->connect(), '-a ');
         if ($result === false) {
             throw new FTPConnectionException('Fetching directory "' . $directory . '" faild.', 1408550538);
         }
         // Some servers do not return anything when using -a, so in that case try again without the -a option.
         if (count($result) <= 1) {
-            $result = @ftp_rawlist($this->getStream(), '');
+            $result = @ftp_rawlist($this->connect(), '');
             if ($result === false) {
                 throw new FTPConnectionException('Fetching directory "' . $directory . '" faild.', 1408550539);
             }
@@ -682,10 +669,9 @@ class FTP extends AbstractFTP
             $resourceInfo = ['path' => $directory, 'isDirectory' => null, 'name' => null, 'size' => null, 'owner' => null, 'group' => null, 'mode' => null, 'mimetype' => null, 'mtime' => 0];
 
             $parseResult = false;
-            foreach ($this->parserRegistry->getParser() as $parserClass) {
-                $parserObject = GeneralUtility::makeInstance($parserClass);
-                if ($parseResult = $parserObject->parse($resourceInfo, $resource, $this)) {
-                    $resourceInfo['parseClass'] = $parserClass;
+            foreach ($this->parserRegistry->parsers as $parser) {
+                if ($parseResult = $parser->parse($resourceInfo, $resource, $this)) {
+                    $resourceInfo['parseClass'] = $parser;
                     break;
                 }
             }
@@ -695,9 +681,8 @@ class FTP extends AbstractFTP
                 throw new InvalidConfigurationException('FTP format not supported.', 1408550540);
             }
 
-            foreach ($this->filterRegistry->getFilter() as $filterClass) {
-                $filterObject = GeneralUtility::makeInstance($filterClass);
-                if ($filterObject->filter($resourceInfo, $resource, $this)) {
+            foreach ($this->filterRegistry->filters as $filter) {
+                if ($filter->filter($resourceInfo, $resource, $this)) {
                     continue 2;
                 }
             }
@@ -722,5 +707,10 @@ class FTP extends AbstractFTP
         }
 
         return $resourceList;
+    }
+
+    protected function getBasePath(): string
+    {
+        return $this->basePath;
     }
 }

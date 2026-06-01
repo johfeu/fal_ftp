@@ -105,6 +105,11 @@ use AdGrafik\FalFtp\FTPClient\FTPInterface;
 
 class StrictRulesParser implements ParserInterface
 {
+    public static function getPriority(): int
+    {
+        return 100;
+    }
+
     /**
      * Parse the FTP result line.
      */

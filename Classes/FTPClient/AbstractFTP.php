@@ -28,7 +28,6 @@ namespace AdGrafik\FalFtp\FTPClient;
  * This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use FTP\Connection as FTPConnection;
 use TYPO3\CMS\Core\Utility\PathUtility;
 
 /**
@@ -37,40 +36,9 @@ use TYPO3\CMS\Core\Utility\PathUtility;
  * @author Arno Dudek <webmaster@adgrafik.at>
  * @author Nicole Cordes <typo3@cordes.co>
  */
-abstract class AbstractFTP implements FTPInterface
+abstract class AbstractFTP
 {
-    public string $basePath = '/';
-    protected FTPConnection $stream;
-
-    protected ParserRegistry $parserRegistry;
-
-    protected FilterRegistry $filterRegistry;
-
-    /**
-     * Get parserRegistry.
-     */
-    public function getParserRegistry(): ParserRegistry
-    {
-        return $this->parserRegistry;
-    }
-
-    /**
-     * Get filterRegistry.
-     */
-    public function getFilterRegistry(): FilterRegistry
-    {
-        return $this->filterRegistry;
-    }
-
-    /**
-     * Get stream.
-     */
-    public function getStream(): FTPConnection
-    {
-        $this->connect();
-
-        return $this->stream;
-    }
+    abstract protected function getBasePath(): string;
 
     /**
      * Returns the mime type of given file extension.
@@ -209,7 +177,7 @@ abstract class AbstractFTP implements FTPInterface
      */
     protected function getAbsolutePath(string $relativeDirectoryOrFilePath): string
     {
-        return $this->basePath . $relativeDirectoryOrFilePath;
+        return $this->getBasePath() . $relativeDirectoryOrFilePath;
     }
 
     /**

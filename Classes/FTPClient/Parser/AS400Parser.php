@@ -105,6 +105,11 @@ use AdGrafik\FalFtp\FTPClient\FTPInterface;
 
 class AS400Parser implements ParserInterface
 {
+    public static function getPriority(): int
+    {
+        return 60;
+    }
+
     /**
      * Parse the FTP result line.
      */

@@ -35,6 +35,11 @@ use AdGrafik\FalFtp\FTPClient\FTPInterface;
 
 class StringTotalFilter implements FilterInterface
 {
+    public static function getPriority(): int
+    {
+        return 50;
+    }
+
     /**
      * Filter the given resource info.
      */

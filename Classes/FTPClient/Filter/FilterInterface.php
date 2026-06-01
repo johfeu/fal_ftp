@@ -32,6 +32,8 @@ use AdGrafik\FalFtp\FTPClient\FTPInterface;
 
 interface FilterInterface
 {
+    public static function getPriority(): int;
+
     /**
      * Filter the given resource info.
      */

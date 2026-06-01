@@ -162,11 +162,13 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
 
     protected FTP $ftpClient;
 
-    protected CharsetConverter|null $charsetConversion = null;
+    protected CharsetConverter $charsetConversion;
 
     public function __construct(array $configuration = [])
     {
         parent::__construct($configuration);
+
+        $this->charsetConversion = GeneralUtility::makeInstance(CharsetConverter::class);
 
         // The capabilities default of this driver. See CAPABILITY_* constants for possible values
         $this->capabilities = new Capabilities(
@@ -238,7 +240,9 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
         }
 
         // Connect to FTP server.
-        $this->ftpClient = GeneralUtility::makeInstance(FTP::class, $this->configuration);
+        $this->ftpClient = GeneralUtility::makeInstance(FTP::class);
+        $this->ftpClient->initialize($this->configuration);
+
         $registryObject = GeneralUtility::makeInstance(Registry::class);
         $storageIdentifier = 'sys_file_storage-' . $this->storageUid . '-' . sha1(serialize($this->configuration)) . '-fal_ftp-configuration-check';
         $configurationChecked = $registryObject->get('fal_ftp', $storageIdentifier, 0);
@@ -1193,26 +1197,6 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
         /** @var FlashMessageQueue $defaultFlashMessageQueue */
         $defaultFlashMessageQueue = GeneralUtility::makeInstance(FlashMessageService::class)->getMessageQueueByIdentifier();
         $defaultFlashMessageQueue->enqueue($flashMessage);
-    }
-
-    /**
-     * Gets the charset conversion object.
-     */
-    protected function getCharsetConversion(): CharsetConverter
-    {
-        if (!$this->charsetConversion instanceof CharsetConverter) {
-            if (ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isFrontend()) {
-                $this->charsetConversion = $GLOBALS['TSFE']->csConvObj;
-            } elseif (is_object($GLOBALS['LANG'])) {
-                // BE assumed:
-                $this->charsetConversion = GeneralUtility::makeInstance(CharsetConverter::class);
-            } else {
-                // The object may not exist yet, so we need to create it now. Happens in the Install Tool for example.
-                $this->charsetConversion = GeneralUtility::makeInstance(CharsetConverter::class);
-            }
-        }
-
-        return $this->charsetConversion;
     }
 
     /**

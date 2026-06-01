@@ -105,6 +105,11 @@ use AdGrafik\FalFtp\FTPClient\FTPInterface;
 
 class TitanParser implements ParserInterface
 {
+    public static function getPriority(): int
+    {
+        return 50;
+    }
+
     /**
      * Parse the FTP result line.
      */

@@ -9,6 +9,7 @@ use AdGrafik\FalFtp\FTPClient\Exception\InvalidAttributeException;
 use AdGrafik\FalFtp\FTPClient\Exception\InvalidConfigurationException;
 use AdGrafik\FalFtp\FTPClient\Exception\InvalidDirectoryException;
 use AdGrafik\FalFtp\FTPClient\Exception\ResourceDoesNotExistException;
+use FTP\Connection;
 
 /***************************************************************
  * Copyright notice
@@ -37,17 +38,14 @@ use AdGrafik\FalFtp\FTPClient\Exception\ResourceDoesNotExistException;
  ***************************************************************/
 interface FTPInterface
 {
-    /**
-     * Constructor.
-     */
-    public function __construct(array $settings);
+    public function initialize(array $settings): void;
 
     /**
      * Connect to the FTP server.
      *
      * @throws InvalidConfigurationException
      */
-    public function connect(string $username = '', string $password = ''): FTPInterface;
+    public function connect(string $username = '', string $password = ''): Connection;
 
     /**
      * Close the FTP connection.

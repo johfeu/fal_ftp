@@ -31,67 +31,18 @@ namespace AdGrafik\FalFtp\FTPClient;
  *
  * This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
-use AdGrafik\FalFtp\FTPClient\Exception\InvalidConfigurationException;
 use AdGrafik\FalFtp\FTPClient\Parser\ParserInterface;
 use TYPO3\CMS\Core\SingletonInterface;
 
-class ParserRegistry implements SingletonInterface
+readonly class ParserRegistry implements SingletonInterface
 {
     /**
-     * @var class-string<ParserInterface>[]
+     * @var ParserInterface[]
      */
-    protected array|null $parser = null;
+    public iterable $parsers;
 
-    /**
-     * Initialize object.
-     */
-    public function initialize(): void
+    public function __construct(iterable $parsers)
     {
-        $this->parser = [];
-    }
-
-    /**
-     * Register parser classes.
-     *
-     * @throws InvalidConfigurationException
-     */
-    public function registerParser(mixed $parsers): self
-    {
-        if (is_array($parsers) === false) {
-            $parsers = [$parsers];
-        }
-        foreach ($parsers as &$parser) {
-            $this->parser[] = $parser;
-        }
-
-        return $this;
-    }
-
-    /**
-     * Has parser.
-     */
-    public function hasParser(): bool
-    {
-        return $this->parser !== null;
-    }
-
-    /**
-     * Set parser.
-     */
-    public function setParser(array $parser): self
-    {
-        $this->parser = $parser;
-
-        return $this;
-    }
-
-    /**
-     * Get parser.
-     *
-     * @return class-string<ParserInterface>[]
-     */
-    public function getParser(): array
-    {
-        return $this->parser ?? [];
+        $this->parsers = iterator_to_array($parsers);
     }
 }

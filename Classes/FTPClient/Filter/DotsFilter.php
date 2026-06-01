@@ -35,6 +35,11 @@ use AdGrafik\FalFtp\FTPClient\FTPInterface;
 
 class DotsFilter implements FilterInterface
 {
+    public static function getPriority(): int
+    {
+        return 100;
+    }
+
     /**
      * Filter the given resource info.
      */

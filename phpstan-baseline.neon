@@ -13,12 +13,6 @@ parameters:
 			path: Classes/Driver/FTPDriver.php
 
 		-
-			message: '#^Method AdGrafik\\FalFtp\\Driver\\FTPDriver\:\:getCharsetConversion\(\) should return TYPO3\\CMS\\Core\\Charset\\CharsetConverter but returns TYPO3\\CMS\\Core\\Charset\\CharsetConverter\|null\.$#'
-			identifier: return.type
-			count: 1
-			path: Classes/Driver/FTPDriver.php
-
-		-
 			message: '#^Method AdGrafik\\FalFtp\\Driver\\FTPDriver\:\:getFileInfoByIdentifier\(\) should return array\<string, mixed\> but returns list\<mixed\>\.$#'
 			identifier: return.type
 			count: 1

@@ -32,6 +32,8 @@ use AdGrafik\FalFtp\FTPClient\FTPInterface;
 
 interface ParserInterface
 {
+    public static function getPriority(): int;
+
     /**
      * Parse the FTP result line.
      */
