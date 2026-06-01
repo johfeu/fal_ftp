@@ -1,8 +1,8 @@
 <?php
 
-if (!defined('TYPO3')) {
-    exit('Access denied.');
-}
+declare(strict_types=1);
+
+defined('TYPO3') or exit('Access to file "' . basename(__FILE__) . '" denied.');
 
 $registerDriver = TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(TYPO3\CMS\Core\Resource\Driver\DriverRegistry::class);
 $registerDriver->registerDriverClass(
