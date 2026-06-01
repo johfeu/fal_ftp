@@ -962,19 +962,13 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
     /**
      * Generic wrapper for extracting a list of items from a path.
      *
-     * @param string $folderIdentifier
      * @param int $start The position to start the listing; if not set, start from the beginning
      * @param int $numberOfItems The number of items to list; if set to zero, all items are returned
-     * @param array[] $filterMethods The filter methods used to filter the directory items
-     * @param bool $includeFiles
-     * @param bool $includeDirs
-     * @param bool $recursive
-     *
-     * @return array
+     * @param array $filterMethods The filter methods used to filter the directory items
      *
      * @throws \InvalidArgumentException
      */
-    protected function getDirectoryItemList($folderIdentifier, $start = 0, $numberOfItems = 0, array $filterMethods = [], $includeFiles = true, $includeDirs = true, $recursive = false)
+    protected function getDirectoryItemList(string $folderIdentifier, int $start = 0, int $numberOfItems = 0, array $filterMethods = [], bool $includeFiles = true, bool $includeDirs = true, bool $recursive = false): array
     {
         if ($folderIdentifier === '') {
             throw new \InvalidArgumentException('Folder identifier cannot be empty', 1314349667);
@@ -1032,16 +1026,11 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
      * Applies a set of filter methods to a file name to find out if it should be used or not. This is e.g. used by
      * directory listings.
      *
-     * @param array[] $filterMethods The filter methods to use
-     * @param string $itemName
-     * @param string $itemIdentifier
-     * @param string $parentIdentifier
-     *
-     * @return bool
+     * @param array $filterMethods The filter methods to use
      *
      * @throws \RuntimeException
      */
-    protected function applyFilterMethodsToDirectoryItem(array $filterMethods, $itemName, $itemIdentifier, $parentIdentifier)
+    protected function applyFilterMethodsToDirectoryItem(array $filterMethods, string $itemName, string $itemIdentifier, string $parentIdentifier): bool
     {
         foreach ($filterMethods as $filter) {
             if (is_array($filter)) {
@@ -1079,11 +1068,8 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
 
     /**
      * Callback function of line parsing. Adds additional file information.
-     *
-     * @param array $resourceInfo
-     * @param FTP $parentObject
      */
-    public function fetchDirectoryList_itemCallback($resourceInfo, $parentObject): void
+    public function fetchDirectoryList_itemCallback(array $resourceInfo, FTP $parentObject): void
     {
         if ($resourceInfo['isDirectory']) {
             $identifier = $this->canonicalizeAndCheckFolderIdentifier($resourceInfo['path'] . $resourceInfo['name']);
@@ -1114,15 +1100,9 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
      * Creates a map of old and new file/folder identifiers after renaming or
      * moving a folder. The old identifier is used as the key, the new one as the value.
      *
-     * @param string $oldIdentifier
-     * @param string $newIdentifier
-     * @param array $identifierMap
-     *
-     * @return array
-     *
      * @throws \RuntimeException
      */
-    protected function createIdentifierMap($oldIdentifier, $newIdentifier, &$identifierMap = [])
+    protected function createIdentifierMap(string $oldIdentifier, string $newIdentifier, array &$identifierMap = []): array
     {
         if ($this->ftpClient->directoryExists($oldIdentifier) === false) {
             $identifierMap[$oldIdentifier] = $newIdentifier;
@@ -1167,14 +1147,9 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
     /**
      * Communication function for the remote service.
      *
-     * @param array $request
-     * @param bool $createOnFail
-     *
-     * @return array
-     *
      * @throws \RuntimeException
      */
-    protected function sendRemoteService($request = [], $createOnFail = true)
+    protected function sendRemoteService(array $request = [], bool $createOnFail = true): array
     {
         $request['encryptionKey'] = $this->remoteServiceEncryptionKey;
         $requestUrl = $this->getPublicUrl($this->remoteServiceFileName) . '?' . http_build_query($request);
@@ -1202,10 +1177,8 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
 
     /**
      * Add flash message to message queue.
-     *
-     * @param string $message
      */
-    protected function addFlashMessage($message, ContextualFeedbackSeverity $severity = ContextualFeedbackSeverity::ERROR): void
+    protected function addFlashMessage(string $message, ContextualFeedbackSeverity $severity = ContextualFeedbackSeverity::ERROR): void
     {
         if (PHP_SAPI === 'cli') {
             return;
@@ -1224,10 +1197,8 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
 
     /**
      * Gets the charset conversion object.
-     *
-     * @return CharsetConverter
      */
-    protected function getCharsetConversion()
+    protected function getCharsetConversion(): CharsetConverter
     {
         if (!$this->charsetConversion instanceof CharsetConverter) {
             if (ApplicationType::fromRequest($GLOBALS['TYPO3_REQUEST'])->isFrontend()) {

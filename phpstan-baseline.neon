@@ -83,3 +83,9 @@ parameters:
 			identifier: argument.type
 			count: 1
 			path: Classes/FTPClient/FTP.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between ''\-''\|''d''\|''l'' and false will always evaluate to false\.$#'
+			identifier: identical.alwaysFalse
+			count: 1
+			path: Classes/FTPClient/Parser/TitanParser.php

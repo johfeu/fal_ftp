@@ -37,13 +37,8 @@ class StringTotalFilter implements FilterInterface
 {
     /**
      * Filter the given resource info.
-     *
-     * @param array $resourceInfo
-     * @param string $resource
-     *
-     * @return bool
      */
-    public function filter($resourceInfo, $resource, FTPInterface $parentObject)
+    public function filter(array $resourceInfo, string $resource, FTPInterface $parentObject): bool
     {
         // Exclude the total line that some servers return
         return str_starts_with($resource, 'total');

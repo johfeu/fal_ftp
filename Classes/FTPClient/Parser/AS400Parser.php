@@ -107,13 +107,8 @@ class AS400Parser implements ParserInterface
 {
     /**
      * Parse the FTP result line.
-     *
-     * @param array &$resourceInfo
-     * @param string $resource
-     *
-     * @return bool
      */
-    public function parse(&$resourceInfo, $resource, FTPInterface $parentObject)
+    public function parse(array &$resourceInfo, string $resource, FTPInterface $parentObject): bool
     {
         //                 owner               size        date            time         type                      filename
         //		Original regexp: '/([a-zA-Z0-9_-]+)[ ]+([0-9]+)[ ]+([0-9\\/-]+)[ ]+([0-9:]+)[ ]+([a-zA-Z0-9_ -\*]+)[ \\/]+([^\\/]+)/'

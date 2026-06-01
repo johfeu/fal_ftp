@@ -34,11 +34,6 @@ interface ParserInterface
 {
     /**
      * Parse the FTP result line.
-     *
-     * @param array &$resourceInfo
-     * @param string $resource
-     *
-     * @return bool
      */
-    public function parse(&$resourceInfo, $resource, FTPInterface $parentObject);
+    public function parse(array &$resourceInfo, string $resource, FTPInterface $parentObject): bool;
 }

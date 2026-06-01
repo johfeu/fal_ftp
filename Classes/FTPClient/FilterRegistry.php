@@ -53,11 +53,9 @@ class FilterRegistry implements SingletonInterface
     /**
      * Register filter classes.
      *
-     * @return FilterRegistry
-     *
      * @throws InvalidConfigurationException
      */
-    public function registerFilter(mixed $filters)
+    public function registerFilter(mixed $filters): self
     {
         if (is_array($filters) === false) {
             $filters = [$filters];
@@ -71,20 +69,16 @@ class FilterRegistry implements SingletonInterface
 
     /**
      * Has filter.
-     *
-     * @return bool
      */
-    public function hasFilter()
+    public function hasFilter(): bool
     {
         return $this->filter !== null;
     }
 
     /**
      * Set filter.
-     *
-     * @return FilterRegistry
      */
-    public function setFilter(array $filter)
+    public function setFilter(array $filter): self
     {
         $this->filter = $filter;
 
@@ -96,7 +90,7 @@ class FilterRegistry implements SingletonInterface
      *
      * @return class-string<FilterInterface>[]
      */
-    public function getFilter()
+    public function getFilter(): array
     {
         return $this->filter ?? [];
     }

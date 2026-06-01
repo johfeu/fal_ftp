@@ -34,11 +34,6 @@ interface FilterInterface
 {
     /**
      * Filter the given resource info.
-     *
-     * @param array $resourceInfo
-     * @param string $resource
-     *
-     * @return bool
      */
-    public function filter($resourceInfo, $resource, FTPInterface $parentObject);
+    public function filter(array $resourceInfo, string $resource, FTPInterface $parentObject): bool;
 }

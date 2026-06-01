@@ -79,45 +79,21 @@ class FTP extends AbstractFTP
      */
     public const TRANSFER_BINARY = FTP_BINARY;
 
-    /**
-     * @var bool
-     */
-    protected $isConnected = false;
+    protected bool $isConnected = false;
 
-    /**
-     * @var string
-     */
-    protected $host;
+    protected string $host;
 
-    /**
-     * @var int
-     */
-    protected $port;
+    protected int $port;
 
-    /**
-     * @var string
-     */
-    protected $username;
+    protected string $username;
 
-    /**
-     * @var string
-     */
-    protected $password;
+    protected string $password;
 
-    /**
-     * @var bool
-     */
-    protected $ssl;
+    protected bool $ssl;
 
-    /**
-     * @var int
-     */
-    protected $timeout;
+    protected int $timeout;
 
-    /**
-     * @var bool
-     */
-    protected $passiveMode;
+    protected bool $passiveMode;
 
     /** @var int<1,2> */
     protected int $transferMode;
@@ -146,8 +122,8 @@ class FTP extends AbstractFTP
 
         $this->host = urldecode(trim((string)$settings['host'], '/') ?: '');
         $this->port = (int)$settings['port'] ?: 21;
-        $this->username = $settings['username'];
-        $this->password = $settings['password'];
+        $this->username = $settings['username'] ?? '';
+        $this->password = $settings['password'] ?? '';
         $this->ssl = (bool)$settings['ssl'];
         $this->timeout = (int)$settings['timeout'] ?: 90;
         $this->passiveMode = isset($settings['passiveMode']) ? (bool)$settings['passiveMode'] : self::MODE_PASSIV;
@@ -163,12 +139,9 @@ class FTP extends AbstractFTP
     /**
      * Connect to the FTP server.
      *
-     * @param string $username
-     * @param string $password
-     *
      * @throws InvalidConfigurationException
      */
-    public function connect($username = '', $password = ''): static
+    public function connect(string $username = '', string $password = ''): static
     {
         if ($this->isConnected) {
             return $this;
@@ -215,12 +188,9 @@ class FTP extends AbstractFTP
     /**
      * Logs in to the FTP connection.
      *
-     * @param string $username
-     * @param string $password
-     *
      * @throws InvalidConfigurationException
      */
-    public function login($username = '', $password = ''): static
+    public function login(string $username = '', string $password = ''): static
     {
         $username = $username ? urldecode($username) : 'anonymous';
 
@@ -235,11 +205,9 @@ class FTP extends AbstractFTP
     /**
      * Turns passive mode on or off.
      *
-     * @param bool $passiveMode
-     *
      * @throws FTPConnectionException thrown at FTP error
      */
-    public function setPassiveMode($passiveMode): static
+    public function setPassiveMode(bool $passiveMode): static
     {
         $result = @ftp_pasv($this->getStream(), $this->passiveMode);
         if ($result === false) {
@@ -254,10 +222,8 @@ class FTP extends AbstractFTP
      * Returns TRUE if given directory or file exists.
      *
      * @param string $resource remote directory or file, relative path from basePath
-     *
-     * @return bool
      */
-    public function resourceExists($resource)
+    public function resourceExists(string $resource): bool
     {
         if ($this->directoryExists($resource) === false) {
             return $this->fileExists($resource);
@@ -271,11 +237,9 @@ class FTP extends AbstractFTP
      *
      * @param string $resource remote directory or file, relative path from basePath
      *
-     * @return int
-     *
      * @throws FTPConnectionException thrown at FTP error
      */
-    public function getModificationTime($resource)
+    public function getModificationTime(string $resource): int
     {
         $result = @ftp_mdtm($this->getStream(), $this->getAbsolutePath($resource));
         if ($result === -1) {
@@ -290,12 +254,11 @@ class FTP extends AbstractFTP
      *
      * @param string $sourceResource source remote directory or file, relative path from basePath
      * @param string $targetResource target remote directory or file, relative path from basePath
-     * @param bool $overwrite
      *
      * @throws ExistingResourceException
      * @throws FTPConnectionException thrown at FTP error
      */
-    public function renameResource($sourceResource, $targetResource, $overwrite = false): static
+    public function renameResource(string $sourceResource, string $targetResource, bool $overwrite = false): static
     {
         if ($overwrite === false && $this->resourceExists($targetResource)) {
             throw new ExistingResourceException('Resource "' . $sourceResource . '" already exists.', 1408550521);
@@ -313,10 +276,8 @@ class FTP extends AbstractFTP
      * Returns TRUE if given directory exists.
      *
      * @param string $directory remote directory, relative path from basePath
-     *
-     * @return bool
      */
-    public function directoryExists($directory)
+    public function directoryExists(string $directory): bool
     {
         $result = @ftp_chdir($this->getStream(), $this->getAbsolutePath($directory));
 
@@ -330,7 +291,7 @@ class FTP extends AbstractFTP
      *
      * @throws InvalidDirectoryException
      */
-    public function changeDirectory($directory): static
+    public function changeDirectory(string $directory): static
     {
         $result = @ftp_chdir($this->getStream(), $this->getAbsolutePath($directory));
         if ($result === false) {
@@ -347,7 +308,7 @@ class FTP extends AbstractFTP
      *
      * @throws InvalidDirectoryException
      */
-    public function changeToParentDirectory($directory): static
+    public function changeToParentDirectory(string $directory): static
     {
         $result = @ftp_cdup($this->getStream());
         if ($result === false) {
@@ -364,7 +325,7 @@ class FTP extends AbstractFTP
      *
      * @throws FTPConnectionException thrown at FTP error
      */
-    public function createDirectory($directory): static
+    public function createDirectory(string $directory): static
     {
         $result = @ftp_mkdir($this->getStream(), $this->getAbsolutePath($directory));
         if ($result === false) {
@@ -380,9 +341,8 @@ class FTP extends AbstractFTP
      *
      * @param string $sourceDirectory source remote directory, relative path from basePath
      * @param string $targetDirectory target remote directory, relative path from basePath
-     * @param bool $overwrite
      */
-    public function renameDirectory($sourceDirectory, $targetDirectory, $overwrite = false): static
+    public function renameDirectory(string $sourceDirectory, string $targetDirectory, bool $overwrite = false): static
     {
         return $this->renameResource($sourceDirectory, $targetDirectory, $overwrite);
     }
@@ -393,9 +353,8 @@ class FTP extends AbstractFTP
      *
      * @param string $sourceDirectory source remote directory, relative path from basePath
      * @param string $targetDirectory target remote directory, relative path from basePath
-     * @param bool $overwrite
      */
-    public function moveDirectory($sourceDirectory, $targetDirectory, $overwrite = false): static
+    public function moveDirectory(string $sourceDirectory, string $targetDirectory, bool $overwrite = false): static
     {
         return $this->renameResource($sourceDirectory, $targetDirectory, $overwrite);
     }
@@ -405,11 +364,10 @@ class FTP extends AbstractFTP
      *
      * @param string $sourceDirectory source remote directory, relative path from basePath
      * @param string $targetDirectory target remote directory, relative path from basePath
-     * @param bool $overwrite
      *
      * @throws ExistingResourceException
      */
-    public function copyDirectory($sourceDirectory, $targetDirectory, $overwrite = false): static
+    public function copyDirectory(string $sourceDirectory, string $targetDirectory, bool $overwrite = false): static
     {
         // If $overwrite is set to FALSE check only for the first directory. On recursion this parameter is by default TRUE.
         if ($overwrite === false && $this->resourceExists($targetDirectory)) {
@@ -434,11 +392,10 @@ class FTP extends AbstractFTP
      * Moves a directory on the FTP server.
      *
      * @param string $directory remote directory, relative path from basePath
-     * @param bool $recursively
      *
      * @throws FTPConnectionException thrown at FTP error
      */
-    public function deleteDirectory($directory, $recursively = true): static
+    public function deleteDirectory(string $directory, bool $recursively = true): static
     {
         $directoryList = $this->fetchDirectoryList($directory);
 
@@ -468,10 +425,8 @@ class FTP extends AbstractFTP
      * Returns TRUE if given file exists.
      *
      * @param string $file remote file, relative path from basePath
-     *
-     * @return bool
      */
-    public function fileExists($file)
+    public function fileExists(string $file): bool
     {
         $result = @ftp_size($this->getStream(), $this->getAbsolutePath($file));
 
@@ -483,11 +438,9 @@ class FTP extends AbstractFTP
      *
      * @param string $file remote file, relative path from basePath
      *
-     * @return int
-     *
      * @throws FileOperationErrorException
      */
-    public function getFileSize($file)
+    public function getFileSize(string $file): int
     {
         $result = @ftp_size($this->getStream(), $this->getAbsolutePath($file));
         if ($result === -1) {
@@ -502,13 +455,12 @@ class FTP extends AbstractFTP
      *
      * @param string $targetFile target remote file, relative path from basePath
      * @param mixed $sourceFileOrResource local source file or file resource, absolute path
-     * @param bool $overwrite
      *
      * @throws ResourceDoesNotExistException
      * @throws ExistingResourceException
      * @throws FTPConnectionException thrown at FTP error
      */
-    public function uploadFile($targetFile, $sourceFileOrResource, $overwrite = false): static
+    public function uploadFile(string $targetFile, mixed $sourceFileOrResource, bool $overwrite = false): static
     {
         if (is_resource($sourceFileOrResource) === false && @is_file($sourceFileOrResource) === false) {
             throw new ResourceDoesNotExistException('File "' . $sourceFileOrResource . '" not exists.', 1408550529);
@@ -541,7 +493,7 @@ class FTP extends AbstractFTP
      * @throws ResourceDoesNotExistException
      * @throws FTPConnectionException thrown at FTP error
      */
-    public function downloadFile($sourceFile, $targetFileOrResource): static
+    public function downloadFile(string $sourceFile, mixed $targetFileOrResource): static
     {
         if (is_resource($targetFileOrResource) === false && @is_file($targetFileOrResource) === false) {
             throw new ResourceDoesNotExistException('File "' . $targetFileOrResource . '" not exists.', 1408550532);
@@ -565,13 +517,10 @@ class FTP extends AbstractFTP
      * Set the contents of a file.
      *
      * @param string $file remote file, relative path from basePath
-     * @param string $contents
-     *
-     * @return int
      *
      * @throws FileOperationErrorException thrown if writing temporary file fails
      */
-    public function setFileContents($file, $contents)
+    public function setFileContents(string $file, string $contents): int
     {
         $temporaryFile = tmpfile();
 
@@ -592,11 +541,9 @@ class FTP extends AbstractFTP
      *
      * @param string $file remote file, relative path from basePath
      *
-     * @return string
-     *
      * @throws FTPConnectionException thrown at FTP error
      */
-    public function getFileContents($file)
+    public function getFileContents(string $file): string
     {
         $temporaryFile = tmpfile();
 
@@ -616,12 +563,11 @@ class FTP extends AbstractFTP
      * Create a file on the FTP server.
      *
      * @param string $file remote file, relative path from basePath
-     * @param bool $overwrite
      *
      * @throws ExistingResourceException
      * @throws FTPConnectionException thrown at FTP error
      */
-    public function createFile($file, $overwrite = false): static
+    public function createFile(string $file, bool $overwrite = false): static
     {
         if ($overwrite === false && $this->resourceExists($file)) {
             throw new ExistingResourceException('File "' . $file . '" already exists.', 1408550536);
@@ -639,7 +585,7 @@ class FTP extends AbstractFTP
      * @param string $targetFile target remote file, relative path from basePath
      * @param mixed $sourceFileOrResource local source file or file resource, absolute path
      */
-    public function replaceFile($targetFile, $sourceFileOrResource): static
+    public function replaceFile(string $targetFile, mixed $sourceFileOrResource): static
     {
         return $this->uploadFile($targetFile, $sourceFileOrResource, true);
     }
@@ -650,9 +596,8 @@ class FTP extends AbstractFTP
      *
      * @param string $sourceFile source remote file, relative path from basePath
      * @param string $targetFile target remote file, relative path from basePath
-     * @param bool $overwrite
      */
-    public function renameFile($sourceFile, $targetFile, $overwrite = false): static
+    public function renameFile(string $sourceFile, string $targetFile, bool $overwrite = false): static
     {
         return $this->renameResource($sourceFile, $targetFile, $overwrite);
     }
@@ -663,9 +608,8 @@ class FTP extends AbstractFTP
      *
      * @param string $sourceFile source remote file, relative path from basePath
      * @param string $targetFile target remote file, relative path from basePath
-     * @param bool $overwrite
      */
-    public function moveFile($sourceFile, $targetFile, $overwrite = false): static
+    public function moveFile(string $sourceFile, string $targetFile, bool $overwrite = false): static
     {
         return $this->renameResource($sourceFile, $targetFile, $overwrite);
     }
@@ -675,9 +619,8 @@ class FTP extends AbstractFTP
      *
      * @param string $sourceFile source remote file, relative path from basePath
      * @param string $targetFile target remote file, relative path from basePath
-     * @param bool $overwrite
      */
-    public function copyFile($sourceFile, $targetFile, $overwrite = false): static
+    public function copyFile(string $sourceFile, string $targetFile, bool $overwrite = false): static
     {
         $temporaryFile = tmpfile();
 
@@ -697,7 +640,7 @@ class FTP extends AbstractFTP
      *
      * @throws FTPConnectionException thrown at FTP error
      */
-    public function deleteFile($file): static
+    public function deleteFile(string $file): static
     {
         $result = @ftp_delete($this->getStream(), $this->getAbsolutePath($file));
         if ($result === false) {
@@ -712,15 +655,12 @@ class FTP extends AbstractFTP
      *
      * @param string $directory remote directory, relative path from basePath
      * @param mixed $resourceInfoParserCallback either an array of object and method name or a function name
-     * @param string $sort
-     *
-     * @return array
      *
      * @throws FTPConnectionException thrown at FTP error
      * @throws InvalidConfigurationException
      * @throws InvalidAttributeException
      */
-    public function fetchDirectoryList($directory, $resourceInfoParserCallback = null, $sort = 'strnatcasecmp')
+    public function fetchDirectoryList(string $directory, mixed $resourceInfoParserCallback = null, string $sort = 'strnatcasecmp'): array
     {
         $this->changeDirectory($directory);
 

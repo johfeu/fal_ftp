@@ -43,10 +43,8 @@ class ImageDimensionExtractor implements ExtractorInterface
      * An empty array indicates all filetypes.
      *
      * Not used in core atm (T3 7.6.0)
-     *
-     * @return array
      */
-    public function getFileTypeRestrictions()
+    public function getFileTypeRestrictions(): array
     {
         return [];
     }
@@ -60,10 +58,8 @@ class ImageDimensionExtractor implements ExtractorInterface
      * Returns array of string with driver names of Drivers which are supported,
      * If the driver did not register a name, it's the classname.
      * empty array indicates no restrictions
-     *
-     * @return array
      */
-    public function getDriverRestrictions()
+    public function getDriverRestrictions(): array
     {
         return ['FTP'];
     }
@@ -74,10 +70,8 @@ class ImageDimensionExtractor implements ExtractorInterface
      * extracted the same property.
      *
      * Should be between 1 and 100, 100 is more important than 1
-     *
-     * @return int
      */
-    public function getPriority()
+    public function getPriority(): int
     {
         return 70;
     }
@@ -85,20 +79,16 @@ class ImageDimensionExtractor implements ExtractorInterface
     /**
      * Returns the execution priority of the extraction Service
      * Should be between 1 and 100, 100 means runs as first service, 1 runs at last service.
-     *
-     * @return int
      */
-    public function getExecutionPriority()
+    public function getExecutionPriority(): int
     {
         return 10;
     }
 
     /**
      * Checks if the given file can be processed by this Extractor.
-     *
-     * @return bool
      */
-    public function canProcess(File $file)
+    public function canProcess(File $file): bool
     {
         if ($file->getType() === FileType::IMAGE->value) {
             try {
@@ -120,10 +110,8 @@ class ImageDimensionExtractor implements ExtractorInterface
      * Should return an array with database properties for sys_file_metadata to write
      *
      * @param array $previousExtractedData optional, contains the array of already extracted data
-     *
-     * @return array
      */
-    public function extractMetaData(File $file, array $previousExtractedData = [])
+    public function extractMetaData(File $file, array $previousExtractedData = []): array
     {
         $size = $this->getImageSize($file);
         if (is_array($size) && $size[0] > 0 && $size[1] > 0) {
@@ -135,13 +123,11 @@ class ImageDimensionExtractor implements ExtractorInterface
 
     /**
      * Return the size-array of an image returned by getimagesize.
-     *
-     * @return array
      */
-    private function getImageSize(File $file)
+    private function getImageSize(File $file): array|false
     {
         $tmpLocalFile = $file->getForLocalProcessing();
 
-        return getimagesize($tmpLocalFile) ?: [];
+        return getimagesize($tmpLocalFile);
     }
 }

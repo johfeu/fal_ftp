@@ -53,11 +53,9 @@ class ParserRegistry implements SingletonInterface
     /**
      * Register parser classes.
      *
-     * @return ParserRegistry
-     *
      * @throws InvalidConfigurationException
      */
-    public function registerParser(mixed $parsers)
+    public function registerParser(mixed $parsers): self
     {
         if (is_array($parsers) === false) {
             $parsers = [$parsers];
@@ -71,20 +69,16 @@ class ParserRegistry implements SingletonInterface
 
     /**
      * Has parser.
-     *
-     * @return bool
      */
-    public function hasParser()
+    public function hasParser(): bool
     {
         return $this->parser !== null;
     }
 
     /**
      * Set parser.
-     *
-     * @return ParserRegistry
      */
-    public function setParser(array $parser)
+    public function setParser(array $parser): self
     {
         $this->parser = $parser;
 

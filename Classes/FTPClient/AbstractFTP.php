@@ -42,32 +42,22 @@ abstract class AbstractFTP implements FTPInterface
     public string $basePath = '/';
     protected FTPConnection $stream;
 
-    /**
-     * @var ParserRegistry
-     */
-    protected $parserRegistry;
+    protected ParserRegistry $parserRegistry;
 
-    /**
-     * @var FilterRegistry
-     */
-    protected $filterRegistry;
+    protected FilterRegistry $filterRegistry;
 
     /**
      * Get parserRegistry.
-     *
-     * @return ParserRegistry
      */
-    public function getParserRegistry()
+    public function getParserRegistry(): ParserRegistry
     {
         return $this->parserRegistry;
     }
 
     /**
      * Get filterRegistry.
-     *
-     * @return FilterRegistry
      */
-    public function getFilterRegistry()
+    public function getFilterRegistry(): FilterRegistry
     {
         return $this->filterRegistry;
     }
@@ -216,22 +206,16 @@ abstract class AbstractFTP implements FTPInterface
 
     /**
      * Returns the absolute path of the FTP remote directory or file.
-     *
-     * @param string $relativeDirectoryOrFilePath
-     *
-     * @return string
      */
-    protected function getAbsolutePath($relativeDirectoryOrFilePath)
+    protected function getAbsolutePath(string $relativeDirectoryOrFilePath): string
     {
         return $this->basePath . $relativeDirectoryOrFilePath;
     }
 
     /**
      * Returns the identifier of the folder the file resides in.
-     *
-     * @param string $directoryOrFile
      */
-    protected function getParentDirectory($directoryOrFile): string
+    protected function getParentDirectory(string $directoryOrFile): string
     {
         $parentDirectory = PathUtility::dirname($directoryOrFile);
         if ($parentDirectory === '/') {
@@ -243,10 +227,8 @@ abstract class AbstractFTP implements FTPInterface
 
     /**
      * Returns the identifier of the folder the file resides in.
-     *
-     * @param string $directoryOrFile
      */
-    protected function getResourceName($directoryOrFile): string
+    protected function getResourceName(string $directoryOrFile): string
     {
         return trim(PathUtility::basename($directoryOrFile), '/');
     }

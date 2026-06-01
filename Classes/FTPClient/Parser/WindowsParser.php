@@ -107,13 +107,8 @@ class WindowsParser implements ParserInterface
 {
     /**
      * Parse the FTP result line.
-     *
-     * @param array &$resourceInfo
-     * @param string $resource
-     *
-     * @return bool
      */
-    public function parse(&$resourceInfo, $resource, FTPInterface $parentObject)
+    public function parse(array &$resourceInfo, string $resource, FTPInterface $parentObject): bool
     {
         //                 date            time            size              filename
         //		Original regexp: '/([0-9\\/-]+)[ ]+([0-9:AMP]+)[ ]+([0-9]*|<DIR>)[ ]+(.*)/'
@@ -135,12 +130,8 @@ class WindowsParser implements ParserInterface
 
     /**
      * Parse the timestamp.
-     *
-     * @param string $date
-     *
-     * @return int
      */
-    protected function getTimestampOfDate($date)
+    protected function getTimestampOfDate(string $date): int
     {
         // Date format depends on what FTP server returns (year, month, day, hour, minutes... see above)
         // Set time always with seconds, else the seconds of the time NOW is taken, and the hash identifier will change.

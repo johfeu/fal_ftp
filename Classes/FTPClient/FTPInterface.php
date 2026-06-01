@@ -45,12 +45,9 @@ interface FTPInterface
     /**
      * Connect to the FTP server.
      *
-     * @param string $username
-     * @param string $password
-     *
      * @throws InvalidConfigurationException
      */
-    public function connect($username = '', $password = ''): FTPInterface;
+    public function connect(string $username = '', string $password = ''): FTPInterface;
 
     /**
      * Close the FTP connection.
@@ -62,42 +59,34 @@ interface FTPInterface
     /**
      * Logs in to the FTP connection.
      *
-     * @param string $username
-     * @param string $password
-     *
      * @throws InvalidConfigurationException
      */
-    public function login($username, $password): FTPInterface;
+    public function login(string $username, string $password): FTPInterface;
 
     /**
      * Returns TRUE if given directory or file exists.
      *
      * @param string $resource remote directory or file, relative path from basePath
-     *
-     * @return bool
      */
-    public function resourceExists($resource);
+    public function resourceExists(string $resource): bool;
 
     /**
      * Renames a directory or file on the FTP server.
      *
      * @param string $sourceResource source remote directory or file, relative path from basePath
      * @param string $targetResource target remote directory or file, relative path from basePath
-     * @param bool $overwrite
      *
      * @throws ExistingResourceException
      * @throws FTPConnectionException thrown at FTP error
      */
-    public function renameResource($sourceResource, $targetResource, $overwrite = false): FTPInterface;
+    public function renameResource(string $sourceResource, string $targetResource, bool $overwrite = false): FTPInterface;
 
     /**
      * Returns TRUE if given directory exists.
      *
      * @param string $directory remote directory, relative path from basePath
-     *
-     * @return bool
      */
-    public function directoryExists($directory);
+    public function directoryExists(string $directory): bool;
 
     /**
      * Changes the current directory to the specified one.
@@ -106,7 +95,7 @@ interface FTPInterface
      *
      * @throws InvalidDirectoryException
      */
-    public function changeDirectory($directory): FTPInterface;
+    public function changeDirectory(string $directory): FTPInterface;
 
     /**
      * Changes the current directory to the parent directory.
@@ -115,7 +104,7 @@ interface FTPInterface
      *
      * @throws InvalidDirectoryException
      */
-    public function changeToParentDirectory($directory): FTPInterface;
+    public function changeToParentDirectory(string $directory): FTPInterface;
 
     /**
      * Creates a directory.
@@ -124,7 +113,7 @@ interface FTPInterface
      *
      * @throws FTPConnectionException thrown at FTP error
      */
-    public function createDirectory($directory): FTPInterface;
+    public function createDirectory(string $directory): FTPInterface;
 
     /**
      * Renames a directory on the FTP server.
@@ -132,9 +121,8 @@ interface FTPInterface
      *
      * @param string $sourceDirectory source remote directory, relative path from basePath
      * @param string $targetDirectory target remote directory, relative path from basePath
-     * @param bool $overwrite
      */
-    public function renameDirectory($sourceDirectory, $targetDirectory, $overwrite = false): FTPInterface;
+    public function renameDirectory(string $sourceDirectory, string $targetDirectory, bool $overwrite = false): FTPInterface;
 
     /**
      * Moves a directory on the FTP server.
@@ -142,63 +130,55 @@ interface FTPInterface
      *
      * @param string $sourceDirectory source remote directory, relative path from basePath
      * @param string $targetDirectory target remote directory, relative path from basePath
-     * @param bool $overwrite
      */
-    public function moveDirectory($sourceDirectory, $targetDirectory, $overwrite = false): FTPInterface;
+    public function moveDirectory(string $sourceDirectory, string $targetDirectory, bool $overwrite = false): FTPInterface;
 
     /**
      * Copy a directory on the FTP server.
      *
      * @param string $sourceDirectory source remote directory, relative path from basePath
      * @param string $targetDirectory target remote directory, relative path from basePath
-     * @param bool $overwrite
      *
      * @throws ExistingResourceException
      */
-    public function copyDirectory($sourceDirectory, $targetDirectory, $overwrite = false): FTPInterface;
+    public function copyDirectory(string $sourceDirectory, string $targetDirectory, bool $overwrite = false): FTPInterface;
 
     /**
      * Moves a directory on the FTP server.
      *
      * @param string $directory remote directory, relative path from basePath
-     * @param bool $recursively
      *
      * @throws FTPConnectionException thrown at FTP error
      */
-    public function deleteDirectory($directory, $recursively = true): FTPInterface;
+    public function deleteDirectory(string $directory, bool $recursively = true): FTPInterface;
 
     /**
      * Returns TRUE if given file exists.
      *
      * @param string $file remote file, relative path from basePath
-     *
-     * @return bool
      */
-    public function fileExists($file);
+    public function fileExists(string $file): bool;
 
     /**
      * Returns the size of the given file.
      *
      * @param string $file remote file, relative path from basePath
      *
-     * @return int
-     *
      * @throws FileOperationErrorException
      */
-    public function getFileSize($file);
+    public function getFileSize(string $file): int;
 
     /**
      * Uploads a file to the FTP server.
      *
      * @param string $targetFile target remote file, relative path from basePath
      * @param mixed $sourceFileOrResource local source file or file resource, absolute path
-     * @param bool $overwrite
      *
      * @throws ResourceDoesNotExistException
      * @throws ExistingResourceException
      * @throws FTPConnectionException thrown at FTP error
      */
-    public function uploadFile($targetFile, mixed $sourceFileOrResource, $overwrite = false): FTPInterface;
+    public function uploadFile(string $targetFile, mixed $sourceFileOrResource, bool $overwrite = false): FTPInterface;
 
     /**
      * Download a file to a temporary file.
@@ -209,41 +189,35 @@ interface FTPInterface
      * @throws ResourceDoesNotExistException
      * @throws FTPConnectionException thrown at FTP error
      */
-    public function downloadFile($sourceFile, mixed $targetFileOrResource): FTPInterface;
+    public function downloadFile(string $sourceFile, mixed $targetFileOrResource): FTPInterface;
 
     /**
      * Set the contents of a file.
      *
      * @param string $file remote file, relative path from basePath
-     * @param string $contents
-     *
-     * @return int
      *
      * @throws FileOperationErrorException thrown if writing temporary file fails
      */
-    public function setFileContents($file, $contents);
+    public function setFileContents(string $file, string $contents): int;
 
     /**
      * Get the contents of a file.
      *
      * @param string $file remote file, relative path from basePath
      *
-     * @return string
-     *
      * @throws FTPConnectionException thrown at FTP error
      */
-    public function getFileContents($file);
+    public function getFileContents(string $file): string;
 
     /**
      * Create a file on the FTP server.
      *
      * @param string $file remote file, relative path from basePath
-     * @param bool $overwrite
      *
      * @throws ExistingResourceException
      * @throws FTPConnectionException thrown at FTP error
      */
-    public function createFile($file, $overwrite = false): FTPInterface;
+    public function createFile(string $file, bool $overwrite = false): FTPInterface;
 
     /**
      * Replace a file to the FTP server.
@@ -252,7 +226,7 @@ interface FTPInterface
      * @param string $targetFile target remote file, relative path from basePath
      * @param mixed $sourceFileOrResource local source file or file resource, absolute path
      */
-    public function replaceFile($targetFile, mixed $sourceFileOrResource): FTPInterface;
+    public function replaceFile(string $targetFile, mixed $sourceFileOrResource): FTPInterface;
 
     /**
      * Renames a file on the FTP server.
@@ -260,9 +234,8 @@ interface FTPInterface
      *
      * @param string $sourceFile source remote file, relative path from basePath
      * @param string $targetFile target remote file, relative path from basePath
-     * @param bool $overwrite
      */
-    public function renameFile($sourceFile, $targetFile, $overwrite = false): FTPInterface;
+    public function renameFile(string $sourceFile, string $targetFile, bool $overwrite = false): FTPInterface;
 
     /**
      * Moves a file on the FTP server.
@@ -270,18 +243,16 @@ interface FTPInterface
      *
      * @param string $sourceFile source remote file, relative path from basePath
      * @param string $targetFile target remote file, relative path from basePath
-     * @param bool $overwrite
      */
-    public function moveFile($sourceFile, $targetFile, $overwrite = false): FTPInterface;
+    public function moveFile(string $sourceFile, string $targetFile, bool $overwrite = false): FTPInterface;
 
     /**
      * Copy a file on the FTP server.
      *
      * @param string $sourceFile source remote file, relative path from basePath
      * @param string $targetFile target remote file, relative path from basePath
-     * @param bool $overwrite
      */
-    public function copyFile($sourceFile, $targetFile, $overwrite = false): FTPInterface;
+    public function copyFile(string $sourceFile, string $targetFile, bool $overwrite = false): FTPInterface;
 
     /**
      * Deletes a file on the FTP server.
@@ -290,22 +261,19 @@ interface FTPInterface
      *
      * @throws FTPConnectionException thrown at FTP error
      */
-    public function deleteFile($file): FTPInterface;
+    public function deleteFile(string $file): FTPInterface;
 
     /**
      * Scans an ftp_rawlist line string and returns its parts (directory/file, name, size,...) using preg_match().
      *
      * @param string $directory remote directory, relative path from basePath
      * @param mixed $resourceInfoParserCallback either an array of object and method name or a function name
-     * @param string $sort
-     *
-     * @return array
      *
      * @throws FTPConnectionException thrown at FTP error
      * @throws InvalidConfigurationException
      * @throws InvalidAttributeException
      */
-    public function fetchDirectoryList($directory, mixed $resourceInfoParserCallback = null, $sort = 'strnatcasecmp');
+    public function fetchDirectoryList(string $directory, mixed $resourceInfoParserCallback = null, string $sort = 'strnatcasecmp'): array;
 
     public function getMimeType(string $fileName): string;
 }
