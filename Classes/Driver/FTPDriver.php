@@ -806,10 +806,8 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
      * Directly output the contents of the file to the output
      * buffer. Should not take care of header files or flushing
      * buffer before. Will be taken care of by the Storage.
-     *
-     * @param string $identifier
      */
-    public function dumpFileContents($identifier): void
+    public function dumpFileContents(string $identifier): void
     {
         echo $this->getFileContents($identifier);
     }
@@ -934,7 +932,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
      *
      * @throws InvalidFileNameException
      */
-    public function sanitizeFileName($fileName, $charset = ''): string
+    public function sanitizeFileName(string $fileName, string $charset = ''): string
     {
         // Handle UTF-8 characters
         if ($GLOBALS['TYPO3_CONF_VARS']['SYS']['UTF8filesystem']) {

@@ -28,6 +28,7 @@ namespace AdGrafik\FalFtp\Extractor;
  * This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 use TYPO3\CMS\Core\Resource\File;
+use TYPO3\CMS\Core\Resource\FileType;
 use TYPO3\CMS\Core\Resource\Index\ExtractorInterface;
 
 /**
@@ -99,7 +100,7 @@ class ImageDimensionExtractor implements ExtractorInterface
      */
     public function canProcess(File $file)
     {
-        if ($file->getType() === File::FILETYPE_IMAGE) {
+        if ($file->getType() === FileType::IMAGE->value) {
             try {
                 $size = $this->getImageSize($file);
                 if (is_array($size) && $size[0] > 0 && $size[1] > 0) {
