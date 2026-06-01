@@ -1,2 +1,85 @@
 parameters:
-	ignoreErrors: []
+	ignoreErrors:
+		-
+			message: '#^Dead catch \- AdGrafik\\FalFtp\\FTPClient\\Exception\\FTPConnectionException is never thrown in the try block\.$#'
+			identifier: catch.neverThrown
+			count: 1
+			path: Classes/Driver/FTPDriver.php
+
+		-
+			message: '#^Dead catch \- AdGrafik\\FalFtp\\FTPClient\\Exception\\ResourceDoesNotExistException is never thrown in the try block\.$#'
+			identifier: catch.neverThrown
+			count: 1
+			path: Classes/Driver/FTPDriver.php
+
+		-
+			message: '#^Method AdGrafik\\FalFtp\\Driver\\FTPDriver\:\:getCharsetConversion\(\) should return TYPO3\\CMS\\Core\\Charset\\CharsetConverter but returns TYPO3\\CMS\\Core\\Charset\\CharsetConverter\|null\.$#'
+			identifier: return.type
+			count: 1
+			path: Classes/Driver/FTPDriver.php
+
+		-
+			message: '#^Method AdGrafik\\FalFtp\\Driver\\FTPDriver\:\:getFileInfoByIdentifier\(\) should return array\<string, mixed\> but returns list\<mixed\>\.$#'
+			identifier: return.type
+			count: 1
+			path: Classes/Driver/FTPDriver.php
+
+		-
+			message: '#^Method AdGrafik\\FalFtp\\Driver\\FTPDriver\:\:getFilesInFolder\(\) should return list\<string\> but returns array\.$#'
+			identifier: return.type
+			count: 1
+			path: Classes/Driver/FTPDriver.php
+
+		-
+			message: '#^Method AdGrafik\\FalFtp\\Driver\\FTPDriver\:\:getFolderInfoByIdentifier\(\) should return array\{identifier\: non\-empty\-string, name\: string, mtime\: int, ctime\: int, storage\: int\} but returns array\{identifier\: non\-empty\-string, name\: string, storage\: int\|null\}\.$#'
+			identifier: return.type
+			count: 1
+			path: Classes/Driver/FTPDriver.php
+
+		-
+			message: '#^Method AdGrafik\\FalFtp\\Driver\\FTPDriver\:\:getPermissions\(\) should return array\{r\: bool, w\: bool\} but returns array\<mixed, mixed\>\.$#'
+			identifier: return.type
+			count: 1
+			path: Classes/Driver/FTPDriver.php
+
+		-
+			message: '#^Parameter \#1 \$callback of function call_user_func expects callable\(\)\: mixed, array\<mixed, mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: Classes/Driver/FTPDriver.php
+
+		-
+			message: '#^Parameter \#1 \$fileIdentifier of method TYPO3\\CMS\\Core\\Resource\\Driver\\AbstractHierarchicalFilesystemDriver\:\:canonicalizeAndCheckFileIdentifier\(\) expects non\-empty\-string, string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: Classes/Driver/FTPDriver.php
+
+		-
+			message: '#^Parameter \#1 \$folderIdentifier of method TYPO3\\CMS\\Core\\Resource\\Driver\\AbstractHierarchicalFilesystemDriver\:\:canonicalizeAndCheckFolderIdentifier\(\) expects non\-empty\-string, string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: Classes/Driver/FTPDriver.php
+
+		-
+			message: '#^Parameter \#1 \$identifier of method AdGrafik\\FalFtp\\Driver\\FTPDriver\:\:getPublicUrl\(\) expects non\-empty\-string, string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: Classes/Driver/FTPDriver.php
+
+		-
+			message: '#^Parameter \#2 \$array of function array_map expects array, list\<string\>\|false given\.$#'
+			identifier: argument.type
+			count: 1
+			path: Classes/Driver/FTPDriver.php
+
+		-
+			message: '#^Strict comparison using \=\=\= between false and false will always evaluate to true\.$#'
+			identifier: identical.alwaysTrue
+			count: 1
+			path: Classes/Driver/FTPDriver.php
+
+		-
+			message: '#^Parameter \#2 \$callback of function uksort expects callable\(int\<0, max\>, int\<0, max\>\)\: int, non\-falsy\-string given\.$#'
+			identifier: argument.type
+			count: 1
+			path: Classes/FTPClient/FTP.php

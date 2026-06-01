@@ -47,6 +47,7 @@ use AdGrafik\FalFtp\FTPClient\Parser\NetwareParser;
 use AdGrafik\FalFtp\FTPClient\Parser\StrictRulesParser;
 use AdGrafik\FalFtp\FTPClient\Parser\TitanParser;
 use AdGrafik\FalFtp\FTPClient\Parser\WindowsParser;
+use FTP\Connection;
 use TYPO3\CMS\Core\Resource\Index\ExtractorRegistry;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 
@@ -69,12 +70,12 @@ class FTP extends AbstractFTP
     public const MODE_PASSIV = true;
 
     /**
-     * @var bool
+     * @var int
      */
     public const TRANSFER_ASCII = FTP_ASCII;
 
     /**
-     * @var bool
+     * @var int
      */
     public const TRANSFER_BINARY = FTP_BINARY;
 
@@ -118,18 +119,15 @@ class FTP extends AbstractFTP
      */
     protected $passiveMode;
 
-    /**
-     * @var bool
-     */
-    protected $transferMode;
+    /** @var int<1,2> */
+    protected int $transferMode;
 
-    /**
-     * @var string
-     */
-    public $basePath;
+    public string $basePath = '/';
 
     /**
      * Constructor.
+     *
+     * @throws InvalidConfigurationException
      */
     public function __construct(array $settings)
     {
@@ -153,7 +151,12 @@ class FTP extends AbstractFTP
         $this->ssl = (bool)$settings['ssl'];
         $this->timeout = (int)$settings['timeout'] ?: 90;
         $this->passiveMode = isset($settings['passiveMode']) ? (bool)$settings['passiveMode'] : self::MODE_PASSIV;
-        $this->transferMode = $settings['transferMode'] ?? self::TRANSFER_BINARY;
+        $transferMode = (int)($settings['transferMode'] ?? self::TRANSFER_BINARY);
+
+        if (!in_array($transferMode, [FTP_ASCII, FTP_BINARY], true)) {
+            throw new InvalidConfigurationException('Invalid transfer mode "' . $transferMode . '".', 1408550515);
+        }
+
         $this->basePath = '/' . (trim((string)$settings['basePath'], '/') ?: '');
     }
 
@@ -171,13 +174,15 @@ class FTP extends AbstractFTP
             return $this;
         }
 
-        $this->stream = $this->ssl
+        $stream = $this->ssl
             ? @ftp_ssl_connect($this->host, $this->port, $this->timeout)
             : @ftp_connect($this->host, $this->port, $this->timeout);
 
-        if ($this->stream === false) {
+        if ($stream instanceof Connection === false) {
             throw new InvalidConfigurationException('Couldn\'t connect to host "' . $this->host . ':' . $this->port . '".', 1408550516);
         }
+
+        $this->stream = $stream;
 
         $this->isConnected = true;
 

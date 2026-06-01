@@ -50,6 +50,7 @@ use TYPO3\CMS\Core\Resource\Exception\ExistingTargetFolderException;
 use TYPO3\CMS\Core\Resource\Exception\FileDoesNotExistException;
 use TYPO3\CMS\Core\Resource\Exception\FolderDoesNotExistException;
 use TYPO3\CMS\Core\Resource\Exception\InvalidFileNameException;
+use TYPO3\CMS\Core\Resource\ResourceStorage;
 use TYPO3\CMS\Core\Resource\StorageRepository;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
@@ -121,18 +122,14 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
      * If this feature ist set, the modification time is fetched by the function ftp_mdtm
      * and overwrite the time of the list if it is available. But not all servers support
      * this feature and it will slow down the file listing.
-     *
-     * @var string
      */
-    protected $exactModificationTime;
+    protected bool $exactModificationTime;
 
     /**
      * Enable Remote Service: If this option is set, a service file is uploaded
      * to the FTP server which handles some operations to avoid too much downloading.
-     *
-     * @var string
      */
-    protected $remoteService;
+    protected bool $remoteService;
 
     /**
      * Encryption key for remote service.
@@ -217,8 +214,8 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
 
         $this->createThumbnailsUpToSize = (int)@$this->extensionConfiguration['ftpDriver']['createThumbnailsUpToSize'];
         $this->defaultThumbnail = GeneralUtility::getFileAbsFileName(@$this->extensionConfiguration['ftpDriver']['defaultThumbnail'] ?: 'EXT:fal_ftp/Resources/Public/Images/default_image.png');
-        $this->exactModificationTime = (isset($this->extensionConfiguration['ftpDriver']['exactModificationTime']) && $this->extensionConfiguration['ftpDriver']['exactModificationTime']);
-        $this->remoteService = (isset($this->extensionConfiguration['remoteService']['enable']) && $this->extensionConfiguration['remoteService']['enable']);
+        $this->exactModificationTime = (bool)($this->extensionConfiguration['ftpDriver']['exactModificationTime'] ?? false);
+        $this->remoteService = (bool)($this->extensionConfiguration['remoteService']['enable'] ?? false);
         $this->remoteServiceEncryptionKey = md5((string)(@$this->extensionConfiguration['remoteService']['encryptionKey'] ?: $GLOBALS['TYPO3_CONF_VARS']['SYS']['encryptionKey']));
         $this->remoteServiceFileName = '/' . trim((string)(@$this->extensionConfiguration['remoteService']['fileName'] ?: '.FalFtpRemoteService.php'));
         $this->remoteServiceAdditionalHeaders = GeneralUtility::trimExplode(';', (string)@$this->extensionConfiguration['remoteService']['additionalHeaders']);
@@ -309,8 +306,8 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
             } catch (\RuntimeException $e) {
                 /** @var StorageRepository $storageRepository */
                 $storageRepository = GeneralUtility::makeInstance(StorageRepository::class);
-                $storage = $storageRepository->findByUid($this->storageUid);
-                if ($storage->isWritable()) {
+                $storage = $storageRepository->findByUid($this->storageUid ?? 0);
+                if ($storage instanceof ResourceStorage && $storage->isWritable()) {
                     throw $e;
                 }
             }
@@ -968,7 +965,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
      * @param string $folderIdentifier
      * @param int $start The position to start the listing; if not set, start from the beginning
      * @param int $numberOfItems The number of items to list; if set to zero, all items are returned
-     * @param array $filterMethods The filter methods used to filter the directory items
+     * @param array[] $filterMethods The filter methods used to filter the directory items
      * @param bool $includeFiles
      * @param bool $includeDirs
      * @param bool $recursive
@@ -979,6 +976,10 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
      */
     protected function getDirectoryItemList($folderIdentifier, $start = 0, $numberOfItems = 0, array $filterMethods = [], $includeFiles = true, $includeDirs = true, $recursive = false)
     {
+        if ($folderIdentifier === '') {
+            throw new \InvalidArgumentException('Folder identifier cannot be empty', 1314349667);
+        }
+
         if ($this->folderExists($folderIdentifier) === false) {
             throw new \InvalidArgumentException('Cannot list items in directory ' . $folderIdentifier . ' - does not exist or is no directory', 1314349666);
         }
@@ -1009,6 +1010,10 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
                 continue;
             }
 
+            if (!is_string($identifier) || $identifier === '') {
+                continue;
+            }
+
             if ($this->applyFilterMethodsToDirectoryItem($filterMethods, $iteratorItem['name'], $identifier, $this->getParentFolderIdentifierOfIdentifier($identifier)) === false) {
                 continue;
             }
@@ -1027,7 +1032,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
      * Applies a set of filter methods to a file name to find out if it should be used or not. This is e.g. used by
      * directory listings.
      *
-     * @param array $filterMethods The filter methods to use
+     * @param array[] $filterMethods The filter methods to use
      * @param string $itemName
      * @param string $itemIdentifier
      * @param string $parentIdentifier
@@ -1175,7 +1180,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
         $requestUrl = $this->getPublicUrl($this->remoteServiceFileName) . '?' . http_build_query($request);
         $headers = count($this->remoteServiceAdditionalHeaders) ? $this->remoteServiceAdditionalHeaders : false;
 
-        $response = GeneralUtility::getUrl($requestUrl);
+        $response = GeneralUtility::getUrl($requestUrl) ?: throw new \RuntimeException('Could not connect to remote service ' . $requestUrl, 1408550585);
         $response = @json_decode($response, true);
 
         if (is_array($response) === false && isset($response['result']) === false) {
@@ -1183,7 +1188,9 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
             $response = ['result' => false, 'message' => 'Remote service communication faild.'];
             // If fails, renew the remote service and try again.
             if ($createOnFail) {
-                $remoteServiceContents = file_get_contents(GeneralUtility::getFileAbsFileName('EXT:fal_ftp/Resources/Private/Script/.FalFtpRemoteService.php'));
+                $scriptFilePath = 'EXT:fal_ftp/Resources/Private/Script/.FalFtpRemoteService.php';
+                $remoteServiceContents = file_get_contents(GeneralUtility::getFileAbsFileName($scriptFilePath))
+                    ?: throw new \RuntimeException(sprintf('Failed to read script file "%s"', $scriptFilePath), 1608550516);
                 $remoteServiceContents = str_replace('###ENCRYPTION_KEY###', $this->remoteServiceEncryptionKey, $remoteServiceContents);
                 $this->ftpClient->setFileContents('/.FalFtpRemoteService.php', $remoteServiceContents);
                 $response = $this->sendRemoteService($request, false);
@@ -1197,9 +1204,8 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
      * Add flash message to message queue.
      *
      * @param string $message
-     * @param int $severity
      */
-    protected function addFlashMessage($message, $severity = ContextualFeedbackSeverity::ERROR)
+    protected function addFlashMessage($message, ContextualFeedbackSeverity $severity = ContextualFeedbackSeverity::ERROR): void
     {
         if (PHP_SAPI === 'cli') {
             return;

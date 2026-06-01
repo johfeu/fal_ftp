@@ -147,6 +147,6 @@ class AS400Parser implements ParserInterface
         // Set time always with seconds, else the seconds of the time NOW is taken, and the hash identifier will change.
         $date = \DateTime::createFromFormat('m/d/y H:i:s', $date) ?: new \DateTime('@0');
 
-        return $date->format('U');
+        return $date->getTimestamp();
     }
 }

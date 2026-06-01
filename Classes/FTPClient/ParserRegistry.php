@@ -38,9 +38,9 @@ use TYPO3\CMS\Core\SingletonInterface;
 class ParserRegistry implements SingletonInterface
 {
     /**
-     * @var array<ParserInterface>
+     * @var class-string<ParserInterface>[]
      */
-    protected $parser;
+    protected array|null $parser = null;
 
     /**
      * Initialize object.
@@ -94,10 +94,10 @@ class ParserRegistry implements SingletonInterface
     /**
      * Get parser.
      *
-     * @return array
+     * @return class-string<ParserInterface>[]
      */
-    public function getParser()
+    public function getParser(): array
     {
-        return $this->parser;
+        return $this->parser ?? [];
     }
 }

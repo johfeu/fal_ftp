@@ -306,4 +306,6 @@ interface FTPInterface
      * @throws InvalidAttributeException
      */
     public function fetchDirectoryList($directory, mixed $resourceInfoParserCallback = null, $sort = 'strnatcasecmp');
+
+    public function getMimeType(string $fileName): string;
 }

@@ -146,6 +146,6 @@ class WindowsParser implements ParserInterface
         // Set time always with seconds, else the seconds of the time NOW is taken, and the hash identifier will change.
         $date = \DateTime::createFromFormat('m-d-y h:ia s', $date . ' 00') ?: new \DateTime('@0');
 
-        return $date->format('U');
+        return $date->getTimestamp();
     }
 }

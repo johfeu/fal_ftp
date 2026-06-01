@@ -38,9 +38,9 @@ use TYPO3\CMS\Core\SingletonInterface;
 class FilterRegistry implements SingletonInterface
 {
     /**
-     * @var array<FilterInterface>
+     * @var class-string<FilterInterface>[]
      */
-    protected $filter;
+    protected array|null $filter = null;
 
     /**
      * Initialize object.
@@ -94,10 +94,10 @@ class FilterRegistry implements SingletonInterface
     /**
      * Get filter.
      *
-     * @return array
+     * @return class-string<FilterInterface>[]
      */
     public function getFilter()
     {
-        return $this->filter;
+        return $this->filter ?? [];
     }
 }

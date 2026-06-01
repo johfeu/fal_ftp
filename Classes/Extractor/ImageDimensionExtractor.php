@@ -142,6 +142,6 @@ class ImageDimensionExtractor implements ExtractorInterface
     {
         $tmpLocalFile = $file->getForLocalProcessing();
 
-        return getimagesize($tmpLocalFile);
+        return getimagesize($tmpLocalFile) ?: [];
     }
 }

@@ -3,11 +3,15 @@ includes:
 
 parameters:
 	phpVersion: 80200
-	level: 1
+	level: 8
 
 	paths:
 		- %currentWorkingDirectory%/Classes/
 		- %currentWorkingDirectory%/ext_localconf.php
+
+	ignoreErrors:
+		-
+			identifier: missingType.iterableValue
 
 	treatPhpDocTypesAsCertain: false
 	reportWrongPhpDocTypeInVarTag: true

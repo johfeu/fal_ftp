@@ -28,6 +28,7 @@ namespace AdGrafik\FalFtp\FTPClient;
  * This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use FTP\Connection as FTPConnection;
 use TYPO3\CMS\Core\Utility\PathUtility;
 
 /**
@@ -38,11 +39,8 @@ use TYPO3\CMS\Core\Utility\PathUtility;
  */
 abstract class AbstractFTP implements FTPInterface
 {
-    public $basePath;
-    /**
-     * @var resource
-     */
-    protected $stream;
+    public string $basePath = '/';
+    protected FTPConnection $stream;
 
     /**
      * @var ParserRegistry
@@ -50,7 +48,7 @@ abstract class AbstractFTP implements FTPInterface
     protected $parserRegistry;
 
     /**
-     * @var ParserRegistry
+     * @var FilterRegistry
      */
     protected $filterRegistry;
 
@@ -67,7 +65,7 @@ abstract class AbstractFTP implements FTPInterface
     /**
      * Get filterRegistry.
      *
-     * @return ParserRegistry
+     * @return FilterRegistry
      */
     public function getFilterRegistry()
     {
@@ -76,10 +74,8 @@ abstract class AbstractFTP implements FTPInterface
 
     /**
      * Get stream.
-     *
-     * @return resource
      */
-    public function getStream()
+    public function getStream(): FTPConnection
     {
         $this->connect();
 
@@ -88,12 +84,8 @@ abstract class AbstractFTP implements FTPInterface
 
     /**
      * Returns the mime type of given file extension.
-     *
-     * @param string $fileName
-     *
-     * @return string
      */
-    public function getMimeType($fileName)
+    public function getMimeType(string $fileName): string
     {
         $extension = strtolower(PathUtility::pathinfo($fileName, PATHINFO_EXTENSION));
 
@@ -239,7 +231,7 @@ abstract class AbstractFTP implements FTPInterface
      *
      * @param string $directoryOrFile
      */
-    protected function getParentDirectory($directoryOrFile)
+    protected function getParentDirectory($directoryOrFile): string
     {
         $parentDirectory = PathUtility::dirname($directoryOrFile);
         if ($parentDirectory === '/') {
@@ -254,7 +246,7 @@ abstract class AbstractFTP implements FTPInterface
      *
      * @param string $directoryOrFile
      */
-    protected function getResourceName($directoryOrFile)
+    protected function getResourceName($directoryOrFile): string
     {
         return trim(PathUtility::basename($directoryOrFile), '/');
     }
