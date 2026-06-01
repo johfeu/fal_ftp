@@ -6,6 +6,9 @@ namespace AdGrafik\FalFtp\FTPClient\Filter;
  * Copyright notice
  *
  * (c) 2014 Arno Dudek <webmaster@adgrafik.at>
+ * (c) 2023 Johannes Feustel <s@feustel.eu>
+ * (c) 2026 Alexander Schnitzler <git@alexanderschnitzler.de>
+ * (c) 2026 niho <n@maxdoom.com>
  * All rights reserved
  *
  * Parsing the list results was adapted from net2ftp by David Gartner.

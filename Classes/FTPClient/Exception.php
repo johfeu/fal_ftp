@@ -5,7 +5,9 @@ namespace AdGrafik\FalFtp\FTPClient;
 /***************************************************************
  *  Copyright notice
  *
- *  (c) 2014 Arno Dudek <webmaster@adgrafik.at>
+ * (c) 2014 Arno Dudek <webmaster@adgrafik.at>
+ * (c) 2026 Alexander Schnitzler <git@alexanderschnitzler.de>
+ * (c) 2026 Johannes Feustel <s@feustel.eu>
  *  All rights reserved
  *
  *  This script is part of the TYPO3 project. The TYPO3 project is

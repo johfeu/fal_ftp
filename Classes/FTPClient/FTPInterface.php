@@ -15,6 +15,9 @@ use FTP\Connection;
  * Copyright notice
  *
  * (c) 2014 Arno Dudek <webmaster@adgrafik.at>
+ * (c) 2023 Johannes Feustel <s@feustel.eu>
+ * (c) 2026 Alexander Schnitzler <git@alexanderschnitzler.de>
+ * (c) 2026 niho <n@maxdoom.com>
  * All rights reserved
  *
  * This script is part of the TYPO3 project. The TYPO3 project is
