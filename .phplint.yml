@@ -1,0 +1,8 @@
+path: ./
+exclude:
+  - vendor
+jobs: 10
+extensions:
+  - php
+warning: true
+cache-dir: .build/.phplint.cache
