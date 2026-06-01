@@ -1,0 +1,7 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Instantiated class TYPO3\\CMS\\Core\\Resource\\Exception\\ExistingTargetFileException not found\.$#'
+			identifier: class.notFound
+			count: 2
+			path: Classes/Driver/FTPDriver.php

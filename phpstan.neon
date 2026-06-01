@@ -1,0 +1,14 @@
+includes:
+	- phpstan-baseline.neon
+
+parameters:
+	phpVersion: 80200
+	level: 0
+
+	paths:
+		- %currentWorkingDirectory%/Classes/
+		- %currentWorkingDirectory%/ext_localconf.php
+
+	treatPhpDocTypesAsCertain: false
+	reportWrongPhpDocTypeInVarTag: true
+	reportMaybesInPropertyPhpDocTypes: false
