@@ -7,7 +7,7 @@
 		"ext-ftp": "*",
 		"psr/http-message": "*",
 		"typo3/cms-backend": "~13.4.0",
-		"typo3/cms-core": "~13.4.0"
+		"typo3/cms-core": "~13.4.0 || ~14.3.0"
 	},
 	"require-dev": {
 		"friendsofphp/php-cs-fixer": "^3.95",
