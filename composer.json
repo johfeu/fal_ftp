@@ -10,6 +10,9 @@
 			"AdGrafik\\FalFtp\\": "Classes"
 		}
 	},
+	"config": {
+		"sort-packages": true
+	},
 	"extra": {
 		"typo3/cms": {
 			"extension-key": "fal_ftp"
