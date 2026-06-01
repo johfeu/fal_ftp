@@ -736,6 +736,7 @@ class FTP extends AbstractFTP
         foreach ($result as &$resource) {
             $resourceInfo = ['path' => $directory, 'isDirectory' => null, 'name' => null, 'size' => null, 'owner' => null, 'group' => null, 'mode' => null, 'mimetype' => null, 'mtime' => 0];
 
+            $parseResult = false;
             foreach ($this->parserRegistry->getParser() as $parserClass) {
                 $parserObject = GeneralUtility::makeInstance($parserClass);
                 if ($parseResult = $parserObject->parse($resourceInfo, $resource, $this)) {
