@@ -45,7 +45,6 @@ use TYPO3\CMS\Core\Messaging\FlashMessageService;
 use TYPO3\CMS\Core\Registry;
 use TYPO3\CMS\Core\Resource\Capabilities;
 use TYPO3\CMS\Core\Resource\Driver\AbstractHierarchicalFilesystemDriver;
-use TYPO3\CMS\Core\Resource\Exception\ExistingTargetFileException;
 use TYPO3\CMS\Core\Resource\Exception\ExistingTargetFileNameException;
 use TYPO3\CMS\Core\Resource\Exception\ExistingTargetFolderException;
 use TYPO3\CMS\Core\Resource\Exception\FileDoesNotExistException;
@@ -817,7 +816,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
      * Note that this is only about an inner-storage move action,
      * where a file is just moved to another folder in the same storage.
      *
-     * @throws ExistingTargetFileException
+     * @throws ExistingTargetFileNameException
      * @throws \RuntimeException
      */
     public function moveFileWithinStorage(string $fileIdentifier, string $targetFolderIdentifier, string $newFileName): string
@@ -827,7 +826,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
         try {
             $this->ftpClient->moveFile($fileIdentifier, $targetFileIdentifier);
         } catch (ExistingResourceException) {
-            throw new ExistingTargetFileException('File "' . $targetFileIdentifier . '" already exists.', 1408550576);
+            throw new ExistingTargetFileNameException('File "' . $targetFileIdentifier . '" already exists.', 1408550576);
         } catch (FTPConnectionException) {
             throw new \RuntimeException('Moving file "' . $fileIdentifier . '" faild.', 1408550577);
         }
@@ -844,7 +843,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
      * where a file is just copied to another folder in the same storage.
      *
      * @throws FileDoesNotExistException
-     * @throws ExistingTargetFileException
+     * @throws ExistingTargetFileNameException
      * @throws \RuntimeException
      */
     public function copyFileWithinStorage(string $fileIdentifier, string $targetFolderIdentifier, string $fileName): string
@@ -856,7 +855,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
         } catch (ResourceDoesNotExistException) {
             throw new FileDoesNotExistException('Source file "' . $fileIdentifier . '" not exists', 1408550578);
         } catch (ExistingResourceException) {
-            throw new ExistingTargetFileException('Target file "' . $targetFileIdentifier . '" already exists', 1408550579);
+            throw new ExistingTargetFileNameException('Target file "' . $targetFileIdentifier . '" already exists', 1408550579);
         } catch (FTPConnectionException) {
             throw new \RuntimeException('Copying file "' . $fileIdentifier . '" faild.', 1408550580);
         }
