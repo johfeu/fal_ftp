@@ -1,4 +1,7 @@
+/.build
+/vendor
 /.phplint.cache
+/composer.lock
 .project
 .svn
 .syncconf
