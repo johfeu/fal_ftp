@@ -1,4 +1,5 @@
 <?php
+
 namespace AdGrafik\FalFtp\FTPClient;
 
 /***************************************************************
@@ -60,22 +61,22 @@ class FTP extends AbstractFTP
     /**
      * @var bool
      */
-    const MODE_ACTIVE = false;
+    public const MODE_ACTIVE = false;
 
     /**
      * @var bool
      */
-    const MODE_PASSIV = true;
+    public const MODE_PASSIV = true;
 
     /**
      * @var bool
      */
-    const TRANSFER_ASCII = FTP_ASCII;
+    public const TRANSFER_ASCII = FTP_ASCII;
 
     /**
      * @var bool
      */
-    const TRANSFER_BINARY = FTP_BINARY;
+    public const TRANSFER_BINARY = FTP_BINARY;
 
     /**
      * @var bool
@@ -128,9 +129,7 @@ class FTP extends AbstractFTP
     public $basePath;
 
     /**
-     * Constructor
-     *
-     * @param array $settings
+     * Constructor.
      */
     public function __construct(array $settings)
     {
@@ -163,8 +162,10 @@ class FTP extends AbstractFTP
      *
      * @param string $username
      * @param string $password
-     * @throws InvalidConfigurationException
+     *
      * @return FTP
+     *
+     * @throws InvalidConfigurationException
      */
     public function connect($username = '', $password = '')
     {
@@ -196,8 +197,9 @@ class FTP extends AbstractFTP
     /**
      * Close the FTP connection.
      *
-     * @throws InvalidConfigurationException
      * @return FTP
+     *
+     * @throws InvalidConfigurationException
      */
     public function disconnect()
     {
@@ -214,8 +216,10 @@ class FTP extends AbstractFTP
      *
      * @param string $username
      * @param string $password
-     * @throws InvalidConfigurationException
+     *
      * @return FTP
+     *
+     * @throws InvalidConfigurationException
      */
     public function login($username = '', $password = '')
     {
@@ -233,8 +237,10 @@ class FTP extends AbstractFTP
      * Turns passive mode on or off.
      *
      * @param bool $passiveMode
-     * @throws FTPConnectionException thrown at FTP error
+     *
      * @return FTP
+     *
+     * @throws FTPConnectionException thrown at FTP error
      */
     public function setPassiveMode($passiveMode)
     {
@@ -251,6 +257,7 @@ class FTP extends AbstractFTP
      * Returns TRUE if given directory or file exists.
      *
      * @param string $resource remote directory or file, relative path from basePath
+     *
      * @return bool
      */
     public function resourceExists($resource)
@@ -266,8 +273,10 @@ class FTP extends AbstractFTP
      * Returns the last modified time of the given file (or directory some times).
      *
      * @param string $resource remote directory or file, relative path from basePath
-     * @throws FTPConnectionException thrown at FTP error
+     *
      * @return int
+     *
+     * @throws FTPConnectionException thrown at FTP error
      */
     public function getModificationTime($resource)
     {
@@ -285,9 +294,11 @@ class FTP extends AbstractFTP
      * @param string $sourceResource source remote directory or file, relative path from basePath
      * @param string $targetResource target remote directory or file, relative path from basePath
      * @param bool $overwrite
+     *
+     * @return FTP
+     *
      * @throws ExistingResourceException
      * @throws FTPConnectionException thrown at FTP error
-     * @return FTP
      */
     public function renameResource($sourceResource, $targetResource, $overwrite = false)
     {
@@ -307,6 +318,7 @@ class FTP extends AbstractFTP
      * Returns TRUE if given directory exists.
      *
      * @param string $directory remote directory, relative path from basePath
+     *
      * @return bool
      */
     public function directoryExists($directory)
@@ -320,8 +332,10 @@ class FTP extends AbstractFTP
      * Changes the current directory to the specified one.
      *
      * @param string $directory remote directory, relative path from basePath
-     * @throws InvalidDirectoryException
+     *
      * @return FTP
+     *
+     * @throws InvalidDirectoryException
      */
     public function changeDirectory($directory)
     {
@@ -337,8 +351,10 @@ class FTP extends AbstractFTP
      * Changes the current directory to the parent directory.
      *
      * @param string $directory remote directory, relative path from basePath
-     * @throws InvalidDirectoryException
+     *
      * @return FTP
+     *
+     * @throws InvalidDirectoryException
      */
     public function changeToParentDirectory($directory)
     {
@@ -354,8 +370,10 @@ class FTP extends AbstractFTP
      * Creates a directory.
      *
      * @param string $directory remote directory, relative path from basePath
-     * @throws FTPConnectionException thrown at FTP error
+     *
      * @return FTP
+     *
+     * @throws FTPConnectionException thrown at FTP error
      */
     public function createDirectory($directory)
     {
@@ -374,6 +392,7 @@ class FTP extends AbstractFTP
      * @param string $sourceDirectory source remote directory, relative path from basePath
      * @param string $targetDirectory target remote directory, relative path from basePath
      * @param bool $overwrite
+     *
      * @return FTP
      */
     public function renameDirectory($sourceDirectory, $targetDirectory, $overwrite = false)
@@ -388,6 +407,7 @@ class FTP extends AbstractFTP
      * @param string $sourceDirectory source remote directory, relative path from basePath
      * @param string $targetDirectory target remote directory, relative path from basePath
      * @param bool $overwrite
+     *
      * @return FTP
      */
     public function moveDirectory($sourceDirectory, $targetDirectory, $overwrite = false)
@@ -401,8 +421,10 @@ class FTP extends AbstractFTP
      * @param string $sourceDirectory source remote directory, relative path from basePath
      * @param string $targetDirectory target remote directory, relative path from basePath
      * @param bool $overwrite
-     * @throws ExistingResourceException
+     *
      * @return FTP
+     *
+     * @throws ExistingResourceException
      */
     public function copyDirectory($sourceDirectory, $targetDirectory, $overwrite = false)
     {
@@ -430,8 +452,10 @@ class FTP extends AbstractFTP
      *
      * @param string $directory remote directory, relative path from basePath
      * @param bool $recursively
-     * @throws FTPConnectionException thrown at FTP error
+     *
      * @return FTP
+     *
+     * @throws FTPConnectionException thrown at FTP error
      */
     public function deleteDirectory($directory, $recursively = true)
     {
@@ -463,6 +487,7 @@ class FTP extends AbstractFTP
      * Returns TRUE if given file exists.
      *
      * @param string $file remote file, relative path from basePath
+     *
      * @return bool
      */
     public function fileExists($file)
@@ -476,8 +501,10 @@ class FTP extends AbstractFTP
      * Returns the size of the given file.
      *
      * @param string $file remote file, relative path from basePath
-     * @throws FileOperationErrorException
+     *
      * @return int
+     *
+     * @throws FileOperationErrorException
      */
     public function getFileSize($file)
     {
@@ -495,10 +522,12 @@ class FTP extends AbstractFTP
      * @param string $targetFile target remote file, relative path from basePath
      * @param mixed $sourceFileOrResource local source file or file resource, absolute path
      * @param bool $overwrite
+     *
+     * @return FTP
+     *
      * @throws ResourceDoesNotExistException
      * @throws ExistingResourceException
      * @throws FTPConnectionException thrown at FTP error
-     * @return FTP
      */
     public function uploadFile($targetFile, $sourceFileOrResource, $overwrite = false)
     {
@@ -529,9 +558,11 @@ class FTP extends AbstractFTP
      *
      * @param string $sourceFile target remote file, relative path from basePath
      * @param mixed $targetFileOrResource local target file or file resource, absolute path
+     *
+     * @return FTP
+     *
      * @throws ResourceDoesNotExistException
      * @throws FTPConnectionException thrown at FTP error
-     * @return FTP
      */
     public function downloadFile($sourceFile, $targetFileOrResource)
     {
@@ -558,8 +589,10 @@ class FTP extends AbstractFTP
      *
      * @param string $file remote file, relative path from basePath
      * @param string $contents
-     * @throws FileOperationErrorException thrown if writing temporary file fails
+     *
      * @return int
+     *
+     * @throws FileOperationErrorException thrown if writing temporary file fails
      */
     public function setFileContents($file, $contents)
     {
@@ -581,8 +614,10 @@ class FTP extends AbstractFTP
      * Get the contents of a file.
      *
      * @param string $file remote file, relative path from basePath
-     * @throws FTPConnectionException thrown at FTP error
+     *
      * @return string
+     *
+     * @throws FTPConnectionException thrown at FTP error
      */
     public function getFileContents($file)
     {
@@ -605,9 +640,11 @@ class FTP extends AbstractFTP
      *
      * @param string $file remote file, relative path from basePath
      * @param bool $overwrite
+     *
+     * @return FTP
+     *
      * @throws ExistingResourceException
      * @throws FTPConnectionException thrown at FTP error
-     * @return FTP
      */
     public function createFile($file, $overwrite = false)
     {
@@ -626,6 +663,7 @@ class FTP extends AbstractFTP
      *
      * @param string $targetFile target remote file, relative path from basePath
      * @param mixed $sourceFileOrResource local source file or file resource, absolute path
+     *
      * @return FTP
      */
     public function replaceFile($targetFile, $sourceFileOrResource)
@@ -640,6 +678,7 @@ class FTP extends AbstractFTP
      * @param string $sourceFile source remote file, relative path from basePath
      * @param string $targetFile target remote file, relative path from basePath
      * @param bool $overwrite
+     *
      * @return FTP
      */
     public function renameFile($sourceFile, $targetFile, $overwrite = false)
@@ -654,6 +693,7 @@ class FTP extends AbstractFTP
      * @param string $sourceFile source remote file, relative path from basePath
      * @param string $targetFile target remote file, relative path from basePath
      * @param bool $overwrite
+     *
      * @return FTP
      */
     public function moveFile($sourceFile, $targetFile, $overwrite = false)
@@ -667,6 +707,7 @@ class FTP extends AbstractFTP
      * @param string $sourceFile source remote file, relative path from basePath
      * @param string $targetFile target remote file, relative path from basePath
      * @param bool $overwrite
+     *
      * @return FTP
      */
     public function copyFile($sourceFile, $targetFile, $overwrite = false)
@@ -674,7 +715,8 @@ class FTP extends AbstractFTP
         $temporaryFile = tmpfile();
 
         $this->downloadFile($sourceFile, $temporaryFile)
-             ->uploadFile($targetFile, $temporaryFile, $overwrite);
+             ->uploadFile($targetFile, $temporaryFile, $overwrite)
+        ;
 
         fclose($temporaryFile);
 
@@ -685,8 +727,10 @@ class FTP extends AbstractFTP
      * Deletes a file on the FTP server.
      *
      * @param string $file remote file, relative path from basePath
-     * @throws FTPConnectionException thrown at FTP error
+     *
      * @return FTP
+     *
+     * @throws FTPConnectionException thrown at FTP error
      */
     public function deleteFile($file)
     {
@@ -699,15 +743,17 @@ class FTP extends AbstractFTP
     }
 
     /**
-     * Scans an ftp_rawlist line string and returns its parts (directory/file, name, size,...) using preg_match()
+     * Scans an ftp_rawlist line string and returns its parts (directory/file, name, size,...) using preg_match().
      *
      * @param string $directory remote directory, relative path from basePath
      * @param mixed $resourceInfoParserCallback either an array of object and method name or a function name
      * @param string $sort
+     *
+     * @return array
+     *
      * @throws FTPConnectionException thrown at FTP error
      * @throws InvalidConfigurationException
      * @throws InvalidAttributeException
-     * @return array
      */
     public function fetchDirectoryList($directory, $resourceInfoParserCallback = null, $sort = 'strnatcasecmp')
     {

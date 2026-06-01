@@ -1,4 +1,5 @@
 <?php
+
 namespace AdGrafik\FalFtp\FTPClient\Exception;
 
 use AdGrafik\FalFtp\FTPClient\Exception;
@@ -26,7 +27,7 @@ use AdGrafik\FalFtp\FTPClient\Exception;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 /**
- * An exception when something is wrong with the configuration
+ * An exception when something is wrong with the configuration.
  */
 class InvalidAttributeException extends Exception
 {

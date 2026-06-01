@@ -1,4 +1,5 @@
 <?php
+
 namespace AdGrafik\FalFtp\FTPClient\Filter;
 
 /***************************************************************
@@ -39,7 +40,7 @@ class DotsFilter implements FilterInterface
      *
      * @param array $resourceInfo
      * @param string $resource
-     * @param FTPInterface $parentObject
+     *
      * @return bool
      */
     public function filter($resourceInfo, $resource, FTPInterface $parentObject)

@@ -1,4 +1,5 @@
 <?php
+
 namespace AdGrafik\FalFtp\FTPClient;
 
 /***************************************************************
@@ -54,7 +55,7 @@ abstract class AbstractFTP implements FTPInterface
     protected $filterRegistry;
 
     /**
-     * Get parserRegistry
+     * Get parserRegistry.
      *
      * @return ParserRegistry
      */
@@ -64,7 +65,7 @@ abstract class AbstractFTP implements FTPInterface
     }
 
     /**
-     * Get filterRegistry
+     * Get filterRegistry.
      *
      * @return ParserRegistry
      */
@@ -74,7 +75,7 @@ abstract class AbstractFTP implements FTPInterface
     }
 
     /**
-     * Get stream
+     * Get stream.
      *
      * @return resource
      */
@@ -89,6 +90,7 @@ abstract class AbstractFTP implements FTPInterface
      * Returns the mime type of given file extension.
      *
      * @param string $fileName
+     *
      * @return string
      */
     public function getMimeType($fileName)
@@ -224,6 +226,7 @@ abstract class AbstractFTP implements FTPInterface
      * Returns the absolute path of the FTP remote directory or file.
      *
      * @param string $relativeDirectoryOrFilePath
+     *
      * @return string
      */
     protected function getAbsolutePath($relativeDirectoryOrFilePath)
@@ -232,10 +235,9 @@ abstract class AbstractFTP implements FTPInterface
     }
 
     /**
-     * Returns the identifier of the folder the file resides in
+     * Returns the identifier of the folder the file resides in.
      *
      * @param string $directoryOrFile
-     * @return mixed
      */
     protected function getParentDirectory($directoryOrFile)
     {
@@ -248,10 +250,9 @@ abstract class AbstractFTP implements FTPInterface
     }
 
     /**
-     * Returns the identifier of the folder the file resides in
+     * Returns the identifier of the folder the file resides in.
      *
      * @param string $directoryOrFile
-     * @return mixed
      */
     protected function getResourceName($directoryOrFile)
     {

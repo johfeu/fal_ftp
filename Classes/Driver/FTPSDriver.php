@@ -1,4 +1,5 @@
 <?php
+
 namespace AdGrafik\FalFtp\Driver;
 
 /***************************************************************
@@ -33,9 +34,7 @@ namespace AdGrafik\FalFtp\Driver;
 class FTPSDriver extends FTPDriver
 {
     /**
-     * processes the configuration, should be overridden by subclasses
-     *
-     * @return void
+     * processes the configuration, should be overridden by subclasses.
      */
     public function processConfiguration(): void
     {

@@ -1,4 +1,5 @@
 <?php
+
 namespace AdGrafik\FalFtp\FTPClient\Parser;
 
 /***************************************************************
@@ -36,7 +37,7 @@ interface ParserInterface
      *
      * @param array &$resourceInfo
      * @param string $resource
-     * @param FTPInterface $parentObject
+     *
      * @return bool
      */
     public function parse(&$resourceInfo, $resource, FTPInterface $parentObject);

@@ -1,4 +1,5 @@
 <?php
+
 namespace AdGrafik\FalFtp\FTPClient\Parser;
 
 /***************************************************************
@@ -44,34 +45,34 @@ use AdGrafik\FalFtp\FTPClient\FTPInterface;
 // 1. "Standard" FTP servers output
 // ---------------
 // ftp.redhat.com
-//drwxr-xr-x    6 0        0            4096 Aug 21  2001 pub (one or more spaces between entries)
+// drwxr-xr-x    6 0        0            4096 Aug 21  2001 pub (one or more spaces between entries)
 //
 // ftp.suse.com
-//drwxr-xr-x   2 root     root         4096 Jan  9  2001 bin
-//-rw-r--r--    1 suse     susewww       664 May 23 16:24 README.txt
+// drwxr-xr-x   2 root     root         4096 Jan  9  2001 bin
+// -rw-r--r--    1 suse     susewww       664 May 23 16:24 README.txt
 //
 // ftp.belnet.be
-//-rw-r--r--   1 BELNET   Mirror        162 Aug  6  2000 HEADER.html
-//drwxr-xr-x  53 BELNET   Archive      2048 Nov 13 12:03 mirror
+// -rw-r--r--   1 BELNET   Mirror        162 Aug  6  2000 HEADER.html
+// drwxr-xr-x  53 BELNET   Archive      2048 Nov 13 12:03 mirror
 //
 // ftp.microsoft.com
-//-r-xr-xr-x   1 owner    group               0 Nov 27  2000 dirmap.htm
+// -r-xr-xr-x   1 owner    group               0 Nov 27  2000 dirmap.htm
 //
 // ftp.sourceforge.net
-//-rw-r--r--   1 root     staff    29136068 Apr 21 22:07 ls-lR.gz
+// -rw-r--r--   1 root     staff    29136068 Apr 21 22:07 ls-lR.gz
 //
 // ftp.nec.com
-//dr-xr-xr-x  12 other        512 Apr  3  2002 pub
+// dr-xr-xr-x  12 other        512 Apr  3  2002 pub
 //
 // ftp.intel.com
-//drwxr-sr-x   11 root     ftp          4096 Sep 23 16:36 pub
+// drwxr-sr-x   11 root     ftp          4096 Sep 23 16:36 pub
 
 // ---------------
 // 3.1 Windows
 // ---------------
-//06-10-04  07:56PM                 8175 garantie.html
-//04-09-04  04:27PM       <DIR>          images
-//05-25-04  09:18AM                 9505 index.html
+// 06-10-04  07:56PM                 8175 garantie.html
+// 04-09-04  04:27PM       <DIR>          images
+// 05-25-04  09:18AM                 9505 index.html
 
 // ---------------
 // 3.2 Netware
@@ -109,7 +110,7 @@ class StrictRulesParser implements ParserInterface
      *
      * @param array &$resourceInfo
      * @param string $resource
-     * @param FTPInterface $parentObject
+     *
      * @return bool
      */
     public function parse(&$resourceInfo, $resource, FTPInterface $parentObject)
@@ -139,6 +140,7 @@ class StrictRulesParser implements ParserInterface
      * Parse the timestamp.
      *
      * @param string $date
+     *
      * @return int
      */
     protected function getTimestampOfDate($date)

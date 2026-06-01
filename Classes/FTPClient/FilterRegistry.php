@@ -1,4 +1,5 @@
 <?php
+
 namespace AdGrafik\FalFtp\FTPClient;
 
 /***************************************************************
@@ -43,8 +44,6 @@ class FilterRegistry implements SingletonInterface
 
     /**
      * Initialize object.
-     *
-     * @return void
      */
     public function initialize(): void
     {
@@ -54,8 +53,9 @@ class FilterRegistry implements SingletonInterface
     /**
      * Register filter classes.
      *
-     * @throws InvalidConfigurationException
      * @return FilterRegistry
+     *
+     * @throws InvalidConfigurationException
      */
     public function registerFilter(mixed $filters)
     {
@@ -70,7 +70,7 @@ class FilterRegistry implements SingletonInterface
     }
 
     /**
-     * Has filter
+     * Has filter.
      *
      * @return bool
      */
@@ -80,9 +80,8 @@ class FilterRegistry implements SingletonInterface
     }
 
     /**
-     * Set filter
+     * Set filter.
      *
-     * @param array $filter
      * @return FilterRegistry
      */
     public function setFilter(array $filter)
@@ -93,7 +92,7 @@ class FilterRegistry implements SingletonInterface
     }
 
     /**
-     * Get filter
+     * Get filter.
      *
      * @return array
      */

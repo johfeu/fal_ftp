@@ -11,22 +11,20 @@
  ***************************************************************/
 
 $EM_CONF[$_EXTKEY] = [
-	'title' => 'FAL FTP Driver',
-	'description' => 'Provides a FTP and FTP-SSL driver for the TYPO3 File Abstraction Layer (FAL) to manage files via filemanager (filelist).',
-	'category' => 'plugin',
-	'version' => '1.6.0',
-	'state' => 'stable',
-	'author' => 'Arno Dudek',
-	'author_email' => 'webmaster@adgrafik.at',
-	'author_company' => 'ad:grafik',
-	'constraints' =>  [
-		'depends' =>  [
-		],
-		'conflicts' => [
-		],
-		'suggests' => [
-		],
-	],
+    'title' => 'FAL FTP Driver',
+    'description' => 'Provides a FTP and FTP-SSL driver for the TYPO3 File Abstraction Layer (FAL) to manage files via filemanager (filelist).',
+    'category' => 'plugin',
+    'version' => '1.6.0',
+    'state' => 'stable',
+    'author' => 'Arno Dudek',
+    'author_email' => 'webmaster@adgrafik.at',
+    'author_company' => 'ad:grafik',
+    'constraints' => [
+        'depends' => [
+        ],
+        'conflicts' => [
+        ],
+        'suggests' => [
+        ],
+    ],
 ];
-
-?>

@@ -1,4 +1,5 @@
 <?php
+
 namespace AdGrafik\FalFtp\Driver;
 
 /***************************************************************
@@ -66,7 +67,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
     /**
      * @var string
      */
-    const UNSAFE_FILENAME_CHARACTER_EXPRESSION = '\\x00-\\x2C\\/\\x3A-\\x3F\\x5B-\\x60\\x7B-\\xBF';
+    public const UNSAFE_FILENAME_CHARACTER_EXPRESSION = '\\x00-\\x2C\\/\\x3A-\\x3F\\x5B-\\x60\\x7B-\\xBF';
 
     /**
      * A list of all supported hash algorithms, written all lower case and
@@ -159,13 +160,13 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
     protected string $basePath;
 
     /**
-     * The public URL from the FTP server
+     * The public URL from the FTP server.
      */
     protected string $publicUrl;
 
     protected FTP $ftpClient;
 
-    protected ?CharsetConverter $charsetConversion = null;
+    protected CharsetConverter|null $charsetConversion = null;
 
     public function __construct(array $configuration = [])
     {
@@ -185,8 +186,6 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
     /**
      * Initializes this object. This is called by the storage after the driver
      * has been attached.
-     *
-     * @return void
      */
     public function __destruct()
     {
@@ -208,9 +207,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
     }
 
     /**
-     * processes the configuration, should be overridden by subclasses
-     *
-     * @return void
+     * processes the configuration, should be overridden by subclasses.
      */
     public function processConfiguration(): void
     {
@@ -262,15 +259,13 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
     /**
      * Initializes this object. This is called by the storage after the driver
      * has been attached.
-     *
-     * @return void
      */
     public function initialize(): void
     {
     }
 
     /**
-     * Get ftpClient
+     * Get ftpClient.
      */
     public function getFtpClient(): FTP
     {
@@ -280,7 +275,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
     /**
      * Returns the public URL to a file.
      */
-    public function getPublicUrl(string $identifier): ?string
+    public function getPublicUrl(string $identifier): string|null
     {
         return $this->publicUrl . $identifier;
     }
@@ -294,7 +289,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
     }
 
     /**
-     * Checks if a folder exists
+     * Checks if a folder exists.
      */
     public function folderExists(string $folderIdentifier): bool
     {
@@ -379,7 +374,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
     }
 
     /**
-     * Returns the identifier of a folder inside the folder
+     * Returns the identifier of a folder inside the folder.
      */
     public function getFolderInFolder(string $folderName, string $folderIdentifier): string
     {
@@ -387,7 +382,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
     }
 
     /**
-     * Returns a list of folders inside the specified path
+     * Returns a list of folders inside the specified path.
      *
      * @param array $folderNameFilterCallbacks callbacks for filtering the items
      * @param string $sort Property name used to sort the items.
@@ -403,9 +398,10 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
     }
 
     /**
-     * Returns the number of files inside the specified path
+     * Returns the number of files inside the specified path.
      *
      * @param array   $filenameFilterCallbacks callbacks for filtering the items
+     *
      * @throws \RuntimeException
      */
     public function countFilesInFolder(string $folderIdentifier, bool $recursive = false, array $filenameFilterCallbacks = []): int
@@ -414,9 +410,10 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
     }
 
     /**
-     * Returns the number of folders inside the specified path
+     * Returns the number of folders inside the specified path.
      *
      * @param array   $folderNameFilterCallbacks callbacks for filtering the items
+     *
      * @throws \RuntimeException
      */
     public function countFoldersInFolder(string $folderIdentifier, bool $recursive = false, array $folderNameFilterCallbacks = []): int
@@ -426,7 +423,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
 
     /**
      * Creates a folder, within a parent folder.
-     * If no parent folder is given, a root level folder will be created
+     * If no parent folder is given, a root level folder will be created.
      *
      * @throws \RuntimeException thrown at FTP error
      */
@@ -449,9 +446,10 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
     /**
      * Renames a folder in this storage.
      *
+     * @return array A map of old to new file identifiers of all affected resources
+     *
      * @throws ExistingTargetFolderException
      * @throws \RuntimeException thrown at FTP error
-     * @return array A map of old to new file identifiers of all affected resources
      */
     public function renameFolder(string $folderIdentifier, string $newName): array
     {
@@ -544,7 +542,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
     }
 
     /**
-     * Checks if a file inside a folder exists
+     * Checks if a file inside a folder exists.
      */
     public function fileExistsInFolder(string $fileName, string $folderIdentifier): bool
     {
@@ -586,7 +584,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
     }
 
     /**
-     * Returns the identifier of a file inside the folder
+     * Returns the identifier of a file inside the folder.
      */
     public function getFileInFolder(string $fileName, string $folderIdentifier): string
     {
@@ -594,7 +592,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
     }
 
     /**
-     * Returns a list of files inside the specified path
+     * Returns a list of files inside the specified path.
      *
      * @param array $filenameFilterCallbacks callbacks for filtering the items
      * @param string $sort Property name used to sort the items.
@@ -616,9 +614,9 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
      * not exist anymore.
      *
      * @param string $localFilePath (within PATH_site)
-     * @param string $targetFolderIdentifier
      * @param string $newFileName optional, if not given original name is used
      * @param bool $removeOriginal if set the original file will be removed after successful operation
+     *
      * @throws FileDoesNotExistException
      * @throws ExistingTargetFolderException
      * @throws \RuntimeException
@@ -675,8 +673,8 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
     /**
      * Renames a file in this storage.
      *
-     * @param string $fileIdentifier
      * @param string $newName The target path (including the file name!)
+     *
      * @throws ExistingTargetFileNameException
      * @throws \RuntimeException if renaming the file failed
      */
@@ -735,8 +733,9 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
     /**
      * Sets the contents of a file to the specified value.
      *
-     * @throws \RuntimeException
      * @return int The number of bytes written to the file
+     *
+     * @throws \RuntimeException
      */
     public function setFileContents(string $fileIdentifier, string $contents): int
     {
@@ -772,9 +771,9 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
      * Returns a path to a local copy of a file for processing it. When changing the
      * file, you have to take care of replacing the current version yourself!
      *
-     * @param string $fileIdentifier
      * @param bool $writable Set this to FALSE if you only need the file for read operations. This might speed up things,
      *                       e.g. by using a cached local version. Never modify the file if you have set this flag!
+     *
      * @throws FileDoesNotExistException
      * @throws \RuntimeException
      */
@@ -809,8 +808,6 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
      * buffer before. Will be taken care of by the Storage.
      *
      * @param string $identifier
-     *
-     * @return void
      */
     public function dumpFileContents($identifier): void
     {
@@ -822,7 +819,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
      * Note that this is only about an inner-storage move action,
      * where a file is just moved to another folder in the same storage.
      *
-     * @throws \TYPO3\CMS\Core\Resource\Exception\ExistingTargetFileException
+     * @throws ExistingTargetFileException
      * @throws \RuntimeException
      */
     public function moveFileWithinStorage(string $fileIdentifier, string $targetFolderIdentifier, string $newFileName): string
@@ -849,7 +846,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
      * where a file is just copied to another folder in the same storage.
      *
      * @throws FileDoesNotExistException
-     * @throws \TYPO3\CMS\Core\Resource\Exception\ExistingTargetFileException
+     * @throws ExistingTargetFileException
      * @throws \RuntimeException
      */
     public function copyFileWithinStorage(string $fileIdentifier, string $targetFolderIdentifier, string $fileName): string
@@ -870,7 +867,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
     }
 
     /**
-     * Returns the permissions of a file/folder as an array (keys r, w) of boolean flags
+     * Returns the permissions of a file/folder as an array (keys r, w) of boolean flags.
      *
      * @throws \RuntimeException
      */
@@ -926,14 +923,16 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
     /**
      * Returns a string where any character not matching [.a-zA-Z0-9_-] is
      * substituted by '_'
-     * Trailing dots are removed
+     * Trailing dots are removed.
      *
      * Previously in \TYPO3\CMS\Core\Utility\File\BasicFileUtility::cleanFileName()
      *
      * @param string $fileName Input string, typically the body of a fileName
      * @param string $charset Charset of the a fileName (defaults to current charset; depending on context)
-     * @throws InvalidFileNameException
+     *
      * @return string Output string with any characters not matching [.a-zA-Z0-9_-] is substituted by '_' and trailing dots removed
+     *
+     * @throws InvalidFileNameException
      */
     public function sanitizeFileName($fileName, $charset = ''): string
     {
@@ -977,8 +976,9 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
      * @param bool $includeDirs
      * @param bool $recursive
      *
-     * @throws \InvalidArgumentException
      * @return array
+     *
+     * @throws \InvalidArgumentException
      */
     protected function getDirectoryItemList($folderIdentifier, $start = 0, $numberOfItems = 0, array $filterMethods = [], $includeFiles = true, $includeDirs = true, $recursive = false)
     {
@@ -999,7 +999,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
         $iterator->seek($start);
 
         // $c is the counter for how many items we still have to fetch (-1 is unlimited)
-        $c = $numberOfItems > 0 ? $numberOfItems : - 1;
+        $c = $numberOfItems > 0 ? $numberOfItems : -1;
         $items = [];
         while ($iterator->valid() && ($numberOfItems === 0 || $c > 0)) {
             $iteratorItem = $iterator->current();
@@ -1034,8 +1034,10 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
      * @param string $itemName
      * @param string $itemIdentifier
      * @param string $parentIdentifier
-     * @throws \RuntimeException
+     *
      * @return bool
+     *
+     * @throws \RuntimeException
      */
     protected function applyFilterMethodsToDirectoryItem(array $filterMethods, $itemName, $itemIdentifier, $parentIdentifier)
     {
@@ -1046,7 +1048,8 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
                 // If calling the method succeeded and thus we can't use that as a return value.
                 if ($result === -1) {
                     return false;
-                } elseif ($result === false) {
+                }
+                if ($result === false) {
                     throw new \RuntimeException('Could not apply file/folder name filter ' . $filter[0] . '::' . $filter[1], 5865295059);
                 }
             }
@@ -1058,12 +1061,9 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
     /**
      * This function scans a ftp_rawlist line string and returns its parts.
      *
-     * @param string $folderIdentifier
-     * @param bool $resetCache
      * @throws InvalidAttributeException
      * @throws InvalidConfigurationException
      * @throws FTPConnectionException
-     * @return array
      */
     protected function fetchDirectoryList(string $folderIdentifier, bool $resetCache = false): array
     {
@@ -1080,7 +1080,6 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
      *
      * @param array $resourceInfo
      * @param FTP $parentObject
-     * @return void
      */
     public function fetchDirectoryList_itemCallback($resourceInfo, $parentObject): void
     {
@@ -1116,8 +1115,10 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
      * @param string $oldIdentifier
      * @param string $newIdentifier
      * @param array $identifierMap
-     * @throws \RuntimeException
+     *
      * @return array
+     *
+     * @throws \RuntimeException
      */
     protected function createIdentifierMap($oldIdentifier, $newIdentifier, &$identifierMap = [])
     {
@@ -1166,8 +1167,10 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
      *
      * @param array $request
      * @param bool $createOnFail
-     * @throws \RuntimeException
+     *
      * @return array
+     *
+     * @throws \RuntimeException
      */
     protected function sendRemoteService($request = [], $createOnFail = true)
     {
@@ -1198,7 +1201,6 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
      *
      * @param string $message
      * @param int $severity
-     * @return void
      */
     protected function addFlashMessage($message, $severity = ContextualFeedbackSeverity::ERROR)
     {
@@ -1241,9 +1243,6 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
 
     /**
      * Returns a temporary path for a given file, including the file extension.
-     *
-     * @param string $fileIdentifier
-     * @return string
      */
     protected function getTemporaryPathForFile(string $fileIdentifier): string
     {
@@ -1251,7 +1250,7 @@ class FTPDriver extends AbstractHierarchicalFilesystemDriver
         $hash = sha1($this->storageUid . ':' . $fileIdentifier);
 
         return $this->temporaryFileStack[$hash] ?? ($this->temporaryFileStack[$hash] = parent::getTemporaryPathForFile($fileIdentifier));
-        //\TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump($this, 'getFileInfoByIdentifier');
-        //\TYPO3\CMS\Core\Utility\DebugUtility::debug(__FUNCTION__, 'Method');
+        // \TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump($this, 'getFileInfoByIdentifier');
+        // \TYPO3\CMS\Core\Utility\DebugUtility::debug(__FUNCTION__, 'Method');
     }
 }

@@ -9,6 +9,9 @@
 		"typo3/cms-backend": "~13.4.0",
 		"typo3/cms-core": "~13.4.0"
 	},
+	"require-dev": {
+		"friendsofphp/php-cs-fixer": "^3.95"
+	},
 	"autoload": {
 		"psr-4": {
 			"AdGrafik\\FalFtp\\": "Classes"

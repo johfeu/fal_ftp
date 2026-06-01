@@ -1,4 +1,5 @@
 <?php
+
 namespace AdGrafik\FalFtp\Extractor;
 
 /***************************************************************
@@ -38,7 +39,7 @@ class ImageDimensionExtractor implements ExtractorInterface
 {
     /**
      * Returns an array of supported file types;
-     * An empty array indicates all filetypes
+     * An empty array indicates all filetypes.
      *
      * Not used in core atm (T3 7.6.0)
      *
@@ -50,7 +51,7 @@ class ImageDimensionExtractor implements ExtractorInterface
     }
 
     /**
-     * Get all supported DriverClasses
+     * Get all supported DriverClasses.
      *
      * Since some extractors may only work for local files, and other extractors
      * are especially made for grabbing data from remote.
@@ -82,7 +83,7 @@ class ImageDimensionExtractor implements ExtractorInterface
 
     /**
      * Returns the execution priority of the extraction Service
-     * Should be between 1 and 100, 100 means runs as first service, 1 runs at last service
+     * Should be between 1 and 100, 100 means runs as first service, 1 runs at last service.
      *
      * @return int
      */
@@ -92,9 +93,8 @@ class ImageDimensionExtractor implements ExtractorInterface
     }
 
     /**
-     * Checks if the given file can be processed by this Extractor
+     * Checks if the given file can be processed by this Extractor.
      *
-     * @param File $file
      * @return bool
      */
     public function canProcess(File $file)
@@ -114,12 +114,12 @@ class ImageDimensionExtractor implements ExtractorInterface
     }
 
     /**
-     * The actual processing TASK
+     * The actual processing TASK.
      *
      * Should return an array with database properties for sys_file_metadata to write
      *
-     * @param File $file
      * @param array $previousExtractedData optional, contains the array of already extracted data
+     *
      * @return array
      */
     public function extractMetaData(File $file, array $previousExtractedData = [])
@@ -133,9 +133,8 @@ class ImageDimensionExtractor implements ExtractorInterface
     }
 
     /**
-     * Return the size-array of an image returned by getimagesize
+     * Return the size-array of an image returned by getimagesize.
      *
-     * @param File $file
      * @return array
      */
     private function getImageSize(File $file)

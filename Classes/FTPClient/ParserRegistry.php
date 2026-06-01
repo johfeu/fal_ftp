@@ -1,4 +1,5 @@
 <?php
+
 namespace AdGrafik\FalFtp\FTPClient;
 
 /***************************************************************
@@ -43,8 +44,6 @@ class ParserRegistry implements SingletonInterface
 
     /**
      * Initialize object.
-     *
-     * @return void
      */
     public function initialize(): void
     {
@@ -54,8 +53,9 @@ class ParserRegistry implements SingletonInterface
     /**
      * Register parser classes.
      *
-     * @throws InvalidConfigurationException
      * @return ParserRegistry
+     *
+     * @throws InvalidConfigurationException
      */
     public function registerParser(mixed $parsers)
     {
@@ -70,7 +70,7 @@ class ParserRegistry implements SingletonInterface
     }
 
     /**
-     * Has parser
+     * Has parser.
      *
      * @return bool
      */
@@ -80,9 +80,8 @@ class ParserRegistry implements SingletonInterface
     }
 
     /**
-     * Set parser
+     * Set parser.
      *
-     * @param array $parser
      * @return ParserRegistry
      */
     public function setParser(array $parser)
@@ -93,7 +92,7 @@ class ParserRegistry implements SingletonInterface
     }
 
     /**
-     * Get parser
+     * Get parser.
      *
      * @return array
      */
