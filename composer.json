@@ -6,7 +6,7 @@
 		"php": "~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0",
 		"ext-ftp": "*",
 		"psr/http-message": "*",
-		"typo3/cms-backend": "~13.4.0",
+		"typo3/cms-backend": "~13.4.0 || ~14.3.0",
 		"typo3/cms-core": "~13.4.0 || ~14.3.0"
 	},
 	"require-dev": {
